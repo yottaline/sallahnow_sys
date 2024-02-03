@@ -1,4 +1,29 @@
 
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_name` VARCHAR(120) NOT NULL,
+  `user_email` VARCHAR(120) NOT NULL,
+  `user_mobile` VARCHAR(24) NOT NULL,
+  `user_password` VARCHAR(255) NOT NULL,
+  `user_active` BOOLEAN NOT NULL DEFAULT '1',
+  `user_group` INT UNSIGNED NOT NULL,
+  `user_login` DATETIME DEFAULT NULL,
+  `user_register` DATETIME NOT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `user_group` (`user_group`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `ugroups` (
+  `ugroup_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ugroup_name` VARCHAR(42) NOT NULL,
+  `ugroup_privileges` VARCHAR(2048) NOT NULL,
+  PRIMARY KEY (`ugroup_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `brands` (
   `brand_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `brand_name` VARCHAR(24) NOT NULL,
@@ -461,31 +486,6 @@ CREATE TABLE IF NOT EXISTS `tech_points` (
   KEY `points_res` (`points_res`),
   KEY `points_tech` (`points_tech`),
   KEY `points_target` (`points_target`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `ugroups` (
-  `ugroup_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ugroup_name` VARCHAR(42) NOT NULL,
-  `ugroup_privileges` VARCHAR(2048) NOT NULL,
-  PRIMARY KEY (`ugroup_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `users` (
-  `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_name` VARCHAR(120) NOT NULL,
-  `user_email` VARCHAR(120) NOT NULL,
-  `user_mobile` VARCHAR(24) NOT NULL,
-  `user_password` VARCHAR(255) NOT NULL,
-  `user_active` BOOLEAN NOT NULL DEFAULT '1',
-  `user_group` INT UNSIGNED NOT NULL,
-  `user_login` DATETIME DEFAULT NULL,
-  `user_register` DATETIME NOT NULL,
-  PRIMARY KEY (`user_id`),
-  KEY `user_group` (`user_group`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
