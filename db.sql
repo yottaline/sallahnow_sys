@@ -24,6 +24,92 @@ CREATE TABLE IF NOT EXISTS `ugroups` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `locations` (
+  `location_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `location_name` VARCHAR(100) NOT NULL,
+  `location_type` TINYINT UNSIGNED NOT NULL COMMENT '1:country,2:state,3:city,4:area',
+  `location_parent` INT UNSIGNED NOT NULL,
+  `location_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`location_id`),
+  KEY `location_parent` (`location_parent`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `technicians` (
+  `tech_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tech_code` VARCHAR(12) NOT NULL,
+  `tech_center` INT UNSIGNED DEFAULT NULL,
+  `tech_email` VARCHAR(100) NOT NULL,
+  `tech_mobile` VARCHAR(24) NOT NULL,
+  `tech_tel` VARCHAR(24) DEFAULT NULL,
+  `tech_password` VARCHAR(255) NOT NULL,
+  `tech_identification` VARCHAR(24) NOT NULL,
+  `tech_birth` DATE DEFAULT NULL,
+  `tech_country` INT UNSIGNED NOT NULL,
+  `tech_state` INT UNSIGNED NOT NULL,
+  `tech_city` INT UNSIGNED NOT NULL,
+  `tech_area` INT UNSIGNED NOT NULL,
+  `tech_address` VARCHAR(1024) NOT NULL,
+  `tech_geo` VARCHAR(64) NOT NULL,
+  `tech_desc` VARCHAR(1024),
+  `tech_notes` VARCHAR(1024),
+  `tech_active` BOOLEAN NOT NULL DEFAULT '1',
+  `tech_blocked` BOOLEAN NOT NULL DEFAULT '0',
+  `tech_login` DATETIME DEFAULT NULL,
+  `tech_register` DATETIME NOT NULL,
+  `tech_user` INT UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`tech_id`),
+  KEY `tech_code` (`tech_code`),
+  KEY `tech_center` (`tech_center`),
+  KEY `tech_country` (`tech_country`),
+  KEY `tech_state` (`tech_state`),
+  KEY `tech_city` (`tech_city`),
+  KEY `tech_area` (`tech_area`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tech_center` (
+  `center_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `center_code` VARCHAR(12) NOT NULL,
+  `center_owner` INT UNSIGNED NOT NULL,
+  `center_name` VARCHAR(120) NOT NULL,
+  `center_email` VARCHAR(120) DEFAULT NULL,
+  `center_mobile` VARCHAR(24) NOT NULL,
+  `center_whatsapp` VARCHAR(24) DEFAULT NULL,
+  `center_cr` VARCHAR(20) DEFAULT NULL,
+  `center_tax` VARCHAR(20) DEFAULT NULL,
+  `center_address` VARCHAR(512) DEFAULT NULL,
+  `center_note` VARCHAR(1024) DEFAULT NULL,
+  `center_rate` TINYINT UNSIGNED DEFAULT NULL,
+  `center_pkg` TINYINT UNSIGNED DEFAULT '0',
+  `center_points` INT UNSIGNED DEFAULT '0',
+  `center_modify` DATETIME DEFAULT NULL,
+  `center_create` DATETIME NOT NULL,
+  PRIMARY KEY (`center_id`),
+  KEY `center_code` (`center_code`),
+  KEY `center_owner` (`center_owner`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tech_points` (
+  `points_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `points_tech` INT UNSIGNED NOT NULL,
+  `points_amount` INT UNSIGNED NOT NULL,
+  `points_res` TINYINT UNSIGNED DEFAULT '0' COMMENT '0:pkg, 1:purch, 2:promo, 3:academy, 4:ticket, 5:ads',
+  `points_target` BIGINT UNSIGNED DEFAULT NULL,
+  `points_process` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '0:spend, 1:earn',
+  `points_time` DATETIME NOT NULL,
+  PRIMARY KEY (`points_id`),
+  KEY `points_res` (`points_res`),
+  KEY `points_tech` (`points_tech`),
+  KEY `points_target` (`points_target`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `brands` (
   `brand_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `brand_name` VARCHAR(24) NOT NULL,
@@ -109,18 +195,6 @@ CREATE TABLE IF NOT EXISTS `languages` (
   `language_code` VARCHAR(2) NOT NULL,
   `language_dir` VARCHAR(3) NOT NULL,
   PRIMARY KEY (`language_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `locations` (
-  `location_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `location_name` VARCHAR(100) NOT NULL,
-  `location_type` TINYINT UNSIGNED NOT NULL COMMENT '1:country,2:state,3:city,4:area',
-  `location_parent` INT UNSIGNED NOT NULL,
-  `location_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`location_id`),
-  KEY `location_parent` (`location_parent`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -411,81 +485,6 @@ CREATE TABLE IF NOT EXISTS `support_tickets` (
   KEY `ticket_model` (`ticket_model`),
   KEY `ticket_category` (`ticket_category`),
   KEY `ticket_tech` (`ticket_tech`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `technicians` (
-  `tech_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tech_code` VARCHAR(24) NOT NULL,
-  `tech_place` VARCHAR(100) NOT NULL,
-  `tech_person` VARCHAR(100) NOT NULL,
-  `tech_email` VARCHAR(100) NOT NULL,
-  `tech_mobile` VARCHAR(24) NOT NULL,
-  `tech_tel` VARCHAR(24) NOT NULL,
-  `tech_password` VARCHAR(255) NOT NULL,
-  `tech_country` INT UNSIGNED NOT NULL,
-  `tech_state` INT UNSIGNED NOT NULL,
-  `tech_city` INT UNSIGNED NOT NULL,
-  `tech_area` INT UNSIGNED NOT NULL,
-  `tech_address` VARCHAR(1024) NOT NULL,
-  `tech_geo` VARCHAR(64) NOT NULL,
-  `tech_desc` VARCHAR(1024),
-  `tech_notes` VARCHAR(1024),
-  `tech_rate` TINYINT UNSIGNED DEFAULT NULL,
-  `tech_pkg` TINYINT UNSIGNED DEFAULT '0',
-  `tech_points` INT UNSIGNED DEFAULT '0',
-  `tech_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  `tech_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
-  `tech_login` DATETIME DEFAULT NULL,
-  `tech_register` DATETIME NOT NULL,
-  `tech_user` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`tech_id`),
-  KEY `tech_country` (`tech_country`),
-  KEY `tech_state` (`tech_state`),
-  KEY `tech_city` (`tech_city`),
-  KEY `tech_area` (`tech_area`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `tech_form` (
-  `form_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `form_name` VARCHAR(120) NOT NULL,
-  `form_email` VARCHAR(100) DEFAULT NULL,
-  `form_mobile` VARCHAR(24) NOT NULL,
-  `form_whatsapp` VARCHAR(24) DEFAULT NULL,
-  `form_key` VARCHAR(6) NOT NULL,
-  `form_national_id` VARCHAR(14) NOT NULL,
-  `form_birth` DATE DEFAULT NULL,
-  `form_store` TINYINT UNSIGNED NOT NULL DEFAULT '0',
-  `form_store_name` VARCHAR(120) DEFAULT NULL,
-  `form_store_cr` VARCHAR(20) DEFAULT NULL,
-  `form_store_tax` VARCHAR(20) DEFAULT NULL,
-  `form_store_address` VARCHAR(220) DEFAULT NULL,
-  `form_level` VARCHAR(1024) DEFAULT NULL,
-  `form_note` VARCHAR(1024) DEFAULT NULL,
-  `form_ref` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
-  `form_media` VARCHAR(24) NOT NULL,
-  `form_modify` DATETIME DEFAULT NULL,
-  `form_create` DATETIME NOT NULL,
-  PRIMARY KEY (`form_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `tech_points` (
-  `points_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `points_tech` INT UNSIGNED NOT NULL,
-  `points_amount` INT UNSIGNED NOT NULL,
-  `points_res` TINYINT UNSIGNED DEFAULT '0' COMMENT '0:pkg, 1:purch, 2:promo, 3:academy, 4:ticket, 5:ads',
-  `points_target` BIGINT UNSIGNED DEFAULT NULL,
-  `points_process` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '0:spend, 1:earn',
-  `points_time` DATETIME NOT NULL,
-  PRIMARY KEY (`points_id`),
-  KEY `points_res` (`points_res`),
-  KEY `points_tech` (`points_tech`),
-  KEY `points_target` (`points_target`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
