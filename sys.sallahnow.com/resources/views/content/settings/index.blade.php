@@ -236,7 +236,7 @@
                     controls.prop('disabled', false);
                 });
 
-            }) {}
+            })
         });
     </script>
 @endsection

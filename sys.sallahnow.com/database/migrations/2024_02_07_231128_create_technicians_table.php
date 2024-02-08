@@ -14,7 +14,6 @@ return new class extends Migration
     {
         Schema::create('technicians', function (Blueprint $table) {
             $table->bigIncrements('id');
-            // $table->integer('code')->autoIncrement()->primary(false);
             $table->integer('center')->nullable();
             $table->string('name');
             $table->string('email')->nullable();
