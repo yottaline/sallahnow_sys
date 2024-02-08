@@ -113,10 +113,7 @@ label.error {
   color: #a00;
   position: absolute;
 }
-.container-fluid {
-    max-width: 1600px;
-    margin-left: 300px;
-}
+
 .help-cursor {
   cursor: help;
 }
