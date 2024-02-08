@@ -32,8 +32,10 @@
                             placeholder="Search for names.." title="Type in a name" autocomplete="off">
                     </div>
                     <div class="col-2">
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal"
-                            data-target="#exampleModal"><i class="bi bi-person-add"></i></button>
+                        @haspermission('add-users')
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                                data-target="#exampleModal"><i class="bi bi-person-add"></i></button>
+                        @endhaspermission
                         <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#add_role"><i
                                 class="bi bi-person-bounding-box"></i></button>
                     </div>

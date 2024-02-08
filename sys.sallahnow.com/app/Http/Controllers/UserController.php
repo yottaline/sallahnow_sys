@@ -14,6 +14,10 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:add-users')->only(['create', 'store']);
+        $this->middleware('permission:view-users')->only(['index', 'show']);
+        $this->middleware('permission:update-users')->only(['edit', 'update']);
+        $this->middleware('permission:delete-users')->only('destroy');
     }
 
     public function index() : View {
