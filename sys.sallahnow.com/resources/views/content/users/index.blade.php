@@ -85,18 +85,20 @@
                                                 Action
                                             </span>
                                             <div class="dropdown-menu">
-                                                {{-- <a class="dropdown-item" href="{{ route('user.add_role', $user->id) }}">
-                                                    <i class="bi bi-person-bounding-box "></i> Add Role</a> --}}
-                                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#edit_user"
-                                                    data-user_id="{{ $user->id }}" data-user_name="{{ $user->name }}"
-                                                    data-user_mobile="{{ $user->mobile }}"
-                                                    data-user_email="{{ $user->email }}"
-                                                    data-user_password="{{ $user->password }}"
-                                                    data-user_active="{{ $user->active }}">
-                                                    <i class="bi bi-pencil-square"></i> Edit</a>
-                                                <a class="dropdown-item text-danger" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_user" data-user_id="{{ $user->id }}">
-                                                    <i class="bi bi-trash"></i> Delete</a>
+                                                @haspermission('update-users')
+                                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#edit_user"
+                                                        data-user_id="{{ $user->id }}" data-user_name="{{ $user->name }}"
+                                                        data-user_mobile="{{ $user->mobile }}"
+                                                        data-user_email="{{ $user->email }}"
+                                                        data-user_password="{{ $user->password }}"
+                                                        data-user_active="{{ $user->active }}">
+                                                        <i class="bi bi-pencil-square"></i> Edit</a>
+                                                @endhaspermission
+                                                @haspermission('delete-users')
+                                                    <a class="dropdown-item text-danger" data-bs-toggle="modal"
+                                                        data-bs-target="#delete_user" data-user_id="{{ $user->id }}">
+                                                        <i class="bi bi-trash"></i> Delete</a>
+                                                @endhaspermission
                                             </div>
                                         </div>
                                     </td>
@@ -154,36 +156,38 @@
         <!-- end add new user  Modal -->
 
         <!-- start edit user active  Modal -->
-        <div class="modal fade" id="edit_active" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Change Active</h5>
-                        <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="{{ route('user_update_active') }}">
-                            @csrf @method('PUT')
-                            <input type="text" hidden id="user_id" name="user_id">
-                            <label for="form-control" class="form-label">Active</label>
-                            <select name="active" class="form-control">
-                                <option value="">-- select status --</option>
-                                <option value="1">Enabled</option>
-                                <option value="0">Blocked</option>
-                            </select>
-                            <div class="d-flex mt-3">
-                                <button type="button" class="btn btn-outline-secondary me-auto"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary">Update Active</button>
-                            </div>
-                        </form>
+        @haspermission('update-users')
+            <div class="modal fade" id="edit_active" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Change Active</h5>
+                            <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{{ route('user_update_active') }}">
+                                @csrf @method('PUT')
+                                <input type="text" hidden id="user_id" name="user_id">
+                                <label for="form-control" class="form-label">Active</label>
+                                <select name="active" class="form-control">
+                                    <option value="">-- select status --</option>
+                                    <option value="1">Enabled</option>
+                                    <option value="0">Blocked</option>
+                                </select>
+                                <div class="d-flex mt-3">
+                                    <button type="button" class="btn btn-outline-secondary me-auto"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-outline-primary">Update Active</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endhaspermission
         <!-- end edit user active Modal -->
 
         <!-- start edit user  Modal -->

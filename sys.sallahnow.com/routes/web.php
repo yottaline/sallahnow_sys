@@ -15,7 +15,7 @@ Route::prefix('users')->middleware(['auth', 'verified'])->group(function () {
     Route::get('add_role', 'UserController@addRole')->name('user_add_role');
     Route::post('add_role_to_user/{user}', 'UserController@addRoleToUser')->name('user_add_role_to_user');
     Route::delete('delete/user','UserController@delete')->name('user_delete');
-    Route::delete('delete/role/{user}/{role}', 'UserController@syncRoles')->name('user_remove_role');
+    Route::delete('delete/role', 'UserController@syncRoles')->name('user_remove_role');
 });
 
 Route::prefix('permission')->middleware('auth')->group(function() {
@@ -40,6 +40,9 @@ Route::prefix('roles')->middleware('auth')->group( function() {
 Route::prefix('technicians')->middleware(['auth'])->group(function(){
     Route::get('technician', 'TechnicianController@index')->name('technician_index');
     Route::post('store','TechnicianController@store')->name('technician_store');
+    Route::put('update', 'TechnicianController@update')->name('technician_update');
+    Route::put('update/active', 'TechnicianController@updateActive')->name('technician_update_active');
+    Route::delete('delete', 'TechnicianController@delete')->name('technician_delete');
 });
 
 Route::prefix('settings')->middleware('auth')->group(function () {

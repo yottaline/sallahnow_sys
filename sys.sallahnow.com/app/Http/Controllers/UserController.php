@@ -14,10 +14,10 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:add-users')->only(['create', 'store']);
-        $this->middleware('permission:view-users')->only(['index', 'show']);
-        $this->middleware('permission:update-users')->only(['edit', 'update']);
-        $this->middleware('permission:delete-users')->only('destroy');
+        // $this->middleware('permission:add-users')->only(['create', 'store']);
+        // $this->middleware('permission:view-users')->only(['index', 'show']);
+        // $this->middleware('permission:update-users')->only(['edit', 'update']);
+        // $this->middleware('permission:delete-users')->only('destroy');
     }
 
     public function index() : View {
@@ -88,9 +88,13 @@ class UserController extends Controller
         return back();
      }
 
-     public function syncRoles(User $user, Role $role){
+     public function syncRoles(Request $request){
+        $user_id = $request->user_id;
+        $role_id = $request->role_id;
+        $user    = User::find($user_id);
+        $role    = Role::find($role_id);
         $user->roles($role)->detach();
-        session()->flash('Add', 'Role Deleted successful');
+        session()->flash('error', 'Role Deleted successful');
         return back();
      }
 
