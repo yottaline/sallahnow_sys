@@ -29,8 +29,8 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->longText('bio')->nullable();
             $table->longText('notes')->nullable();
-            $table->boolean('active');
-            $table->boolean('blocked');
+            $table->boolean('active')->default(1);
+            $table->boolean('blocked')->default(0);
             $table->date('login');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();

@@ -12,6 +12,7 @@ class Technician extends Model
     protected $fillable = [
         'center',
         'name',
+        'code',
         'email',
         'mobile',
         'tel',
@@ -27,7 +28,8 @@ class Technician extends Model
         'notes',
         'active',
         'blocked',
-        'login'
+        'login',
+        'user_id'
     ];
 
     public function user() {
