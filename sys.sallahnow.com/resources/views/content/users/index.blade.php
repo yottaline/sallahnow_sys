@@ -3,7 +3,7 @@
     Users
 @endsection
 @section('content')
-    <div class="container-fluid mt-5">
+    <div class="container-fluid mt-5" data-ng-app="myApp" data-ng-controller="myCtrl">
         @if (session()->has('Add'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>{{ session()->get('Add') }}</strong>
@@ -20,101 +20,91 @@
                 </ul>
             </div>
         @endif
-        <div class="card">
-            <div class="card-body p-4">
-                <div class="row">
-                    <div class="col-7">
-                        <h5 class="card-title fw-semibold pt-1"> <i class="bi bi-people text-success"></i> User Table
-                        </h5>
-                    </div>
-                    <div class="col-3">
-                        <input type="text" id="search" class="form-control input-lg" onkeyup="myFunction()"
-                            placeholder="Search for names.." title="Type in a name" autocomplete="off">
-                    </div>
-                    <div class="col-2">
-                        @haspermission('add-users')
-                            <button type="button" class="btn btn-outline-primary" data-toggle="modal"
-                                data-target="#exampleModal"><i class="bi bi-person-add"></i></button>
-                        @endhaspermission
-                        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#add_role"><i
-                                class="bi bi-person-bounding-box"></i></button>
+        <div class="row">
+            <div class="col-12 col-sm-4 col-lg-3">
+                <div class="card card-box">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="roleFilter">Role</label>
+                            <select name="" id="" class="form-select">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roleFilter">Status</label>
+                            <select name="" id="" class="form-select">
+                                <option value=""></option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <hr class="mb-3">
+            </div>
+            <div class="col-12 col-sm-8 col-lg-9">
+                <div class="card card-box">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                <span class="loading-spinner spinner-border spinner-border-sm text-warning"
+                                    role="status"></span>
+                                User Table
+                            </h5>
+                            <div>
+                                <button type="button" class="btn btn-outline-primary btn-circle bi bi-person-add"
+                                    data-ng-click="setUser(false)"></button>
+                                <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
+                                    data-ng-click="dataLoader(true)"></button>
+                            </div>
+                            @haspermission('add-users')
+                            @endhaspermission
+                        </div>
+                        {{-- <div class="row">
+                            <div class="col-7">
+                            </div>
+                            
+                            <div class="col-2">
+                                <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#add_role"><i
+                                        class="bi bi-person-bounding-box"></i></button>
+                            </div>
+                        </div> --}}
+                        {{-- <hr class="mb-3"> --}}
 
-                <div class="table-responsive">
-                    <table class="table table-hover" id="user_table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Mobile</th>
-                                <th scope="col">Active</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($users as $user)
-                                <tr>
-                                    <th scope="row">{{ $user->id }}</th>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->mobile }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2" style="cursor:pointer"
-                                            data-bs-toggle="modal" data-bs-target="#edit_active"
-                                            data-user_id="{{ $user->id }}">
-                                            @if ($user->active == 1)
-                                                <span class="badge bg-success p-2 rounded-3 fw-semibold">
-                                                    Enabled
-                                                </span>
-                                            @else
-                                                <span class="badge bg-danger p-2 rounded-3 fw-semibold">
-                                                    Blocked
-                                                </span>
-                                            @endif
+                        <div data-ng-if="users.length" class="table-responsive">
+                            <table class="table table-hover" id="user_table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="u in users track by $index">
+                                        <td data-ng-bind="u.id"></td>
+                                        <td data-ng-bind="u.name"></td>
+                                        <td data-ng-bind="u.email"></td>
+                                        <td data-ng-bind="u.mobile"></td>
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                data-ng-click="setUser($index)"></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="dropright d-flex align-items-center gap-2">
-                                            <span type="button"
-                                                class=" dropdown-toggle badge bg-dark p-2 rounded-3 fw-semibold"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Action
-                                            </span>
-                                            <div class="dropdown-menu">
-                                                @haspermission('update-users')
-                                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#edit_user"
-                                                        data-user_id="{{ $user->id }}" data-user_name="{{ $user->name }}"
-                                                        data-user_mobile="{{ $user->mobile }}"
-                                                        data-user_email="{{ $user->email }}"
-                                                        data-user_password="{{ $user->password }}"
-                                                        data-user_active="{{ $user->active }}">
-                                                        <i class="bi bi-pencil-square"></i> Edit</a>
-                                                @endhaspermission
-                                                @haspermission('delete-users')
-                                                    <a class="dropdown-item text-danger" data-bs-toggle="modal"
-                                                        data-bs-target="#delete_user" data-user_id="{{ $user->id }}">
-                                                        <i class="bi bi-trash"></i> Delete</a>
-                                                @endhaspermission
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
-                        </tbody>
-                    </table>
+                        <div data-ng-if="!users.length" class="text-center py-5">
+                            <i class="bi bi-people text-secondary display-4"></i>
+                            <h5 class="text-secondary">No records</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-
         <!-- start add new user  Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -123,30 +113,66 @@
                             <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
                         </button>
                     </div>
+
                     <div class="modal-body">
                         <form method="POST" action="{{ route('user_store') }}">
                             @csrf
+                            <input data-ng-if="updateUser !== false" type="hidden" name="_method" value="put">
+                            <input type="hidden" name="user_id"
+                                data-ng-value="updateUser !== false ? users[updateUser].id : 0">
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">User Name</label>
-                                <input type="text" class="form-control" name="name">
+                                <label for="exampleInputEmail1">Full Name<b class="text-danger">&ast;</b></label>
+                                <input type="text" class="form-control" name="name" maxlength="120" required
+                                    data-ng-value="updateUser !== false ? users[updateUser].name : ''">
                             </div>
-                            <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Mobile</label>
-                                <input type="text" class="form-control" name="mobile">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1">Mobile<b class="text-danger">&ast;</b></label>
+                                        <input type="text" class="form-control" name="mobile" maxlength="24" required
+                                            data-ng-value="updateUser !== false ? users[updateUser].mobile : ''">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1">Email</label>
+                                        <input type="email" class="form-control" name="email"
+                                            id="exampleInputEmail1"
+                                            data-ng-value="updateUser !== false ? users[updateUser].email : ''">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" id="exampleInputEmail1"
-                                    aria-describedby="emailHelp">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1">Password</label>
+                                        <input type="password" class="form-control" name="password"
+                                            id="exampleInputPassword1">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1">Password Confirmation</label>
+                                        <input type="password" class="form-control" name="password_co"
+                                            id="exampleInputPassword2">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="exampleInputPassword1" class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password" id="exampleInputPassword1">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1">Role<b class="text-danger">&ast;</b></label>
+                                        <select name="" id="">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
-                                    data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary">Add User</button>
+                                    data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-outline-primary">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -171,7 +197,7 @@
                             <form method="POST" action="{{ route('user_update_active') }}">
                                 @csrf @method('PUT')
                                 <input type="text" hidden id="user_id" name="user_id">
-                                <label for="form-control" class="form-label">Active</label>
+                                <label for="form-control">Active</label>
                                 <select name="active" class="form-control">
                                     <option value="">-- select status --</option>
                                     <option value="1">Enabled</option>
@@ -206,20 +232,20 @@
                             @csrf @method('PUT')
                             <input type="text" id="user_id" name="user_id" hidden>
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">User Name</label>
+                                <label for="exampleInputEmail1">User Name</label>
                                 <input type="text" class="form-control" name="user_name" id="user_name">
                             </div>
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Mobile</label>
+                                <label for="exampleInputEmail1">Mobile</label>
                                 <input type="text" class="form-control" name="user_mobile" id="user_mobile">
                             </div>
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Email</label>
+                                <label for="exampleInputEmail1">Email</label>
                                 <input type="email" class="form-control" name="user_email" id="user_email"
                                     aria-describedby="emailHelp">
                             </div>
                             <div class="mb-3">
-                                <label for="exampleInputPassword1" class="form-label">Password</label>
+                                <label for="exampleInputPassword1">Password</label>
                                 <input type="password" class="form-control" name="user_password" id="user_password">
                             </div>
 
@@ -243,7 +269,7 @@
                         <form method="GET" action="{{ route('user_add_role') }}">
                             @csrf
                             <div class="mb-3">
-                                <label for="form-control" class="form-label">Users</label>
+                                <label for="form-control">Users</label>
                                 <select name="user_id" class="form-control">
                                     <option value="">-- select user name --</option>
                                     @foreach ($users as $user)
@@ -293,6 +319,38 @@
     </div>
 @endsection
 @section('js')
+    <script>
+        var scope, app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+            $('.loading-spinner').hide();
+            $scope.updateUser = false;
+            $scope.users = [];
+            $scope.page = 1;
+            $scope.dataLoader = function(reload = false) {
+                $('.loading-spinner').show();
+                if (reload) {
+                    $scope.page = 1;
+                }
+                $.post("/users/load/", {
+                    page: $scope.page,
+                    limit: 24,
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.users = data;
+                        $scope.page++;
+                    });
+                }, 'json');
+            }
+            $scope.setUser = (indx) => {
+                $scope.updateUser = indx;
+                $('#exampleModal').modal('show');
+            };
+            $scope.dataLoader();
+            scope = $scope;
+        });
+    </script>
     <script>
         let delete_user = document.getElementById("delete_user");
 

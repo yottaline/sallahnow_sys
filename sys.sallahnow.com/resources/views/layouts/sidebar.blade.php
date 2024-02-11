@@ -12,11 +12,11 @@
                      <i class="bi bi-speedometer text-secondary me-2"></i><b>Dashboard</b>
                  </a>
              </li>
-             <li class="list-group-item nav-customers">
+             {{-- <li class="list-group-item nav-customers">
                  <a class="link-dark d-block" href="#">
                      <i class="bi bi-people text-secondary me-2"></i><b>Customers</b>
                  </a>
-             </li>
+             </li> --}}
 
              <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="{{ route('technician_index') }}">
@@ -24,17 +24,17 @@
                  </a>
              </li>
 
-             <li class="list-group-item nav-articles">
+             {{-- <li class="list-group-item nav-articles">
                  <a class="link-dark d-block" href="">
                      <i class="bi bi-file-earmark-richtext text-secondary me-2"></i><b>Articles</b>
                  </a>
-             </li>
+             </li> --}}
 
-             <li class="list-group-item nav-news">
+             {{-- <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="">
                      <i class="bi bi-newspaper text-secondary me-2"></i><b>News</b>
                  </a>
-             </li>
+             </li> --}}
 
              <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="{{ route('role_index') }}">
@@ -48,13 +48,13 @@
                  </a>
              </li>
 
-             <li class="list-group-item nav-pages">
+             {{-- <li class="list-group-item nav-pages">
                  <a class="link-dark d-block" href="">
                      <i class="bi bi-file-earmark text-secondary me-2"></i><b>Web Pages</b>
                  </a>
-             </li>
+             </li> --}}
 
-             <li class="list-group-item">
+             {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#paymentsCollapse" role="button"
                      aria-expanded="false" aria-controls="paymentsCollapse">
                      <i class="bi bi-wallet2 text-secondary me-2"></i><b>Finance</b>
@@ -93,7 +93,7 @@
                      if (['subsc', 'trans', 'refunds', 'promos'].includes(navTarget))
                          paymentsCollapse.show();
                  </script>
-             </li>
+             </li> --}}
 
              <li class="list-group-item nav-users">
                  <a class="link-dark d-block" href="{{ route('users') }}">
@@ -101,13 +101,13 @@
                  </a>
              </li>
 
-             <li class="list-group-item nav-support">
+             {{-- <li class="list-group-item nav-support">
                  <a class="link-dark d-block" href="">
                      <i class="bi bi-question-circle text-secondary me-2"></i><b>Help Disk</b>
                  </a>
-             </li>
+             </li> --}}
 
-             <li class="list-group-item">
+             {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#reportsCollapse" role="button"
                      aria-expanded="false" aria-controls="reportsCollapse">
                      <i class="bi bi-receipt-cutoff text-secondary me-2"></i><b>Reports</b>
@@ -140,7 +140,7 @@
                      if (['rep-customers', 'rep-trans', 'rep-subsc'].includes(navTarget))
                          reportsCollapse.show();
                  </script>
-             </li>
+             </li> --}}
 
              <li class="list-group-item nav-support">
                  <a class="link-dark d-block" href="{{ route('setting_index') }}">
@@ -148,11 +148,11 @@
                  </a>
              </li>
 
-             <li class="list-group-item nav-help">
+             {{-- <li class="list-group-item nav-help">
                  <a class="link-dark d-block" href="#">
                      <i class="bi bi-info-lg text-secondary me-2"></i><b>Help</b>
                  </a>
-             </li>
+             </li> --}}
          </ul>
      </div>
      <div class="d-flex">
