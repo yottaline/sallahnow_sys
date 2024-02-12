@@ -42,11 +42,11 @@
                  </a>
              </li>
 
-             <li class="list-group-item nav-news">
+             {{-- <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="{{ route('permission_index') }}">
                      <i class="bi bi-ui-checks text-secondary me-2"></i><b>Permissions</b>
                  </a>
-             </li>
+             </li> --}}
 
              {{-- <li class="list-group-item nav-pages">
                  <a class="link-dark d-block" href="">
