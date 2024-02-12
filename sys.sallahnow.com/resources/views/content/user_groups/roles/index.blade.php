@@ -4,19 +4,11 @@
 @endsection
 @section('content')
     <!--  content start -->
-    <div class="container-fluid mt-5">
-
+    <div class="container-fluid mt-5" data-ng-app="myApp" data-ng-controller="myCtrl">
         @if (session()->has('Add'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>{{ session()->get('Add') }}</strong>
-                <span aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close"> <i
-                        class="bi bi-x-circle"></i></span>
-            </div>
-        @endif
-        @if (session()->has('error'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>{{ session()->get('error') }}</strong>
-                <span aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close"> <i
+                <span aria-hidden="true" class="close" data-bs-dismiss="alert" aria-label="Close"> <i
                         class="bi bi-x-circle"></i></span>
             </div>
         @endif
@@ -29,158 +21,160 @@
                 </ul>
             </div>
         @endif
-
-        <!-- table start -->
-        <div class="card">
-            <div class="card-body p-4">
-                <div class="row">
-                    <div class="col-7">
-                        <h5 class="card-title fw-semibold pt-1"> <i class="bi bi-person-bounding-box text-success"></i>
-                            Roles
-                            Table
-                        </h5>
-                    </div>
-                    <div class="col-3">
-                        <input type="text" id="search" class="form-control input-lg" onkeyup="myFunction()"
-                            placeholder="Search for names.." title="Type in a name" autocomplete="off">
-                    </div>
-                    <div class="col-2">
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal"
-                            data-target="#add_role"><i class="bi bi-person-bounding-box"></i></button>
+        <div class="row">
+            <div class="col-12 col-sm-4 col-lg-3">
+                <div class="card card-box">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            Add Role
+                            <form method="POST" action="{{ route('role_store') }}">
+                                @csrf
+                                <div class="input-group">
+                                    <input type="text" name="name" class="form-control">
+                                    <button class="input-group-text" id="basic-addon1" type="submit">
+                                        <i class="bi bi-plus-circle-fill"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roleFilter">Roles</label>
+                            <ul class="list-group" data-ng-repeat="role in roles track by $index">
+                                <div class="input-group mb-2">
+                                    <li class="list-group-item" style="width:80%" data-ng-bind="role.user_group_name"
+                                        data-ng-value="role.id"></li>
+                                    <button class="input-group-text" id="basic-addon1">
+                                        <i class="bi-eye" data-ng-click="setPermissions(role)"></i>
+                                    </button>
+                                    @if (in_array('add-users', json_decode(auth()->user()->role->user_group_privileges)))
+                                        <button class="input-group-text" id="basic-addon1">
+                                            <i class="bi-caret-right-fill" data-ng-click="getPermissions(role)"></i>
+                                        </button>
+                                    @endif
+                                </div>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <hr class="mb-3">
-
-                <div class="table-responsive">
-                    <table class="table table-hover" id="role_table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($roles as $role)
-                                <tr>
-                                    <th scope="row">{{ $role->id }}</th>
-                                    <td>{{ $role->name }}</td>
-                                    <td>
-                                        <div class="dropright d-flex align-items-center gap-2">
-                                            <span type="button"
-                                                class=" dropdown-toggle badge bg-dark p-2 rounded-3 fw-semibold"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Action
-                                            </span>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item text-secondary" data-bs-toggle="modal"
-                                                    data-bs-target="#edit_role" data-role_id={{ $role->id }}>
-                                                    <i class="bi bi-pencil-square"></i> Edit</a>
-                                                <a class="dropdown-item text-danger" data-bs-toggle="modal"
-                                                    data-bs-target="#delete_role" data-role_id={{ $role->id }}>
-                                                    <i class="bi bi-trash"></i> Delete</a>
+            </div>
+            <div class="col-12 col-sm-8 col-lg-9">
+                <div class="card card-box perms">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <h5 class="card-title fw-semibold pt-1 me-auto mb-3">Permissions
+                            </h5>
+                        </div>
+                        <div>
+                            <form action="{{ route('addPermissions') }}" method="post">
+                                @csrf @method('PUT')
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Users Permissions</h5>
+                                        <div class="row">
+                                            <input type="text" hidden data-ng-value="roleId" name="role_id">
+                                            <div class="card-box">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="add-users" name="name[]">
+                                                            <label class="form-check-label">Add
+                                                                Users</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="view-users" name="name[]">
+                                                            <label class="form-check-label">View
+                                                                Users</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="update-users" name="name[]">
+                                                            <label class="form-check-label">Update
+                                                                Users</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="delete-users" name="name[]">
+                                                            <label class="form-check-label">Delete
+                                                                Users</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
-                        </tbody>
-                    </table>
+                                    </div>
+                                </div>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Technicians Permissions</h5>
+                                        <div class="row">
+                                            <input type="text" hidden data-ng-value="roleId" name="role_id">
+                                            <div class="card-box">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="add-technician" name="name[]">
+                                                            <label class="form-check-label">Add
+                                                                Technicians</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="view-technician" name="name[]">
+                                                            <label class="form-check-label">View
+                                                                Technicians</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="update-technician" name="name[]">
+                                                            <label class="form-check-label">Update
+                                                                Technicians</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                value="delete-technician" name="name[]">
+                                                            <label class="form-check-label">Delete
+                                                                Technicians</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-dark" type="submit"><i
+                                        class="bi bi-plus-circle-fill"></i></button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <!-- table end -->
-
-
-        <!-- start add new permission  Modal -->
-        <div class="modal fade" id="add_role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Create New Role</h5>
-                        <button type="button" class="btn btn-danger close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="{{ route('role_store') }}">
-                            @csrf
-                            <div class="mb-2">
-                                <label for="exampleInputEmail1" class="form-label">Role Name</label>
-                                <input type="text" class="form-control lg" name="role_name" id="exampleInputEmail1"
-                                    aria-describedby="emailHelp">
-                            </div>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-secondary me-auto"
-                                    data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary">Add Role</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- end add new permission  Modal -->
-
-        <!-- start edit role  Modal -->
-        <div class="modal fade" id="edit_role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Role</h5>
-                        <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="GET" action="{{ route('role_edit') }}">
-                            @csrf
-                            <input type="text" hidden id="role_id" name="role_id">
-                            <p class="mb-2">You will be Transfer to the edit file, and you can also add ?</p>
-
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-secondary me-auto"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary">Transfer</button>
-                            </div>
-                        </form>
+                <div class="card card-box perm">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <h5 class="card-title fw-semibold pt-1 me-auto mb-3">Permissions
+                            </h5>
+                        </div>
+                        <div>
+                            <p>The permsission is Role : <span data-ng-bind="permissions.user_group_privileges"></span></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- end edit role Modal -->
-
-        <!-- start delete role  Modal -->
-        <div class="modal fade" id="delete_role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Delete Role</h5>
-                        <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="{{ route('role_delete') }}">
-                            @csrf
-                            @method('DELETE')
-                            <input type="text" hidden id="role_id" name="role_id">
-                            <p class="mb-2">Are you sure you want to delete?</p>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-secondary me-auto"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-danger">Delete</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- end delete role Modal -->
 
     </div>
     <!--  content end -->
@@ -188,42 +182,42 @@
 
 @section('js')
     <script>
-        let edit_role = document.getElementById("edit_role");
-
-        edit_role.addEventListener("shown.bs.modal", function(event) {
-            let button = $(event.relatedTarget);
-            let role_id = button.data("role_id");
-            let modal = $(this);
-            modal.find(".modal-body #role_id").val(role_id);
-        });
-    </script>
-    <script>
-        let delete_role = document.getElementById("delete_role");
-
-        delete_role.addEventListener("shown.bs.modal", function(event) {
-            let button = $(event.relatedTarget);
-            let role_id = button.data("role_id");
-            let modal = $(this);
-            modal.find(".modal-body #role_id").val(role_id);
-        });
-    </script>
-    <script>
-        const myFunction = () => {
-            const trs = document.querySelectorAll('#role_table tr:not(.header)')
-            const filter = document.querySelector('#search').value
-            const regex = new RegExp(filter, 'i')
-            const isFoundInTds = td => regex.test(td.innerHTML)
-            const isFound = childrenArr => childrenArr.some(isFoundInTds)
-            const setTrStyleDisplay = ({
-                style,
-                children
-            }) => {
-                style.display = isFound([
-                    ...children // <-- All columns
-                ]) ? '' : 'none'
+        var scope, app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+            $('.perms').show();
+            $('.perm').hide();
+            $scope.roleId = 0;
+            $scope.roles = [];
+            $scope.permissions = [];
+            $scope.dataLoader = function() {
+                $('.loading-spinner').show();
+                $.post("/roles/load/", {
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.roles = data;
+                    });
+                }, 'json');
             }
+            $scope.setPermissions = ($role) => {
+                $scope.roleId = $role.id;
+            };
+            $scope.getPermissions = ($role) => {
+                $('.perms').hide();
+                $.post("/roles/getPermission/" + $role.id, {
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.perm').show();
+                    $scope.$apply(() => {
+                        $scope.permissions = data;
+                    });
+                }, 'json');
+            };
 
-            trs.forEach(setTrStyleDisplay)
-        };
+
+            $scope.dataLoader();
+            scope = $scope;
+        });
     </script>
 @endsection

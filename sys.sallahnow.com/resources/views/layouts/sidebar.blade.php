@@ -38,7 +38,7 @@
 
              <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="{{ route('role_index') }}">
-                     <i class="bi bi-person-bounding-box text-secondary me-2"></i><b>Roles</b>
+                     <i class="bi bi-person-gear text-secondary me-2"></i><b>Roles</b>
                  </a>
              </li>
 

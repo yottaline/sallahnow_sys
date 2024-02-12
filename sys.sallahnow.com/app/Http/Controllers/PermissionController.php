@@ -28,6 +28,10 @@ class PermissionController extends Controller
         return back();
      }
 
+     public function getRole($id){
+        echo json_decode($id);
+     }
+
      public function edit(Request $request) {
         $id = $request->permission_id;
         $permission = Permission::find($id);

@@ -14,16 +14,12 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('permission:add-users')->only(['create', 'store']);
-        // $this->middleware('permission:view-users')->only(['index', 'show']);
-        // $this->middleware('permission:update-users')->only(['edit', 'update']);
-        // $this->middleware('permission:delete-users')->only('destroy');
+        $this->middleware('add-users')->only('store');
     }
 
     public function index(): View
     {
-        $users = User::all();
-        return view('content.users.index', compact('users'));
+        return view('content.users.index',);
     }
 
     public function load()
@@ -34,13 +30,13 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'name'     => 'required|string',
-            'email'    => 'required|email|unique:users,email',
             'mobile'   => 'required|numeric',
             'password' => 'required'
         ]);
-
+        if($request->user_id == 0) {
         User::create([
             'name'      => $request->name,
             'email'     => $request->email,
@@ -50,21 +46,21 @@ class UserController extends Controller
         ]);
         session()->flash('Add', 'User data has been added successfully');
         return back();
-    }
-
-    public function update(Request $request)
-    {
+        }
+        if($request->user_id > 0) {
         $id = $request->user_id;
         User::where('id', $id)->update([
-            'name'     => $request->user_name,
-            'email'    => $request->user_email,
+            'name'      => $request->name,
+            'email'     => $request->email,
             'group'     => 1,
-            'mobile'    => $request->user_mobile,
-            'password'  => $request->user_password
+            'mobile'    => $request->mobile,
+            'password'  => $request->password
         ]);
         session()->flash('Add', 'User data has been updated successfully');
         return back();
+        }
     }
+
 
     public function updateActive(Request $request)
     {
