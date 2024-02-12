@@ -3,8 +3,13 @@
     Location
 @endsection
 @section('content')
-    <div class="container-fluid mt-5">
-        <div class="card card-box">
+    <style>
+        #locationsSection .list-box {
+            height: 300px
+        }
+    </style>
+    <div class="container-fluid mt-5" data-ng-app="ngApp" data-ng-controller="ngCtrl">
+        <div id="locationsSection" class="card card-box">
             <div class="card-body">
                 <h5 class="card-title fw-bold text-uppercase">Locations</h5>
                 <div class="row">
@@ -157,6 +162,7 @@
     <script>
         var scope, ngApp = angular.module("ngApp", ['ngSanitize']);
         ngApp.controller("ngCtrl", function($scope) {
+            $('.loading-spinner').hide();
             $scope.countries = [];
             $scope.states = [];
             $scope.cities = [];
@@ -209,7 +215,6 @@
         });
 
         $(function() {
-            $('.loading-spinner').hide();
             $('#locationModal form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this),

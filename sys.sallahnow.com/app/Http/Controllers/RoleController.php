@@ -15,14 +15,23 @@ class RoleController extends Controller
 
     public function index() {
         $roles = Role::all();
-
         return view('content.user_groups.roles.index', compact('roles'));
     }
 
-    public function store(Request $request) {
-        $request->validate(['role_name'        => 'required', ]);
+    public function load() {
+        $roles = Role::all();
+        echo json_encode($roles);
+    }
 
-        Role::create(['name' => $request->role_name,]);
+    public function getPermissions($id){
+        $role = Role::find($id);
+        echo json_encode($role);
+    }
+
+    public function store(Request $request) {
+       $data=  $request->validate(['name'  => 'required', ]);
+
+        Role::create($data);
 
         session()->flash('Add', 'Role information has been added successfully');
         return back();
@@ -53,6 +62,7 @@ class RoleController extends Controller
      }
 
      public function givePermission(Request $request, Role $role){
+        return $request->input('name.*.name');
         if($role->hasPermissionTo($request->permission)){
             session()->flash('error', 'permission is exist');
             return back();

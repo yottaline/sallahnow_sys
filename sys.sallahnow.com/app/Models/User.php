@@ -24,7 +24,7 @@ class User extends Authenticatable
         'password',
         'mobile',
         'active',
-        'group',
+        'user_group_id',
     ];
 
     /**
@@ -50,4 +50,9 @@ class User extends Authenticatable
     public function technicians() {
         return $this->hasMany(Technician::class);
     }
+
+    public function role() {
+        return $this->belongsTo(User_group::class, 'user_group_id');
+    }
+
 }

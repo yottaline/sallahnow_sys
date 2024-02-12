@@ -21,75 +21,122 @@ class TechnicianController extends Controller
         return view('content.technicians.index', compact('technicians'));
     }
 
-    public function store(Request $request) {
-
-        $request->validate([
-        'name'            => 'required|string',
-        'mobile'          => 'required|numeric',
-        'password'        => 'required',
-       ]);
-
-       $randomCode =  Str::random(4);
-       Technician::create([
-        'name'               => $request->name,
-        'code'               => $randomCode,
-        'email'              => $request->email,
-        'mobile'             => $request->mobile,
-        'password'           => Hash::make($request->password),
-        'birth'              => $request->birth,
-        'country_id'         => $request->country_id,
-        'state_id'           => $request->state_id,
-        'city_id'            => $request->city_id,
-        'area_id'            => $request->area_id,
-        'address'            => $request->address,
-        'identification'     => $request->identification,
-        'bio'                => $request->bio,
-        'active'             => 1,
-        'blocked'            => 0,
-        'login'              => now(),
-        'user_id'            => Auth::user()->id,
-       ]);
-       session()->flash('Add', 'Technician data has been added successfully');
-        return back();
+    public function load() {
+        $technicians = Technician::all();
+        echo json_encode($technicians);
     }
 
-    public function update(Request $request) {
-        $id = $request->id;
+    public function store(Request $request) {
         $request->validate([
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
             'password'        => 'required',
            ]);
 
-           $randomCode =  Str::random(4);
-           Technician::where('id', $id)->update([
-            'name'               => $request->name,
-            'code'               => $randomCode,
-            'email'              => $request->email,
-            'tel'              => $request->tel,
-            'mobile'             => $request->mobile,
-            'password'           => Hash::make($request->password),
-            'birth'              => $request->birth,
-            'country_id'         => $request->country_id,
-            'state_id'           => $request->state_id,
-            'city_id'            => $request->city_id,
-            'area_id'            => $request->area_id,
-            'address'            => $request->address,
-            'identification'     => $request->identification,
-            'bio'                => $request->bio,
-            'active'             => 1,
-            'blocked'            => 0,
-            'login'              => now(),
-            'user_id'            => Auth::user()->id,
-           ]);
-           session()->flash('Add', 'Technician data has been update successfully');
-            return back();
+        if($request->technician_id == 0){
+
+            $randomCode =  Str::random(4);
+            $devise_token =  Str::random(15);
+
+            Technician::create([
+             'name'               => $request->name,
+             'code'               => $randomCode,
+             'email'              => $request->email,
+             'tel'                => $request->tel,
+             'mobile'             => $request->mobile,
+             'password'           => Hash::make($request->password),
+             'birth'              => $request->birth,
+             'country_id'         => $request->country_id,
+             'state_id'           => $request->state_id,
+             'city_id'            => $request->city_id,
+             'area_id'            => $request->area_id,
+             'address'            => $request->address,
+             'identification'     => $request->identification,
+             'bio'                => $request->bio,
+             'blocked'            => 0,
+             'devise_token'       => $devise_token,
+             'login'              => now(),
+             'user_id'            => Auth::user()->id,
+            ]);
+            session()->flash('Add', 'Technician data has been added successfully');
+             return back();
+        }
+        if($request->technician_id > 0){
+            $id = $request->technician_id;
+            $randomCode =  Str::random(4);
+            $devise_token =  Str::random(15);
+            Technician::where('id', $id)->update([
+             'name'               => $request->name,
+             'code'               => $randomCode,
+             'email'              => $request->email,
+             'tel'              => $request->tel,
+             'mobile'             => $request->mobile,
+             'password'           => Hash::make($request->password),
+             'birth'              => $request->birth,
+             'country_id'         => $request->country_id,
+             'state_id'           => $request->state_id,
+             'city_id'            => $request->city_id,
+             'area_id'            => $request->area_id,
+             'address'            => $request->address,
+             'identification'     => $request->identification,
+             'bio'                => $request->bio,
+             'blocked'            => 0,
+             'devise_token'       => $devise_token,
+             'login'              => now(),
+             'user_id'            => Auth::user()->id,
+            ]);
+            session()->flash('Add', 'Technician data has been update successfully');
+             return back();
+        }
+
+
+
     }
+
+    // public function update(Request $request) {
+    //     $id = $request->id;
+    //     $request->validate([
+    //         'name'            => 'required|string',
+    //         'mobile'          => 'required|numeric',
+    //         'password'        => 'required',
+    //        ]);
+
+    //        $randomCode =  Str::random(4);
+    //        Technician::where('id', $id)->update([
+    //         'name'               => $request->name,
+    //         'code'               => $randomCode,
+    //         'email'              => $request->email,
+    //         'tel'              => $request->tel,
+    //         'mobile'             => $request->mobile,
+    //         'password'           => Hash::make($request->password),
+    //         'birth'              => $request->birth,
+    //         'country_id'         => $request->country_id,
+    //         'state_id'           => $request->state_id,
+    //         'city_id'            => $request->city_id,
+    //         'area_id'            => $request->area_id,
+    //         'address'            => $request->address,
+    //         'identification'     => $request->identification,
+    //         'bio'                => $request->bio,
+    //         'active'             => 1,
+    //         'blocked'            => 0,
+    //         'login'              => now(),
+    //         'user_id'            => Auth::user()->id,
+    //        ]);
+    //        session()->flash('Add', 'Technician data has been update successfully');
+    //         return back();
+    // }
 
     public function updateActive(Request $request) {
         $id = $request->technician_id;
-        Technician::where('id', $id)->update(['active' => $request->active]);
+        Technician::where('id', $id)->update(['blocked' => $request->blocked]);
         session()->flash('Add', 'Active Technician has been updated successfully');
+        return back();
+    }
+
+    public function addNote(Request $request) {
+        $id = $request->technician_id;
+        Technician::where('id', $id)->update(['notes' => $request->notes]);
+        session()->flash('Add', 'Note has been added successfully');
         return back();
     }
 

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User_group;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -13,16 +14,10 @@ class PermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        // users
-        Permission::create(['name'  => 'view-users']);
-        Permission::create(['name'  => 'add-users']);
-        Permission::create(['name'  => 'update-users']);
-        Permission::create(['name'  => 'delete-users']);
-        // technicians
-        Permission::create(['name'  => 'list-technician']);
-        Permission::create(['name'  => 'view-technician']);
-        Permission::create(['name'  => 'add-technician']);
-        Permission::create(['name'  => 'update-technician']);
-        Permission::create(['name'  => 'delete-technician']);
+        User_group::create([
+            'user_group_name' => 'Admin',
+            'user_group_privileges'  => 0.
+        ]);
+
     }
 }

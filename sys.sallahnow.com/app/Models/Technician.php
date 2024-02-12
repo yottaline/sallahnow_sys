@@ -26,7 +26,7 @@ class Technician extends Model
         'address',
         'bio',
         'notes',
-        'active',
+        'devise_token',
         'blocked',
         'login',
         'user_id'
