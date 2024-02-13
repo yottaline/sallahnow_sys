@@ -55,4 +55,11 @@ class User extends Authenticatable
         return $this->belongsTo(User_group::class, 'user_group_id');
     }
 
+    public function brands () {
+        return $this->hasMany(Brand::class);
+    }
+    public function models () {
+        return $this->hasMany(Models::class);
+    }
+
 }

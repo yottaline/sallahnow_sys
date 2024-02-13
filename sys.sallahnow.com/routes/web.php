@@ -52,6 +52,22 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::delete('delete', 'TechnicianController@delete')->name('technician_delete');
 });
 
+
+Route::prefix('brands')->middleware('auth')->group( function() {
+    Route::get('/', 'BrandController@index')->name('brand_index');
+    Route::post('load', 'BrandController@load');
+    Route::match(['post', 'put'], 'store', 'BrandController@store')->name('brand_store');
+    Route::post('getUserName','BrandController@getUsersName');
+});
+
+Route::prefix('models')->middleware('auth')->group( function() {
+    Route::get('/','ModelController@index')->name('model_index');
+    Route::post('load', 'ModelController@load');
+    Route::match(['post', 'put'], 'store', 'ModelController@store')->name('model_store');
+    Route::post('getBrandsName','ModelController@getBrandsName');
+    Route::post('getUserName','ModelController@getUsersName');
+});
+
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('location', 'SettingController@index')->name('setting_index');
     Route::post('store/location', 'SettingController@storeLocation')->name('location_store');
