@@ -67,7 +67,7 @@
                         <div>
                             <form action="{{ route('addPermissions') }}" method="post">
                                 @csrf @method('PUT')
-                                <div class="card mb-3">
+                                <div class="card mb-3 p-2">
                                     <div class="card-body">
                                         <h5 class="card-title">Users Permissions</h5>
                                         <div class="row">
@@ -111,7 +111,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card mb-3">
+                                <div class="card mb-3 p-2">
                                     <div class="card-body">
                                         <h5 class="card-title">Technicians Permissions</h5>
                                         <div class="row">

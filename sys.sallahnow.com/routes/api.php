@@ -20,6 +20,7 @@ Route::middleware('api')->group(function() {
         Route::post('sign_in', 'TechnicianApiController@sign_in');
         Route::post('login', 'TechnicianApiController@login');
         Route::post('profile', 'TechnicianApiController@profile');
-        Route::post('Update/{id}', 'TechnicianApiController@Update');
+        Route::put('update/{id}', 'TechnicianApiController@Update');
+        Route::get('getModels', 'TechnicianApiController@getModels');
     });
 });

@@ -48,11 +48,17 @@
                  </a>
              </li> --}}
 
-             {{-- <li class="list-group-item nav-pages">
-                 <a class="link-dark d-block" href="">
-                     <i class="bi bi-file-earmark text-secondary me-2"></i><b>Web Pages</b>
+             <li class="list-group-item nav-pages">
+                 <a class="link-dark d-block" href="{{ route('brand_index') }}">
+                     <i class="bi bi-microsoft text-secondary me-2"></i><b>Brands</b>
                  </a>
-             </li> --}}
+             </li>
+
+             <li class="list-group-item nav-pages">
+                 <a class="link-dark d-block" href="{{ route('model_index') }}">
+                     <i class="bi bi-phone-flip text-secondary me-2"></i><b>Models</b>
+                 </a>
+             </li>
 
              {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#paymentsCollapse" role="button"
