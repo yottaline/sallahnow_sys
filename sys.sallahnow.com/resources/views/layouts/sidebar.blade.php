@@ -19,7 +19,7 @@
              </li> --}}
 
              <li class="list-group-item nav-news">
-                 <a class="link-dark d-block" href="{{ route('technician_index') }}">
+                 <a class="link-dark d-block" href="/technicians/">
                      <i class="bi bi-tools text-secondary me-2"></i><b>Technicians</b>
                  </a>
              </li>
