@@ -139,21 +139,21 @@ CREATE TABLE IF NOT EXISTS `models` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `compats` (
-  `compat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `compat_category` INT UNSIGNED NOT NULL,
-  `compat_part` VARCHAR(120) NOT NULL,
-  PRIMARY KEY (`compat_id`),
-  KEY `compat_category`(`compat_category`)
+CREATE TABLE IF NOT EXISTS `compats_categories` (
+  `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category_name` VARCHAR(4096) NOT NULL,
+  `category_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`category_id`);
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `compats_categories` (
-  `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `category_name` VARCHAR(1024) NOT NULL,
-  `category_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`category_id`);
+CREATE TABLE IF NOT EXISTS `compats` (
+  `compat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `compat_category` INT UNSIGNED NOT NULL,
+  `compat_part` VARCHAR(4096) NOT NULL,
+  PRIMARY KEY (`compat_id`),
+  KEY `compat_category`(`compat_category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -172,17 +172,28 @@ CREATE TABLE IF NOT EXISTS `compatible_models` (
 CREATE TABLE IF NOT EXISTS `compats_sugg` (
   `sugg_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `sugg_category` INT UNSIGNED NOT NULL COMMENT 'compats_categories.category_id',
-  `sugg_model` INT UNSIGNED NOT NULL COMMENT 'models.model_id',
   `sugg_tech` INT UNSIGNED NOT NULL COMMENT 'technicians.tech_id',
   `sugg_status` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '0:new, 1:accepted, 2:rejected',
   `sugg_act_note` VARCHAR(1024) DEFAULT NULL,
   `sugg_act_by` INT UNSIGNED DEFAULT NULL,
   `sugg_act_time` DATETIME DEFAULT NULL,
+  `sugg_register` DATETIME DEFAULT NULL,
   PRIMARY KEY (`sugg_id`),
   KEY `sugg_category` (`sugg_category`),
   KEY `sugg_model` (`sugg_model`),
   KEY `sugg_tech` (`sugg_tech`),
   KEY `sugg_act_by` (`sugg_act_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `compats_sugg_models` (
+  `csugg_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `csugg_src` INT UNSIGNED NOT NULL COMMENT 'compats_sugg.compats_sugg',
+  `csugg_model` INT UNSIGNED NOT NULL COMMENT 'models.model_id',
+  PRIMARY KEY (`csugg_id`),
+  KEY `csugg_src` (`csugg_src`),
+  KEY `csugg_model` (`csugg_model`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
