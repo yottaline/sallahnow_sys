@@ -2,15 +2,13 @@
 @section('title')
     Users
 @endsection
+@section('search')
+    <form id="searchForm" role="search">
+        <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" placeholder="Search...">
+    </form>
+@endsection
 @section('content')
-    <div class="container-fluid mt-5" data-ng-app="myApp" data-ng-controller="myCtrl">
-        @if (session()->has('Add'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>{{ session()->get('Add') }}</strong>
-                <span aria-hidden="true" class="close" data-bs-dismiss="alert" aria-label="Close"> <i
-                        class="bi bi-x-circle"></i></span>
-            </div>
-        @endif
+    <div class="container-fluid" data-ng-app="myApp" data-ng-controller="myCtrl">
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -44,29 +42,19 @@
                     <div class="card-body">
                         <div class="d-flex">
                             <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
-                                <span class="loading-spinner spinner-border spinner-border-sm text-warning"
-                                    role="status"></span>User Table
+                                <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                    role="status"></span><span>USERS</span>
                             </h5>
                             <div>
-                                @haspermission('add-users')
-                                    <button type="button" class="btn btn-outline-primary btn-circle bi bi-person-add"
-                                        data-ng-click="setUser(false)"></button>
-                                @endhaspermission
-                                <button type="button" class="btn btn-outline-danger btn-circle bi bi-person-gear"
-                                    data-bs-toggle="modal" data-bs-target="#add_role"></button>
+                                <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                    data-ng-click="setUser(false)"></button>
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
 
                         </div>
-                        {{-- <div class="row">
-                            <div class="col-7">
-                            </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#add_role"><i
-                                class="bi bi-person-bounding-box"></i></button>
-                            </div>
-                        </div> --}}
+                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5>
                         <div data-ng-if="users.length" class="table-responsive">
                             <table class="table table-hover" id="user_table">
                                 <thead>
@@ -75,7 +63,6 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Mobile</th>
-                                        {{-- <th>Status</th> --}}
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -85,23 +72,24 @@
                                         <td data-ng-bind="u.name"></td>
                                         <td data-ng-bind="u.email"></td>
                                         <td data-ng-bind="u.mobile"></td>
-                                        {{-- <td data-ng-bind="u.active"></td> --}}
                                         <td>
-                                            <button class="btn btn-outline-success btn-circle bi bi-person-lock"
-                                                data-ng-click="editActive($index)"></button>
-                                            <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
-                                                data-ng-click="setUser($index)"></button>
-                                            <button class="btn btn-outline-danger btn-circle bi bi-trash"
-                                                data-ng-click="deleletUser($index)"></button>
+                                            <div class="col-fit">
+                                                <button class="btn btn-outline-success btn-circle bi bi-person-lock"
+                                                    data-ng-click="editActive($index)"></button>
+                                                <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                    data-ng-click="setUser($index)"></button>
+                                                {{-- <button class="btn btn-outline-danger btn-circle bi bi-trash"
+                                                    data-ng-click="deleletUser($index)"></button> --}}
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div data-ng-if="!users.length" class="text-center py-5">
-                            <i class="bi bi-people text-danger display-4"></i>
-                            <h5 class="text-danger">No records</h5>
+                        <div data-ng-if="!users.length" class="text-center text-secondary py-5">
+                            <i class="bi bi-people  display-4"></i>
+                            <h5>No records</h5>
                         </div>
                     </div>
                 </div>
@@ -109,31 +97,26 @@
         </div>
 
         <!-- start add new user  Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal fade" id="useForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    {{-- <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Create New User</h5>
-                        <button type="button" class="btn btn-danger close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
-                        </button>
-                    </div> --}}
                     <div class="modal-body">
-                        <form method="POST" action="{{ route('user_store') }}">
+                        <form method="POST" action="/users/submit/">
                             @csrf
                             <input data-ng-if="updateUser !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="user_id"
                                 data-ng-value="updateUser !== false ? users[updateUser].id : 0">
                             <div class="mb-3">
-                                <label for="exampleInputEmail1">Full Name<b class="text-danger">&ast;</b></label>
-                                <input type="text" class="form-control" name="name" maxlength="120" required
-                                    data-ng-value="updateUser !== false ? users[updateUser].name : ''">
+                                <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
+                                <input type="text" class="form-control" name="name" maxlength="120" id="fullName"
+                                    required data-ng-value="updateUser !== false ? users[updateUser].name : ''">
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Mobile<b class="text-danger">&ast;</b></label>
-                                        <input type="text" class="form-control" name="mobile" maxlength="24" required
+                                        <label for="mobiel">Mobile<b class="text-danger">&ast;</b></label>
+                                        <input type="text" class="form-control" name="mobile" maxlength="24"
+                                            id="mobiel"
                                             data-ng-value="updateUser !== false ? users[updateUser].mobile : ''">
                                     </div>
                                 </div>
@@ -156,9 +139,20 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputPassword1">Password Confirmation</label>
+                                        <label for="exampleInputPassword2">Password Confirmation</label>
                                         <input type="password" class="form-control" name="password_co"
                                             id="exampleInputPassword2">
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="role">Roles</label>
+                                        <select name="role_id" class="form-control" id="role">
+                                            <option value="">-- SELECT ROLE NAME</option>
+                                            <option data-ng-repeat="role in roles" data-ng-value="role.id"
+                                                data-ng-bind="role.user_group_name"></option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -179,12 +173,6 @@
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    {{-- <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Change Active</h5>
-                        <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
-                        </button>
-                    </div> --}}
                     <div class="modal-body">
                         <form method="POST" action="{{ route('user_update_active') }}">
                             @csrf @method('PUT')
@@ -207,43 +195,12 @@
         </div>
         <!-- end edit user active Modal -->
 
-        <!-- start add role to user  Modal -->
-        <div class="modal fade" id="add_role" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form method="GET" action="{{ route('user_add_role') }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="form-control">Users</label>
-                                <select name="user_id"data-ng-repeat="u in users track by $index" class="form-control">
-                                    <option value="">-- select user name --</option>
-                                    <option data-ng-value="u.id" data-ng-bind="u.name"></option>
-                                </select>
-                            </div>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-secondary me-auto"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary">Go</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- end add role to user Modal -->
 
         <!-- start delete user  Modal -->
         <div class="modal fade" id="delete_user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    {{-- <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Delete User</h5>
-                        <button type="button" class="btn btn-danger close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="bi bi-x-circle"></i></span>
-                        </button>
-                    </div> --}}
                     <div class="modal-body">
                         <form method="POST" action="{{ route('user_delete') }}">
                             @csrf
@@ -267,9 +224,9 @@
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
             $scope.updateUser = false;
-            // $scope.deleltUser = false;
             $scope.userId = 0;
             $scope.users = [];
+            $scope.roles = [];
             $scope.page = 1;
             $scope.dataLoader = function(reload = false) {
                 $('.loading-spinner').show();
@@ -287,10 +244,19 @@
                         $scope.page++;
                     });
                 }, 'json');
+
+                $.post("/roles/load/", {
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.roles = data;
+                    });
+                }, 'json');
             }
             $scope.setUser = (indx) => {
                 $scope.updateUser = indx;
-                $('#exampleModal').modal('show');
+                $('#useForm').modal('show');
             };
             $scope.editActive = (index) => {
                 $scope.userId = index;
@@ -303,15 +269,55 @@
             $scope.dataLoader();
             scope = $scope;
         });
-    </script>
-    {{-- <script>
-        let delete_user = document.getElementById("delete_user");
 
-        delete_user.addEventListener("shown.bs.modal", function(event) {
-            let button = $(event.relatedTarget);
-            let user_id = button.data("user_id");
-            let modal = $(this);
-            modal.find(".modal-body #user_id").val(user_id);
+        $(function() {
+            $('#userFomr form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    console.log(data)
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#modelForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updateUser === false) {
+                                scope.users.unshift(response.data);
+                                $scope.dataLoader();
+                            } else {
+                                scope.users[scope.updateUser] = response.data;
+                                $scope.dataLoader();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
         });
-    </script> --}}
+        $(function() {
+            $('#searchForm').on('submit', function(e) {
+                e.preventDefault();
+                scope.$apply(() => scope.q = $(this).find('input').val());
+                scope.dataLoader(true);
+            });
+        });
+    </script>
 @endsection

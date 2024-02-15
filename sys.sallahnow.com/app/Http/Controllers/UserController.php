@@ -24,11 +24,11 @@ class UserController extends Controller
 
     public function load()
     {
-        $users = User::all();
+        $users = User::orderBy('created_at', 'desc')->limit(15)->get();
         echo json_encode($users);
     }
 
-    public function store(Request $request)
+    public function submit(Request $request)
     {
 
         $request->validate([
@@ -36,29 +36,30 @@ class UserController extends Controller
             'mobile'   => 'required|numeric',
             'password' => 'required'
         ]);
-        if($request->user_id == 0) {
-        User::create([
+        $id = intval($request->user_id);
+        if(!$id) {
+        $status = User::create([
             'name'      => $request->name,
             'email'     => $request->email,
-            'group'     => 1,
+            'user_group_id'     => $request->role_id,
             'mobile'    => $request->mobile,
             'password'  => $request->password
         ]);
-        session()->flash('Add', 'User data has been added successfully');
-        return back();
+
+        $record = User::where('id', $status->id)->get();
+        }else{
+        $status = User::where('id', $id)->update([
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'user_group_id'     => $request->role_id,
+                'mobile'    => $request->mobile,
+                'password'  => $request->password
+            ]);
         }
-        if($request->user_id > 0) {
-        $id = $request->user_id;
-        User::where('id', $id)->update([
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'group'     => 1,
-            'mobile'    => $request->mobile,
-            'password'  => $request->password
+        echo json_encode([
+            'status' => boolval($status),
+            // 'data' => $record,
         ]);
-        session()->flash('Add', 'User data has been updated successfully');
-        return back();
-        }
     }
 
 

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('mobile');
             $table->string('password');
             $table->boolean('active')->default(1);
-            // $table->integer('user_group_id')->
             $table->foreignId('user_group_id')->constrained('user_groups');
             // $table->date('user_login');
             $table->rememberToken();

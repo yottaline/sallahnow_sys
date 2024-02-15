@@ -19,14 +19,14 @@ class TechnicianController extends Controller
 
     public function index()
     {
-        $technicians = Technician::all();
-        return view('content.technicians.index', compact('technicians'));
+        return view('content.technicians.index');
     }
+
 
     public function load()
     {
-        // TODO: get data DESC limited with offset 
-        $technicians = Technician::all();
+        // TODO: get data DESC limited with offset #NEN
+        $technicians = Technician::orderBy('created_at', 'desc')->limit(15)->get();
         echo json_encode($technicians);
     }
 
@@ -36,8 +36,8 @@ class TechnicianController extends Controller
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
             'password'        => 'required',
-        ]);
-
+           ]);
+      
         $param = [
             'name'              => $request->name,
             'email'             => $request->email,
@@ -62,15 +62,15 @@ class TechnicianController extends Controller
             $param['devise_token'] = '';
             $param['user_id'] = Auth::user()->id;
             $status = Technician::create($param);
-            // TODO: get insert $id
+           $id = $status->id;
         } else {
             $status = Technician::where('id', $id)->update($param);
         }
 
-        // TODO: get $record data 
+         $record = Technician::where('id', $id)->get();
         echo json_encode([
             'status' => boolval($status),
-            // 'data' => $record,
+            'data' => $record,
         ]);
     }
 
@@ -82,6 +82,8 @@ class TechnicianController extends Controller
         session()->flash('Add', 'Active Technician has been updated successfully');
         return back();
     }
+
+
 
     private function uniqidReal($lenght = 12)
     {
@@ -95,3 +97,4 @@ class TechnicianController extends Controller
         return substr(bin2hex($bytes), 0, $lenght);
     }
 }
+
