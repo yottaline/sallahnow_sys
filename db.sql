@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_active` BOOLEAN NOT NULL DEFAULT '1',
   `user_group` INT UNSIGNED NOT NULL,
   `user_login` DATETIME DEFAULT NULL,
-  `user_register` DATETIME NOT NULL,
+  `user_create` DATETIME NOT NULL,
   PRIMARY KEY (`user_id`),
   KEY `user_group` (`user_group`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -24,33 +24,176 @@ CREATE TABLE IF NOT EXISTS `ugroups` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `locations` (
+  `location_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `location_name` VARCHAR(100) NOT NULL,
+  `location_type` TINYINT UNSIGNED NOT NULL COMMENT '1:country,2:state,3:city,4:area',
+  `location_parent` INT UNSIGNED NOT NULL,
+  `location_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`location_id`),
+  KEY `location_parent` (`location_parent`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `technicians` (
+  `tech_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tech_code` VARCHAR(12) NOT NULL,
+  `tech_center` INT UNSIGNED NOT NULL,
+  `tech_email` VARCHAR(120) DEFAULT NULL,
+  `tech_email_verefied` DATETIME DEFAULT NULL,
+  `tech_mobile` VARCHAR(24) NOT NULL,
+  `tech_mobile_verefied` DATETIME DEFAULT NULL,
+  `tech_tel` VARCHAR(24) DEFAULT NULL,
+  `tech_password` VARCHAR(255) NOT NULL,
+  `tech_identification` VARCHAR(24) DEFAULT NULL,
+  `tech_birth` DATE DEFAULT NULL,
+  `tech_country` INT UNSIGNED NOT NULL,
+  `tech_state` INT UNSIGNED NOT NULL,
+  `tech_city` INT UNSIGNED NOT NULL,
+  `tech_area` INT UNSIGNED NOT NULL,
+  `tech_address` VARCHAR(1024) NOT NULL,
+  `tech_bio` VARCHAR(1024),
+  `tech_notes` VARCHAR(1024),
+  `tech_rate` TINYINT UNSIGNED DEFAULT NULL,
+  `tech_pkg` TINYINT UNSIGNED DEFAULT '0',
+  `tech_points` INT UNSIGNED DEFAULT '0',
+  `tech_blocked` BOOLEAN NOT NULL DEFAULT '0',
+  `tech_login` DATETIME DEFAULT NULL,
+  `tech_create` DATETIME NOT NULL,
+  `tech_create_by` INT UNSIGNED DEFAULT NULL,
+  `tech_modify` DATETIME DEFAULT NULL,
+  `tech_modify_by` INT UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`tech_id`),
+  KEY `tech_code` (`tech_code`),
+  KEY `tech_center` (`tech_center`),
+  KEY `tech_country` (`tech_country`),
+  KEY `tech_state` (`tech_state`),
+  KEY `tech_city` (`tech_city`),
+  KEY `tech_area` (`tech_area`),
+  KEY `tech_create_by` (`tech_create_by`),
+  KEY `tech_modify_by` (`tech_modify_by`),
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tech_centers` (
+  `center_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `center_owner` INT UNSIGNED NOT NULL,
+  `center_name` VARCHAR(255) NOT NULL,
+  `center_logo` VARCHAR(24) DEFAULT NULL,
+  `center_cr` VARCHAR(24) DEFAULT NULL,
+  `center_tax` VARCHAR(24) DEFAULT NULL,
+  `center_email` VARCHAR(120) DEFAULT NULL,
+  `center_mobile` VARCHAR(24) DEFAULT NULL,
+  `center_tel` VARCHAR(24) DEFAULT NULL,
+  `center_whatsapp` VARCHAR(24) DEFAULT NULL,
+  `center_country` INT UNSIGNED NOT NULL,
+  `center_state` INT UNSIGNED NOT NULL,
+  `center_city` INT UNSIGNED NOT NULL,
+  `center_area` INT UNSIGNED NOT NULL,
+  `center_address` VARCHAR(1024) NOT NULL,
+  `center_rate` TINYINT UNSIGNED DEFAULT NULL,
+  `center_create` DATETIME NOT NULL,
+  `center_create_by` INT UNSIGNED DEFAULT NULL,
+  `center_modify` DATETIME DEFAULT NULL,
+  `center_modify_by` INT UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`center_id`),
+  KEY `center_owner` (`center_owner`),
+  KEY `center_country` (`center_country`),
+  KEY `center_state` (`center_state`),
+  KEY `center_city` (`center_city`),
+  KEY `center_area` (`center_area`),
+  KEY `center_create_by` (`center_create_by`),
+  KEY `center_modify_by` (`center_modify_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `brands` (
   `brand_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `brand_name` VARCHAR(24) NOT NULL,
   `brand_logo` VARCHAR(24) NOT NULL,
   `brand_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`brand_id`)
+  `brand_create` DATETIME NOT NULL,
+  `brand_create_by` INT NOT NULL,
+  PRIMARY KEY (`brand_id`),
+  KEY `brand_create_by` (`brand_create_by`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `compatibilities` (
-  `compatibility_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `compatibility_category` INT UNSIGNED NOT NULL,
-  `compatibility_part` VARCHAR(120) NOT NULL,
-  PRIMARY KEY (`compatibility_id`),
-  KEY `compatibility_category`(`compatibility_category`)
+CREATE TABLE IF NOT EXISTS `models` (
+  `model_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `model_name` VARCHAR(24) NOT NULL,
+  `model_brand` INT UNSIGNED NOT NULL,
+  `model_photo` VARCHAR(120) NOT NULL,
+  `model_url` VARCHAR(120) NOT NULL,
+  `model_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  `model_create` DATETIME NOT NULL,
+  `model_create_by` INT NOT NULL,
+  PRIMARY KEY (`model_id`),
+  KEY `model_brand` (`model_brand`),
+  KEY `model_create_by` (`model_create_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `compats_categories` (
+  `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category_name` VARCHAR(4096) NOT NULL,
+  `category_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`category_id`);
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `compats` (
+  `compat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `compat_category` INT UNSIGNED NOT NULL,
+  `compat_part` VARCHAR(4096) NOT NULL,
+  PRIMARY KEY (`compat_id`),
+  KEY `compat_category`(`compat_category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `compatible_models` (
   `compatible_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `compatible_src` INT UNSIGNED NOT NULL COMMENT 'compatibilities.compatibility_id',
+  `compatible_src` INT UNSIGNED NOT NULL COMMENT 'compats.compat_id',
   `compatible_model` INT UNSIGNED NOT NULL COMMENT 'models.model_id',
   PRIMARY KEY (`compatible_id`),
   KEY `compatible_src` (`compatible_src`),
   KEY `compatible_model` (`compatible_model`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `compats_sugg` (
+  `sugg_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sugg_category` INT UNSIGNED NOT NULL COMMENT 'compats_categories.category_id',
+  `sugg_tech` INT UNSIGNED NOT NULL COMMENT 'technicians.tech_id',
+  `sugg_status` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '0:new, 1:accepted, 2:rejected',
+  `sugg_act_note` VARCHAR(1024) DEFAULT NULL,
+  `sugg_act_by` INT UNSIGNED DEFAULT NULL,
+  `sugg_act_time` DATETIME DEFAULT NULL,
+  `sugg_register` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`sugg_id`),
+  KEY `sugg_category` (`sugg_category`),
+  KEY `sugg_model` (`sugg_model`),
+  KEY `sugg_tech` (`sugg_tech`),
+  KEY `sugg_act_by` (`sugg_act_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `compats_sugg_models` (
+  `csugg_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `csugg_src` INT UNSIGNED NOT NULL COMMENT 'compats_sugg.compats_sugg',
+  `csugg_model` INT UNSIGNED NOT NULL COMMENT 'models.model_id',
+  PRIMARY KEY (`csugg_id`),
+  KEY `csugg_src` (`csugg_src`),
+  KEY `csugg_model` (`csugg_model`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -73,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `customer_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
   `customer_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
   `customer_login` DATETIME DEFAULT NULL,
-  `customer_register` DATETIME NOT NULL,
+  `customer_create` DATETIME NOT NULL,
   PRIMARY KEY (`customer_id`),
   KEY `customer_country` (`customer_country`),
   KEY `customer_state` (`customer_state`),
@@ -113,18 +256,6 @@ CREATE TABLE IF NOT EXISTS `languages` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `locations` (
-  `location_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `location_name` VARCHAR(100) NOT NULL,
-  `location_type` TINYINT UNSIGNED NOT NULL COMMENT '1:country,2:state,3:city,4:area',
-  `location_parent` INT UNSIGNED NOT NULL,
-  `location_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`location_id`),
-  KEY `location_parent` (`location_parent`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `merchants` (
   `merchant_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `merchant_code` VARCHAR(24) NOT NULL,
@@ -146,26 +277,13 @@ CREATE TABLE IF NOT EXISTS `merchants` (
   `merchant_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
   `merchant_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
   `merchant_login` DATETIME DEFAULT NULL,
-  `merchant_register` DATETIME NOT NULL,
+  `merchant_create` DATETIME NOT NULL,
   `merchant_user` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`merchant_id`),
   KEY `merchant_country` (`merchant_country`),
   KEY `merchant_state` (`merchant_state`),
   KEY `merchant_city` (`merchant_city`),
   KEY `merchant_area` (`merchant_area`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `models` (
-  `model_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `model_name` VARCHAR(24) NOT NULL,
-  `model_brand` INT UNSIGNED NOT NULL,
-  `model_photo` VARCHAR(120) NOT NULL,
-  `model_url` VARCHAR(120) NOT NULL,
-  `model_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`model_id`),
-  KEY `model_brand` (`model_brand`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -269,7 +387,7 @@ CREATE TABLE IF NOT EXISTS `requests` (
   `request_note` VARCHAR(2048) NOT NULL,
   `request_status` TINYINT UNSIGNED NOT NULL DEFAULT '1',
   `request_modify` DATETIME NOT NULL,
-  `request_register` DATETIME NOT NULL,
+  `request_create` DATETIME NOT NULL,
   PRIMARY KEY (`request_id`),
   KEY `request_customer` (`request_customer`),
   KEY `request_brand` (`request_brand`),
@@ -411,40 +529,6 @@ CREATE TABLE IF NOT EXISTS `support_tickets` (
   KEY `ticket_model` (`ticket_model`),
   KEY `ticket_category` (`ticket_category`),
   KEY `ticket_tech` (`ticket_tech`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `technicians` (
-  `tech_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tech_code` VARCHAR(24) NOT NULL,
-  `tech_place` VARCHAR(100) NOT NULL,
-  `tech_person` VARCHAR(100) NOT NULL,
-  `tech_email` VARCHAR(100) NOT NULL,
-  `tech_mobile` VARCHAR(24) NOT NULL,
-  `tech_tel` VARCHAR(24) NOT NULL,
-  `tech_password` VARCHAR(255) NOT NULL,
-  `tech_country` INT UNSIGNED NOT NULL,
-  `tech_state` INT UNSIGNED NOT NULL,
-  `tech_city` INT UNSIGNED NOT NULL,
-  `tech_area` INT UNSIGNED NOT NULL,
-  `tech_address` VARCHAR(1024) NOT NULL,
-  `tech_geo` VARCHAR(64) NOT NULL,
-  `tech_desc` VARCHAR(1024),
-  `tech_notes` VARCHAR(1024),
-  `tech_rate` TINYINT UNSIGNED DEFAULT NULL,
-  `tech_pkg` TINYINT UNSIGNED DEFAULT '0',
-  `tech_points` INT UNSIGNED DEFAULT '0',
-  `tech_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  `tech_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
-  `tech_login` DATETIME DEFAULT NULL,
-  `tech_register` DATETIME NOT NULL,
-  `tech_user` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`tech_id`),
-  KEY `tech_country` (`tech_country`),
-  KEY `tech_state` (`tech_state`),
-  KEY `tech_city` (`tech_city`),
-  KEY `tech_area` (`tech_area`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

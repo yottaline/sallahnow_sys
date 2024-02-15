@@ -13,10 +13,11 @@ class TechnicianApiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:technician-api',['except' => ['login', 'sign_in']]);
+        $this->middleware('auth:technician-api', ['except' => ['login', 'sign_in']]);
     }
 
-    public function sign_in(Request $request) {
+    public function register(Request $request)
+    {
 
         $request->validate([
             'name'         => 'required',
@@ -45,7 +46,7 @@ class TechnicianApiController extends Controller
             'address'         => $request->address,
             'bio'             => $request->bio,
             'login'           => $request->login,
-            'devise_token'    => '03df25c845d460bcdad7802d2vf6fc1dfde97283bf75cc993eb6dca835ea2e2f',
+            'devise_token'    => '03df25c845d460bcd',
             'user_id'         => 1,
             'code'            => $code
         ]);
@@ -53,7 +54,7 @@ class TechnicianApiController extends Controller
 
         $credentials = request(['mobile', 'password']);
 
-        if (! $token = auth('technician-api')->attempt($credentials)) {
+        if (!$token = auth('technician-api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -61,22 +62,25 @@ class TechnicianApiController extends Controller
     }
 
 
-    public function login(){
+    public function login()
+    {
 
         $credentials = request(['mobile', 'password']);
 
-        if (! $token = auth('technician-api')->attempt($credentials)) {
+        if (!$token = auth('technician-api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
     }
 
-    public function profile() {
+    public function profile()
+    {
         return response()->json(auth('technician-api')->user());
     }
 
-    public function update($id,Request $request) {
+    public function update($id, Request $request)
+    {
         $request->validate([
             'name'         => 'required',
             'mobile'       => 'required|numeric',
@@ -113,7 +117,8 @@ class TechnicianApiController extends Controller
     }
 
 
-    public function getModels() {
+    public function getModels()
+    {
         $models = Models::all();
         return response()->json($models);
     }

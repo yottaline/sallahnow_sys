@@ -147,8 +147,8 @@
                     <div class="modal-body">
                         <form action="{{ route('location_store') }}" method="post">
                             @csrf
-                            <input type="hidden" name="location_type" data-ng-value="modalObject.type">
-                            <input type="hidden" name="location_parent" data-ng-value="modalObject.parent">
+                            <input type="hidden" name="location_type" value="">
+                            <input type="hidden" name="location_parent" value="">
                             <div class="mb-3">
                                 <label for="locationNameEn">Name EN<b class="text-danger">&ast;</b></label>
                                 <input type="text" name="location_name_en" id="locationNameEn" class="form-control"
@@ -483,6 +483,8 @@
                         type: +type,
                         parent: +parent,
                     };
+                    $('[name="location_type"]').val(type);
+                    $('[name="location_parent"]').val(parent);
                     $('#locationModal').modal('show');
                 };
 

@@ -10,11 +10,7 @@ Route::get('/', function () {
 Route::prefix('users')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', 'UserController@index')->name('users');
     Route::post('load', 'UserController@load');
-<<<<<<< Updated upstream
-    Route::match(['post', 'put'],'store', 'UserController@store')->name('user_store');
-=======
     Route::match(['post', 'put'], 'submit', 'UserController@submit');
->>>>>>> Stashed changes
     Route::put('update', 'UserController@update')->name('user_update');
     Route::put('update/active', 'UserController@updateActive')->name('user_update_active');
     Route::get('add_role', 'UserController@addRole')->name('user_add_role');
@@ -47,40 +43,26 @@ Route::prefix('roles')->middleware('auth')->group(function () {
 });
 
 Route::prefix('technicians')->middleware(['auth'])->group(function () {
-    Route::get('/', 'TechnicianController@index')->name('technician_index');
+    Route::get('/', 'TechnicianController@index');
     Route::post('load', 'TechnicianController@load');
-    Route::match(['post', 'put'],'store', 'TechnicianController@store')->name('technician_store');
-    Route::put('update/active', 'TechnicianController@updateActive')->name('technician_update_active');
-    Route::post('add/note', 'TechnicianController@addNote')->name('technician_add_note');
-    // Route::put('update', 'TechnicianController@update')->name('technician_update');
-    Route::delete('delete', 'TechnicianController@delete')->name('technician_delete');
+    Route::match(['post', 'put'], 'submit', 'TechnicianController@submit');
 });
 
 
-Route::prefix('brands')->middleware('auth')->group( function() {
+Route::prefix('brands')->middleware('auth')->group(function () {
     Route::get('/', 'BrandController@index')->name('brand_index');
     Route::post('load', 'BrandController@load');
-<<<<<<< Updated upstream
-    Route::match(['post', 'put'], 'store', 'BrandController@store')->name('brand_store');
-    Route::post('getUserName','BrandController@getUsersName');
-=======
     Route::match(['post', 'put'], 'submit', 'BrandController@store');
     Route::post('getUserName', 'BrandController@getUsersName');
->>>>>>> Stashed changes
 });
 
-Route::prefix('models')->middleware('auth')->group( function() {
-    Route::get('/','ModelController@index')->name('model_index');
+Route::prefix('models')->middleware('auth')->group(function () {
+    Route::get('/', 'ModelController@index')->name('model_index');
     Route::post('load', 'ModelController@load');
-<<<<<<< Updated upstream
-    Route::match(['post', 'put'], 'store', 'ModelController@store')->name('model_store');
-    Route::post('getBrandsName','ModelController@getBrandsName');
-    Route::post('getUserName','ModelController@getUsersName');
-=======
     Route::match(['post', 'put'], 'submit', 'ModelController@submit');
     Route::post('getBrandsName', 'ModelController@getBrandsName');
     Route::post('getUserName', 'ModelController@getUsersName');
->>>>>>> Stashed changes
+
 });
 
 Route::prefix('settings')->middleware('auth')->group(function () {
