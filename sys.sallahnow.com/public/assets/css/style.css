@@ -161,6 +161,11 @@ td {
     white-space: nowrap;
 }
 
+.bootstrap-datetimepicker-widget {
+    font-size: 11px !important;
+    font-family: monospace !important;
+}
+
 footer {
     height: 40px;
 }

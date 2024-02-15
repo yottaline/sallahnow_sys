@@ -2,6 +2,11 @@
 @section('title')
     Technician
 @endsection
+@section('search')
+    <form id="searchForm" role="search">
+        <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" placeholder="Search...">
+    </form>
+@endsection
 @section('content')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
@@ -16,6 +21,30 @@
         toastr.options.timeOut = 5000;
         toastr.options.preventDuplicates = true;
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link rel='stylesheet'
+        href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css'>
+    <script
+        src='https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js'>
+    </script>
+    <script>
+        const dtp_opt = {
+            icons: {
+                time: 'bi bi-clock',
+                date: 'bi bi-calendar',
+                up: 'bi bi-chevron-up',
+                down: 'bi bi-chevron-down',
+                previous: 'bi bi-chevron-left',
+                next: 'bi bi-chevron-right',
+                today: 'bi bi-calendar2-event',
+                clear: 'bi bi-eraser',
+                close: 'bi bi-x'
+            },
+            format: "YYYY-MM-DD",
+        };
+    </script>
+
 
     <div class="container-fluid mt-5" data-ng-app="myApp" data-ng-controller="myCtrl">
         <div class="row">
@@ -47,6 +76,9 @@
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
                         </div>
+
+                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5>
 
                         <div data-ng-if="technicians.length" class="table-responsive">
                             <table class="table table-hover">
@@ -85,8 +117,7 @@
                                         <td class="text-center">-</td>
                                         <td class="col-fit">
                                             <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
-                                                data-ng-href="'/technicians/profile/' + technician.code"
-                                                target="_blank"></a>
+                                                href="/technicians/profile/<% technician.code %>" target="_blank"></a>
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                 data-ng-click="setUser($index)"></button>
                                         </td>
@@ -104,7 +135,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal fade" id="techModal" tabindex="-1" role="dialog" aria-labelledby="techModalLabel">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -113,8 +144,8 @@
                             <input data-ng-if="updateTechnician !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="technician_id" data-ng-value="technicians[updateTechnician].id">
                             <div class="row">
+                                {{-- name --}}
                                 <div class="col-12 col-md-6">
-                                    {{-- name --}}
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1">Full Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name" maxlength="120"
@@ -160,7 +191,8 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1">Birthday<b class="text-danger">&ast;</b></label>
-                                        <input type="date" class="form-control" name="birth"
+                                        <input id="inputBirthdate" type="text" class="form-control text-center"
+                                            name="birth" maxlength="10"
                                             data-ng-value="technicians[updateTechnician].mobile">
                                     </div>
                                 </div>
@@ -265,7 +297,7 @@
                                         var response = JSON.parse(data);
                                         if (response.status) {
                                             toastr.success('Data processed successfully');
-                                            $('#exampleModal').modal('hide');
+                                            $('#techModal').modal('hide');
                                             scope.$apply(() => {
                                                 if (updateTechnician === false) {
                                                     scope.technicians.unshift(response.data);
@@ -280,6 +312,13 @@
                                         $(form).find('button').prop('disabled', false);
                                     });
                                 }
+                            });
+
+                            $(function() {
+                                $("#inputBirthdate").datetimepicker($.extend({}, dtp_opt, {
+                                    showTodayButton: false,
+                                    format: "YYYY-MM-DD",
+                                }));
                             });
                         </script>
                     </div>
@@ -337,6 +376,7 @@
 
             app.controller('myCtrl', function($scope) {
                 $('.loading-spinner').hide();
+                $scope.q = '';
                 $scope.updateTechnician = false;
                 $scope.technicianId = 0;
                 $scope.technicians = [];
@@ -348,6 +388,7 @@
                         $scope.page = 1;
                     }
                     $.post("/technicians/load", {
+                        q: $scope.q,
                         page: $scope.page,
                         limit: 24,
                         _token: '{{ csrf_token() }}'
@@ -361,7 +402,7 @@
                 }
                 $scope.setUser = (indx) => {
                     $scope.updateTechnician = indx;
-                    $('#exampleModal').modal('show');
+                    $('#techModal').modal('show');
                 };
                 $scope.editActive = (index) => {
                     $scope.technicianId = index;
@@ -381,6 +422,14 @@
                 };
                 $scope.dataLoader();
                 scope = $scope;
+            });
+
+            $(function() {
+                $('#searchForm').on('submit', function(e) {
+                    e.preventDefault();
+                    scope.$apply(() => scope.q = $(this).find('input').val());
+                    scope.dataLoader(true);
+                });
             });
         </script>
     @endsection

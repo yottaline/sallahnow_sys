@@ -12,7 +12,6 @@
                 <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">Dashboard</a>
             </div>
             @yield('search')
-
         </div>
     </nav>
 

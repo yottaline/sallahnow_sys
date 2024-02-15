@@ -25,7 +25,7 @@ class TechnicianController extends Controller
 
     public function load()
     {
-        // TODO: get data DESC limited with offset
+        // TODO: get data DESC limited with offset 
         $technicians = Technician::all();
         echo json_encode($technicians);
     }
@@ -50,7 +50,6 @@ class TechnicianController extends Controller
             'area_id'           => $request->area_id,
             'address'           => $request->address,
             'identification'    => $request->identification,
-            'bio'               => '',
             'notes'             => $request->notes,
             'login'             => now(), // TODO: login is nunable
         ];
@@ -58,8 +57,7 @@ class TechnicianController extends Controller
         $id = intval($request->technician_id);
         // STATUS SHOULD BE BOOLEAN
         if (!$id) {
-            $randomCode =  Str::random(4);
-            $param['code'] = $randomCode;
+            $param['code'] = strtoupper($this->uniqidReal());
             $param['password'] = '';
             $param['devise_token'] = '';
             $param['user_id'] = Auth::user()->id;
@@ -83,5 +81,17 @@ class TechnicianController extends Controller
         Technician::where('id', $id)->update(['blocked' => $request->blocked]);
         session()->flash('Add', 'Active Technician has been updated successfully');
         return back();
+    }
+
+    private function uniqidReal($lenght = 12)
+    {
+        if (function_exists("random_bytes")) {
+            $bytes = random_bytes(ceil($lenght / 2));
+        } elseif (function_exists("openssl_random_pseudo_bytes")) {
+            $bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
+        } else {
+            // throw new Exception("no cryptographically secure random function available");
+        }
+        return substr(bin2hex($bytes), 0, $lenght);
     }
 }
