@@ -21,8 +21,15 @@ class TechnicianController extends Controller
         return view('content.technicians.index', compact('technicians'));
     }
 
+<<<<<<< Updated upstream
     public function load() {
         $technicians = Technician::all();
+=======
+    public function load()
+    {
+        // TODO: get data DESC limited with offset #NEN
+        $technicians = Technician::orderBy('created_at', 'desc')->limit(15)->get();
+>>>>>>> Stashed changes
         echo json_encode($technicians);
     }
 
@@ -35,6 +42,7 @@ class TechnicianController extends Controller
 
         if($request->technician_id == 0){
 
+<<<<<<< Updated upstream
             $randomCode =  Str::random(4);
             $devise_token =  Str::random(15);
 
@@ -91,6 +99,26 @@ class TechnicianController extends Controller
 
 
 
+=======
+        $id = intval($request->technician_id);
+        // STATUS SHOULD BE BOOLEAN
+        if (!$id) {
+            $param['code'] = strtoupper($this->uniqidReal());
+            $param['password'] = '';
+            $param['devise_token'] = '';
+            $param['user_id'] = Auth::user()->id;
+            $status = Technician::create($param);
+            $record = Technician::where('id', $status->id)->get();
+        } else {
+            $status = Technician::where('id', $id)->update($param);
+        }
+
+        // TODO: get $record data
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $record,
+        ]);
+>>>>>>> Stashed changes
     }
 
     // public function update(Request $request) {
@@ -139,6 +167,7 @@ class TechnicianController extends Controller
         session()->flash('Add', 'Note has been added successfully');
         return back();
     }
+<<<<<<< Updated upstream
 
     public function delete(Request $request) {
         $id = $request->technician_id;
@@ -146,4 +175,6 @@ class TechnicianController extends Controller
         session()->flash('error', 'Technician data has been deleted successfully');
         return back();
     }
+=======
+>>>>>>> Stashed changes
 }

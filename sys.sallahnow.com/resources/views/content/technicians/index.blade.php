@@ -3,6 +3,7 @@
     Technician
 @endsection
 @section('content')
+<<<<<<< Updated upstream
     {{-- <div class="container-fluid mt-5">
         @if (session()->has('Add'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -453,6 +454,9 @@
                 </ul>
             </div>
         @endif
+=======
+    <div class="container-fluid" data-ng-app="myApp" data-ng-controller="myCtrl">
+>>>>>>> Stashed changes
         <div class="row">
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">

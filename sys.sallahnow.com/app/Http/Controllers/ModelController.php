@@ -18,11 +18,11 @@ class ModelController extends Controller
     }
 
     public function load() {
-        $models = Models::all();
+        $models = Models::orderBy('created_at', 'desc')->get();
         echo json_encode($models);
     }
 
-    public function store(Request $request) {
+    public function submit(Request $request) {
 
         $request->validate([
             'name'   => 'required',
@@ -31,7 +31,9 @@ class ModelController extends Controller
             'brand'  => 'required'
         ]);
 
-        if($request->model_id == 0){
+        $id = $request->model_id;
+
+        if(!$id){
             if($request->file('photo')){
                 $photo = $request->file('photo');
                 $photoName = $photo->hashName();
@@ -40,7 +42,7 @@ class ModelController extends Controller
                 $photo->move($location , $photoName);
 
                 $photoPath = url('Image/Brands/', $photoName);
-                Models::create([
+                $status = Models::create([
                     'name'     => $request->name,
                     'url'      => $request->url,
                     'photo'    => $photoPath,
@@ -48,12 +50,10 @@ class ModelController extends Controller
                     'visible'  => 1,
                     'user_id'  => auth()->user()->id
                 ]);
-                session()->flash('Add', 'Model data has been added successfully');
-                return back();
             };
+            $record = Models::where('id', $status->id)->get();
         }
-        if($request->model_id > 0) {
-            $id = $request->model_id;
+        else{
             if($request->file('photo')){
                 $photo = $request->file('photo');
                 $photoName = $photo->hashName();
@@ -62,21 +62,23 @@ class ModelController extends Controller
                 $photo->move($location , $photoName);
 
                 $photoPath = url('Image/Brands/', $photoName);
-                Models::where('id', $id)->update([
+                $status = Models::where('id', $id)->update([
                     'name' => $request->name,
                     'photo' => $photoPath,
                     'user_id' => auth()->user()->id
                 ]);
-                session()->flash('Add', 'Brand data has been updated successfully');
-                return back();
             };
         }
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $record,
+        ]);
     }
 
     public function getBrandsName(){
         $brandName = DB::table('brands')
         ->join('models', 'brands.id', '=', 'models.brand_id')
-        ->select('models.name','brands.name')
+        ->select('models.name','brands.name')->orderBy('models.created_at', 'desc')
         ->get();
         echo json_encode($brandName);
     }

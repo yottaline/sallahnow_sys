@@ -18,18 +18,19 @@ class BrandController extends Controller
     }
 
     public function load() {
-        $brands = Brand::all();
+        $brands = Brand::orderBy('created_at', 'desc')
+        ->limit(10)->get();
         echo json_encode($brands);
     }
 
     public function store(Request $request) {
-
         $request->validate([
             'name'   => 'required|max:250',
             'logo'   => 'required'
         ]);
 
-        if($request->brand_id == 0){
+        $id = intval($request->brand_id);
+        if(!$id){
             if($request->file('logo')){
                 $logo = $request->file('logo');
                 $logoName = $logo->hashName();
@@ -38,17 +39,15 @@ class BrandController extends Controller
                 $logo->move($location , $logoName);
 
                 $logoPath = url('Image/Brands/', $logoName);
-                Brand::create([
+        $status = Brand::create([
                     'name' => $request->name,
                     'logo' => $logoPath,
                     'user_id' => auth()->user()->id
                 ]);
-                session()->flash('Add', 'Brand data has been added successfully');
-                return back();
             };
+        $record = Brand::where('id', $status->id)->get();
         }
-        if($request->brand_id > 0) {
-            $id = $request->brand_id;
+        else{
             if($request->file('logo')){
                 $logo = $request->file('logo');
                 $logoName = $logo->hashName();
@@ -57,15 +56,17 @@ class BrandController extends Controller
                 $logo->move($location , $logoName);
 
                 $logoPath = url('Image/Brands/', $logoName);
-                Brand::where('id', $id)->update([
+        $status = Brand::where('id', $id)->update([
                     'name' => $request->name,
                     'logo' => $logoPath,
                     'user_id' => auth()->user()->id
                 ]);
-                session()->flash('Add', 'Brand data has been updated successfully');
-                return back();
-            };
         }
+        }
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $record,
+        ]);
     }
 
     public function getUsersName(){

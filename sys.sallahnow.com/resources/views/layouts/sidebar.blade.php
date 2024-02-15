@@ -8,7 +8,7 @@
      <div class="offcanvas-body">
          <ul class="list-group list-group-flush">
              <li class="list-group-item nav-dashboard">
-                 <a class="link-dark d-block" href="{{ route('dashboard') }}">
+                 <a class="link-dark d-block" href="/">
                      <i class="bi bi-speedometer text-secondary me-2"></i><b>Dashboard</b>
                  </a>
              </li>
@@ -37,7 +37,7 @@
              </li> --}}
 
              <li class="list-group-item nav-news">
-                 <a class="link-dark d-block" href="{{ route('role_index') }}">
+                 <a class="link-dark d-block" href="/roles/">
                      <i class="bi bi-person-gear text-secondary me-2"></i><b>Roles</b>
                  </a>
              </li>
@@ -47,18 +47,6 @@
                      <i class="bi bi-ui-checks text-secondary me-2"></i><b>Permissions</b>
                  </a>
              </li> --}}
-
-             <li class="list-group-item nav-pages">
-                 <a class="link-dark d-block" href="{{ route('brand_index') }}">
-                     <i class="bi bi-microsoft text-secondary me-2"></i><b>Brands</b>
-                 </a>
-             </li>
-
-             <li class="list-group-item nav-pages">
-                 <a class="link-dark d-block" href="{{ route('model_index') }}">
-                     <i class="bi bi-phone-flip text-secondary me-2"></i><b>Models</b>
-                 </a>
-             </li>
 
              {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#paymentsCollapse" role="button"
@@ -102,8 +90,9 @@
              </li> --}}
 
              <li class="list-group-item nav-users">
-                 <a class="link-dark d-block" href="{{ route('users') }}">
-                     <i class="bi bi-fingerprint text-secondary me-2"></i><b>Users</b>
+                 <a class="link-dark d-block" href="/users/">
+                     <i class="bi bi-fingerprint
+                     text-secondary me-2"></i><b>Users</b>
                  </a>
              </li>
 
@@ -149,7 +138,7 @@
              </li> --}}
 
              <li class="list-group-item nav-support">
-                 <a class="link-dark d-block" href="{{ route('setting_index') }}">
+                 <a class="link-dark d-block" href="/settings/">
                      <i class="bi bi-gear text-secondary me-2"></i><b>Settings</b>
                  </a>
              </li>
