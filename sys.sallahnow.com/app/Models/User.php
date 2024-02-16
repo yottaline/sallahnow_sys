@@ -62,4 +62,8 @@ class User extends Authenticatable
         return $this->hasMany(Models::class);
     }
 
+    public function suggestions() {
+        return $this->hasMany(Compatibilities_suggestions::class);
+    }
+
 }

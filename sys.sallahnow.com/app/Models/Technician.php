@@ -38,6 +38,11 @@ class Technician extends Authenticatable implements JWTSubject
         return $this->belongsTo(User::class);
     }
 
+    public function suggestions() {
+        return $this->hasMany(Compatibilities_suggestions::class);
+    }
+
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

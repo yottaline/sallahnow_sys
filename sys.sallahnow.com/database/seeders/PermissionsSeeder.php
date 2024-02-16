@@ -16,7 +16,7 @@ class PermissionsSeeder extends Seeder
     {
         User_group::create([
             'user_group_name' => 'Admin',
-            'user_group_privileges'  => 0.
+            'user_group_privileges'  => '["add-users","view-users","update-users"]'
         ]);
 
     }

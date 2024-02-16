@@ -248,14 +248,16 @@
                                 <input type="hidden" name="brand_id"
                                     data-ng-value="updateBrand !== false ? brands[updateBrand].id : 0">
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1">Brand Name<b class="text-danger">&ast;</b></label>
+                                    <label for="brandName">Brand Name<b class="text-danger">&ast;</b></label>
                                     <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateBrand !== false ? brands[updateBrand].name : ''" />
+                                        data-ng-value="updateBrand !== false ? brands[updateBrand].name : ''"
+                                        id="brandName" />
                                 </div>
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1">Logo<b class="text-danger">&ast;</b></label>
+                                    <label for="logoBrand">Logo<b class="text-danger">&ast;</b></label>
                                     <input type="file" class="form-control" name="logo"
-                                        accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" required />
+                                        accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" required
+                                        id="logoBrand" />
                                 </div>
                                 <div class="d-flex">
                                     <button type="button" class="btn btn-outline-secondary me-auto"
@@ -360,30 +362,31 @@
                                 <input type="hidden" name="model_id"
                                     data-ng-value="updateModel !== false ? models[updateModel].id : 0">
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1">Model Name<b class="text-danger">&ast;</b></label>
+                                    <label for="Modelname">Model Name<b class="text-danger">&ast;</b></label>
                                     <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateModel !== false ? models[updateModel].name : ''" />
+                                        data-ng-value="updateModel !== false ? models[updateModel].name : ''"
+                                        id="Modelname" />
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         <div class="mb-3">
-                                            <label for="exampleInputEmail1">Logo<b class="text-danger">&ast;</b></label>
+                                            <label for="modelPhoto">Photo<b class="text-danger">&ast;</b></label>
                                             <input type="file" class="form-control" name="photo"
-                                                accept=".pdf,.jpg, .png, image/jpeg, image/png" required />
+                                                accept=".pdf,.jpg, .png, image/jpeg, image/png" required
+                                                id="modelPhoto" />
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <div class="mb-3">
-                                            <label for="exampleInputEmail1">URL</label>
-                                            <input type="text" class="form-control" name="url"
-                                                id="exampleInputEmail1"
+                                            <label for="ModleUrl">URL</label>
+                                            <input type="text" class="form-control" name="url" id="ModleUrl"
                                                 data-ng-value="updateModel !== false ? models[updateModel].url : ''">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1">Logo<b class="text-danger">&ast;</b></label>
-                                    <select name="brand" class="form-control">
+                                    <label for="ModelBrandName">Brand Name<b class="text-danger">&ast;</b></label>
+                                    <select name="brand" class="form-control" id="ModelBrandName">
                                         <option value="">-- SELECT BRAND NAME --</option>
                                         <option data-ng-repeat="brand in brands track by $index" data-ng-value="brand.id"
                                             data-ng-bind="brand.name">
@@ -402,6 +405,106 @@
                 </div>
             </div>
             <!-- end add new brand  Modal -->
+        </div>
+
+        {{-- compatbiliy_categorie --}}
+        <div class="models mt-5">
+            <div class="row">
+                <div class="col-12 col-sm-4 col-lg-3">
+                    <div class="card card-box">
+                        <div class="card-body">
+                            {{-- <div class="mb-3">
+                                <label for="roleFilter">brands Name</label>
+                                <select name="" id="" class="form-select">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="roleFilter">User Name</label>
+                                <select name="" id="" class="form-select">
+                                    <option value=""></option>
+                                </select>
+                            </div> --}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-8 col-lg-9">
+                    <div class="card card-box">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                    <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                        role="status"></span><span>COMOATILIY CATEGORIES</span>
+                                </h5>
+                                <div>
+                                    <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                        data-ng-click="setCompatibilityCategories(false)"></button>
+                                    <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
+                                        data-ng-click="lodaCompatibilityCategoriessData(true)"></button>
+                                </div>
+
+                            </div>
+                            <div data-ng-if="compatibility_categories.length" class="table-responsive">
+                                <table class="table table-hover" id="compatibility_categories_table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="cate in compatibility_categories">
+                                            <td data-ng-bind="cate.id"></td>
+                                            <td data-ng-bind="cate.name"></td>
+                                            <td>
+                                                <div class="col-fit">
+                                                    <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                        data-ng-click="setCompatibilityCategories($index)"></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div data-ng-if="!compatibility_categories.length" class="text-center py-5 text-secondary">
+                                <i class="bi bi-people  display-4"></i>
+                                <h5>No records</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- start add new compatibility_categories  Modal -->
+            <div class="modal fade" id="CompatibilityCategoriesForm" tabindex="-1" role="dialog"
+                aria-labelledby="CompatibilityCategoriesFormLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form method="POST" action="/CompatibilityCategories/submit/"> @csrf <input
+                                    data-ng-if="updateCompCate !== false" type="hidden" name="_method" value="put">
+                                <input type="hidden" name="cate_id"
+                                    data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].id : 0">
+                                <div class="mb-3">
+                                    <label for="CompatibilityCategoriesName">Compatibility Categories Name<b
+                                            class="text-danger">&ast;</b></label>
+                                    <input type="text" class="form-control" name="name" maxlength="120" required
+                                        data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].name : ''"
+                                        id="CompatibilityCategoriesName" />
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-outline-secondary me-auto"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end add new compatibility_categories  Modal -->
         </div>
     </div>
 @endsection
@@ -437,6 +540,11 @@
             $scope.models = [];
             $scope.brandName = false;
             $scope.userName = false;
+            $scope.page = 1;
+
+            // compatibility_categories
+            $scope.updateCompCate = false;
+            $scope.compatibility_categories = [];
             $scope.page = 1;
 
             $scope.jsonParse = str => JSON.parse(str);
@@ -545,11 +653,35 @@
                 }, 'json');
             }
 
+            $scope.lodaCompatibilityCategoriessData = function(reload = false) {
+                $('.loading-spinner').show();
+                if (reload) {
+                    $scope.page = 1;
+                }
+                $.post("/CompatibilityCategories/load/", {
+                    page: $scope.page,
+                    limit: 24,
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.compatibility_categories = data;
+                        $scope.page++;
+                    });
+                }, 'json');
+            }
+
+            $scope.setCompatibilityCategories = (indx) => {
+                $scope.updateCompCate = indx;
+                $('#CompatibilityCategoriesForm').modal('show');
+            };
+
             $scope.loadData(0, 'countries');
             $scope.loadBrandsData();
             $scope.getUserNameModel();
             $scope.lodaModelsData();
             $scope.getBrandName();
+            $scope.lodaCompatibilityCategoriessData()
             scope = $scope;
 
             // create new location
@@ -667,6 +799,52 @@
                                 } else {
                                     scope.models[scope.updateModel] = response.data;
                                     $scope.lodaModelsData();
+                                }
+                            });
+                        } else toastr.error("Error");
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        // error msg
+                    }).always(function() {
+                        spinner.hide();
+                        controls.prop('disabled', false);
+                    });
+
+                })
+            })
+
+            // create and update Compatibility Categories
+            $(function() {
+                $('#CompatibilityCategoriesForm form').on('submit', function(e) {
+                    e.preventDefault();
+                    var form = $(this),
+                        formData = new FormData(this),
+                        action = form.attr('action'),
+                        method = form.attr('method'),
+                        controls = form.find('button, input'),
+                        spinner = $('#locationModal .loading-spinner');
+                    spinner.show();
+                    controls.prop('disabled', true);
+                    $.ajax({
+                        url: action,
+                        type: method,
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                    }).done(function(data, textStatus, jqXHR) {
+                        var response = JSON.parse(data);
+                        console.log(data)
+                        if (response.status) {
+                            toastr.success('Data processed successfully');
+                            $('#CompatibilityCategoriesForm').modal('hide');
+                            scope.$apply(() => {
+                                if (scope.updateCompCate === false) {
+                                    scope.compatibility_categories.unshift(response
+                                        .data);
+                                    $scope.lodaCompatibilityCategoriessData();
+                                } else {
+                                    scope.compatibility_categories[scope
+                                        .updateCompCate] = response.data;
+                                    $scope.lodaCompatibilityCategoriessData();
                                 }
                             });
                         } else toastr.error("Error");

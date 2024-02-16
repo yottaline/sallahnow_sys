@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Compatibilities_suggestions;
+use App\Models\Compatibility;
 use App\Models\Models;
 use App\Models\Technician;
 use Illuminate\Support\Str;
@@ -116,6 +118,32 @@ class TechnicianApiController extends Controller
         return response('updated successfully');
     }
 
+    public function getCompatibilities() {
+        if (request('search')) {
+            $compatibilities  = Compatibility::where('name', 'like', '%' . request('search') . '%')->get();
+        } else {
+            $compatibilities  = Compatibility::all();
+        }
+
+        return response()->json($compatibilities);
+    }
+
+    public function addSuggestions(Request $request){
+        $status = Compatibilities_suggestions::create([
+            'status' => 0,
+            'act_not' => '',
+            'act_time' => now(),
+            'category_id' => $request->cate_id,
+            'technician_id'  => $request->technician_id,
+            'user_id' => 1
+        ]);
+        $status->models()->attach($request->models);
+    }
+
+    public function suggestions(){
+        $suggestions = Compatibilities_suggestions::all();
+        return response()->json($suggestions);
+    }
 
     public function getModels()
     {
@@ -131,4 +159,5 @@ class TechnicianApiController extends Controller
             'expires_in' => auth('technician-api')->factory()->getTTL() * 999999
         ]);
     }
+
 }

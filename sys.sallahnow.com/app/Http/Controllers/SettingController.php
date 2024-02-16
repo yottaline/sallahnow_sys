@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Location;
 use Illuminate\Http\Request;
 
@@ -32,4 +33,5 @@ class SettingController extends Controller
         session()->flash('Add', 'Location data has been added successfully');
         return back();
     }
+
 }

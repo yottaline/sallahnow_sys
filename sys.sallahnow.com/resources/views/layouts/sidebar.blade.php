@@ -24,11 +24,17 @@
                  </a>
              </li>
 
-             {{-- <li class="list-group-item nav-articles">
-                 <a class="link-dark d-block" href="">
-                     <i class="bi bi-file-earmark-richtext text-secondary me-2"></i><b>Articles</b>
+             <li class="list-group-item nav-articles">
+                 <a class="link-dark d-block" href="/compatibilities/">
+                     <i class="bi bi-file-earmark-richtext text-secondary me-2"></i><b>Compatibilities</b>
                  </a>
-             </li> --}}
+             </li>
+
+             <li class="list-group-item nav-articles">
+                 <a class="link-dark d-block" href="/suggestions/">
+                     <i class="bi bi-lightbulb text-secondary me-2"></i><b>Suggestions</b>
+                 </a>
+             </li>
 
              {{-- <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="">
