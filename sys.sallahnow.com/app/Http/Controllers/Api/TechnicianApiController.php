@@ -110,7 +110,7 @@ class TechnicianApiController extends Controller
             'address'         => $request->address,
             'bio'             => $request->bio,
             'login'           => $request->login,
-            'devise_token'    => '03df25c845d460bcdad7802d2vf6fc1dfde97283bf75cc993eb6dca835ea2e2f',
+            'devise_token'    => '03df25c845d460bcdad7802d2vf6fc1dfde972',
             'user_id'         => 1,
             'code'            => $code
         ]);
