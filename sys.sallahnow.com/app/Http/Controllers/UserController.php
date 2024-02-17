@@ -14,56 +14,56 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('permission:add-users')->only(['create', 'store']);
-        // $this->middleware('permission:view-users')->only(['index', 'show']);
-        // $this->middleware('permission:update-users')->only(['edit', 'update']);
-        // $this->middleware('permission:delete-users')->only('destroy');
+        $this->middleware('add-users')->only('store');
     }
 
     public function index(): View
     {
-        $users = User::all();
-        return view('content.users.index', compact('users'));
+        return view('content.users.index',);
     }
 
     public function load()
     {
-        $users = User::all();
+        $users = User::orderBy('created_at', 'desc')->limit(15)->get();
         echo json_encode($users);
     }
 
-    public function store(Request $request)
+    public function submit(Request $request)
     {
+
         $request->validate([
             'name'     => 'required|string',
-            'email'    => 'required|email|unique:users,email',
             'mobile'   => 'required|numeric',
             'password' => 'required'
         ]);
-
-        User::create([
+        $id = intval($request->user_id);
+        if(!$id) {
+        $status = User::create([
             'name'      => $request->name,
             'email'     => $request->email,
-            'group'     => 1,
+            'user_group_id'     => $request->role_id,
             'mobile'    => $request->mobile,
             'password'  => $request->password
         ]);
-        session()->flash('Add', 'User data has been added successfully');
-        return back();
+
+        $record = User::where('id', $status->id)->get();
+        }else{
+        $status = User::where('id', $id)->update([
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'user_group_id'     => $request->role_id,
+                'mobile'    => $request->mobile,
+                'password'  => $request->password
+            ]);
+        }
+        echo json_encode([
+            'status' => boolval($status),
+            // 'data' => $record,
+        ]);
     }
 
-    public function update(Request $request)
-    {
-        $id = $request->user_id;
-        User::where('id', $id)->update([
-            'name'     => $request->user_name,
-            'email'    => $request->user_email,
-            'group'     => 1,
-            'mobile'    => $request->user_mobile,
-            'password'  => $request->user_password
-        ]);
-        session()->flash('Add', 'User data has been updated successfully');
-        return back();
+    public function search($item){
+        echo json_encode($item);
     }
 
     public function updateActive(Request $request)

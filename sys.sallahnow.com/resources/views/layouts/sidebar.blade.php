@@ -8,7 +8,7 @@
      <div class="offcanvas-body">
          <ul class="list-group list-group-flush">
              <li class="list-group-item nav-dashboard">
-                 <a class="link-dark d-block" href="{{ route('dashboard') }}">
+                 <a class="link-dark d-block" href="/">
                      <i class="bi bi-speedometer text-secondary me-2"></i><b>Dashboard</b>
                  </a>
              </li>
@@ -19,16 +19,22 @@
              </li> --}}
 
              <li class="list-group-item nav-news">
-                 <a class="link-dark d-block" href="{{ route('technician_index') }}">
+                 <a class="link-dark d-block" href="/technicians/">
                      <i class="bi bi-tools text-secondary me-2"></i><b>Technicians</b>
                  </a>
              </li>
 
-             {{-- <li class="list-group-item nav-articles">
-                 <a class="link-dark d-block" href="">
-                     <i class="bi bi-file-earmark-richtext text-secondary me-2"></i><b>Articles</b>
+             <li class="list-group-item nav-articles">
+                 <a class="link-dark d-block" href="/compatibilities/">
+                     <i class="bi bi-file-earmark-richtext text-secondary me-2"></i><b>Compatibilities</b>
                  </a>
-             </li> --}}
+             </li>
+
+             <li class="list-group-item nav-articles">
+                 <a class="link-dark d-block" href="/suggestions/">
+                     <i class="bi bi-lightbulb text-secondary me-2"></i><b>Suggestions</b>
+                 </a>
+             </li>
 
              {{-- <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="">
@@ -37,20 +43,14 @@
              </li> --}}
 
              <li class="list-group-item nav-news">
-                 <a class="link-dark d-block" href="{{ route('role_index') }}">
-                     <i class="bi bi-person-bounding-box text-secondary me-2"></i><b>Roles</b>
+                 <a class="link-dark d-block" href="/roles/">
+                     <i class="bi bi-person-gear text-secondary me-2"></i><b>Roles</b>
                  </a>
              </li>
 
-             <li class="list-group-item nav-news">
+             {{-- <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="{{ route('permission_index') }}">
                      <i class="bi bi-ui-checks text-secondary me-2"></i><b>Permissions</b>
-                 </a>
-             </li>
-
-             {{-- <li class="list-group-item nav-pages">
-                 <a class="link-dark d-block" href="">
-                     <i class="bi bi-file-earmark text-secondary me-2"></i><b>Web Pages</b>
                  </a>
              </li> --}}
 
@@ -96,8 +96,9 @@
              </li> --}}
 
              <li class="list-group-item nav-users">
-                 <a class="link-dark d-block" href="{{ route('users') }}">
-                     <i class="bi bi-fingerprint text-secondary me-2"></i><b>Users</b>
+                 <a class="link-dark d-block" href="/users/">
+                     <i class="bi bi-fingerprint
+                     text-secondary me-2"></i><b>Users</b>
                  </a>
              </li>
 
@@ -143,7 +144,7 @@
              </li> --}}
 
              <li class="list-group-item nav-support">
-                 <a class="link-dark d-block" href="{{ route('setting_index') }}">
+                 <a class="link-dark d-block" href="/settings/">
                      <i class="bi bi-gear text-secondary me-2"></i><b>Settings</b>
                  </a>
              </li>

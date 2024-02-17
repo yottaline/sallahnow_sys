@@ -56,12 +56,13 @@ CREATE TABLE IF NOT EXISTS `compatible_models` (
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `tech_packages` (
-  `pkg_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pkg_name` VARCHAR(2048) NOT NULL,
+  `pkg_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pkg_name` VARCHAR(2048) NOT NULL COMMENT 'json en\ar',
+  `pkg_type` TINYINT UNSIGNED NOT NULL COMMENT '0:free, 1:silver, 2:gold, 3:diamond',
   `pkg_period` INT UNSIGNED NOT NULL,
   `pkg_cost` DECIMAL(9, 2) NOT NULL,
   `pkg_points` INT UNSIGNED NOT NULL,
-  `pkg_priv` VARCHAR(4096) NOT NULL,
+  `pkg_priv` VARCHAR(4096) NOT NULL COMMENT 'json',
   PRIMARY KEY (`pkg_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -69,7 +70,6 @@ CREATE TABLE IF NOT EXISTS `tech_packages` (
 
 CREATE TABLE IF NOT EXISTS `tech_subscriptions` (
   `sub_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `sub_transaction` INT UNSIGNED NOT NULL,
   `sub_tech` INT UNSIGNED NOT NULL,
   `sub_pkg` INT UNSIGNED NOT NULL,
   `sub_cost` DECIMAL(9, 2) NOT NULL,
@@ -90,12 +90,13 @@ CREATE TABLE IF NOT EXISTS `tech_subscriptions` (
 CREATE TABLE IF NOT EXISTS `tech_transactions` (
   `trans_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `trans_ref` VARCHAR(32) NOT NULL,
+  `trans_tech` INT UNSIGNED NOT NULL,
   `trans_method` TINYINT UNSIGNED NOT NULL COMMENT '1:gateway, 2:cash, 3: wallet, 4:cobon, 5:transfer',
   `trans_amount` DECIMAL(9, 2) NOT NULL,
   `trans_process` TINYINT UNSIGNED NOT NULL COMMENT '1:spend, 2:earn',
   `trans_create` DATETIME NOT NULL,
-  PRIMARY KEY (`pck_id`),
-  KEY `sub_tech` (`sub_tech`)
+  PRIMARY KEY (`trans_id`),
+  KEY `trans_tech` (`trans_tech`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -103,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `tech_transactions` (
 CREATE TABLE IF NOT EXISTS `tech_points` (
   `points_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `points_count` INT UNSIGNED NOT NULL,
-  `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:purch, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads',
+  `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:credit, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads',
   `points_target` INT UNSIGNED DEFAULT NULL,
   `points_process` TINYINT UNSIGNED NOT NULL COMMENT '1spend, 2:earn',
   `points_register` DATETIME NOT NULL,
@@ -495,6 +496,7 @@ CREATE TABLE IF NOT EXISTS `technicians` (
   `tech_rate` TINYINT UNSIGNED DEFAULT NULL,
   `tech_pkg` TINYINT UNSIGNED DEFAULT '0',
   `tech_points` INT UNSIGNED DEFAULT '0',
+  `tech_cedit` DECIMAL(9, 2) UNSIGNED DEFAULT '0',
   `tech_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
   `tech_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
   `tech_login` DATETIME DEFAULT NULL,

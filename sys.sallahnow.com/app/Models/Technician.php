@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Technician extends Model
+class Technician extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
@@ -26,7 +28,7 @@ class Technician extends Model
         'address',
         'bio',
         'notes',
-        'active',
+        'devise_token',
         'blocked',
         'login',
         'user_id'
@@ -34,5 +36,25 @@ class Technician extends Model
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function suggestions() {
+        return $this->hasMany(Compatibilities_suggestions::class);
+    }
+
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

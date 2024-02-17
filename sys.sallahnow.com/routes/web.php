@@ -10,7 +10,8 @@ Route::get('/', function () {
 Route::prefix('users')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', 'UserController@index')->name('users');
     Route::post('load', 'UserController@load');
-    Route::post('store', 'UserController@store')->name('user_store');
+    Route::post('search/{item}', 'UserController@search');
+    Route::match(['post', 'put'], 'submit', 'UserController@submit');
     Route::put('update', 'UserController@update')->name('user_update');
     Route::put('update/active', 'UserController@updateActive')->name('user_update_active');
     Route::get('add_role', 'UserController@addRole')->name('user_add_role');
@@ -20,8 +21,9 @@ Route::prefix('users')->middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::prefix('permission')->middleware('auth')->group(function () {
-    Route::get('permission', 'PermissionController@index')->name('permission_index');
+    Route::get('/', 'PermissionController@index')->name('permission_index');
     Route::post('store', 'PermissionController@store')->name('permission_store');
+    Route::post('getRole/{id}', 'PermissionController@getRole');
     Route::get('edit', 'PermissionController@edit')->name('permission_edit');
     Route::put('update/{permission}', 'PermissionController@update')->name('permission_update');
     Route::delete('delete', 'PermissionController@delete')->name('permission_delete');
@@ -30,9 +32,11 @@ Route::prefix('permission')->middleware('auth')->group(function () {
 });
 
 Route::prefix('roles')->middleware('auth')->group(function () {
-    Route::get('roles', 'RoleController@index')->name('role_index');
-    Route::post('store', 'RoleController@store')->name('role_store');
-    Route::get('edit', 'RoleController@edit')->name('role_edit');
+    Route::get('/', 'UserGroupController@index')->name('role_index');
+    Route::post('load', 'UserGroupController@load');
+    Route::post('store', 'UserGroupController@store')->name('role_store');
+    Route::put('addPermissions', 'UserGroupController@addPermissions')->name('addPermissions');
+    Route::post('getPermission/{id}', 'UserGroupController@getPermissions');
     Route::put('update/{role}', 'RoleController@update')->name('role_update');
     Route::delete('delete', 'RoleController@delete')->name('role_delete');
     Route::post('give_permission/{role}', 'RoleController@givePermission')->name('role_give_permission');
@@ -40,15 +44,55 @@ Route::prefix('roles')->middleware('auth')->group(function () {
 });
 
 Route::prefix('technicians')->middleware(['auth'])->group(function () {
-    Route::get('technician', 'TechnicianController@index')->name('technician_index');
-    Route::post('store', 'TechnicianController@store')->name('technician_store');
-    Route::put('update', 'TechnicianController@update')->name('technician_update');
-    Route::put('update/active', 'TechnicianController@updateActive')->name('technician_update_active');
-    Route::delete('delete', 'TechnicianController@delete')->name('technician_delete');
+    Route::get('/', 'TechnicianController@index');
+    Route::post('load', 'TechnicianController@load');
+    Route::match(['post', 'put'], 'submit', 'TechnicianController@submit');
+    Route::get( 'profile/{technician}', 'TechnicianController@profile');
+});
+
+
+Route::prefix('brands')->middleware('auth')->group(function () {
+    Route::get('/', 'BrandController@index')->name('brand_index');
+    Route::post('load', 'BrandController@load');
+    Route::match(['post', 'put'], 'submit', 'BrandController@store');
+    Route::post('getUserName', 'BrandController@getUsersName');
+});
+
+Route::prefix('models')->middleware('auth')->group(function () {
+    Route::post('load', 'ModelController@load');
+    Route::match(['post', 'put'], 'submit', 'ModelController@submit');
+    Route::post('getBrandsName', 'ModelController@getBrandsName');
+    Route::post('getUserName', 'ModelController@getUsersName');
+
+});
+
+Route::prefix('CompatibilityCategories')->middleware('auth')->group(function () {
+    Route::post('load', 'CompatibilityCategorieController@load');
+    Route::match(['post', 'put'], 'submit', 'CompatibilityCategorieController@submit');
+
+});
+
+Route::prefix('compatibilities')->middleware('auth')->group(function () {
+    Route::get('/', 'CompatibilityController@index');
+    Route::post('load', 'CompatibilityController@load');
+    Route::match(['post', 'put'], 'submit', 'CompatibilityController@submit');
+    Route::post('getCateName', 'CompatibilityController@getCateName');
+
+});
+
+Route::prefix('suggestions')->middleware('auth')->group(function () {
+    Route::get('/', 'CompatibilitiesSuggestionsController@index');
+    Route::post('load', 'CompatibilitiesSuggestionsController@load');
+    // Route::post('store', 'CompatibilitiesSuggestionsController@store')->name('i.suggestions');
+    Route::match(['post', 'put'], 'submit', 'CompatibilitiesSuggestionsController@submit');
+    Route::post('getCateName', 'CompatibilitiesSuggestionsController@getCateName');
+    Route::post('getTechnicianName', 'CompatibilitiesSuggestionsController@getTechnicianName');
+    Route::post('getUserName', 'CompatibilitiesSuggestionsController@getUserName');
+
 });
 
 Route::prefix('settings')->middleware('auth')->group(function () {
-    Route::get('location', 'SettingController@index')->name('setting_index');
+    Route::get('/', 'SettingController@index');
     Route::post('store/location', 'SettingController@storeLocation')->name('location_store');
 });
 Route::middleware('auth')->group(function () {

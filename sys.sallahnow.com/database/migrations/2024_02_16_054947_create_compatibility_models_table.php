@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_groups', function (Blueprint $table) {
+        Schema::create('compatibility_models', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('user_group_name');
-            $table->text('user_group_privileges');
+            $table->foreignId('compatibility_id')->constrained('compatibilities')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('models_id')->constrained('models')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_groups');
+        Schema::dropIfExists('compatibility__models');
     }
 };

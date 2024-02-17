@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TechnicianController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('api')->group(function() {
+    Route::prefix('technicians')->group(function() {
+        Route::post('sign_in', 'TechnicianApiController@sign_in');
+        Route::post('login', 'TechnicianApiController@login');
+        Route::post('profile', 'TechnicianApiController@profile');
+        Route::put('update/{id}', 'TechnicianApiController@Update');
+        Route::get('getModels', 'TechnicianApiController@getModels');
+        Route::get('getCompatibilities', 'TechnicianApiController@getCompatibilities');
+    });
 });

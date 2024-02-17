@@ -11,10 +11,7 @@
                     data-bs-target="#navOffcanvas" aria-controls="navOffcanvas"></a>
                 <a class="navbar-brand fw-bold" href="{{ route('dashboard') }}">Dashboard</a>
             </div>
-            <form action="" method="get" role="search">
-                <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill"
-                    placeholder="Search..." value="">
-            </form>
+            @yield('search')
         </div>
     </nav>
 

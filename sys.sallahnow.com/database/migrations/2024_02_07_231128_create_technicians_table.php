@@ -17,7 +17,9 @@ return new class extends Migration
             $table->integer('center')->nullable();
             $table->string('name');
             $table->string('email')->nullable();
+            $table->string('tech_email_verefied')->nullable();
             $table->string('mobile');
+            $table->string('tech_mobile_verefied')->nullable();
             $table->string('tel')->nullable();
             $table->string('password');
             $table->string('identification')->nullable();
@@ -28,8 +30,13 @@ return new class extends Migration
             $table->integer('area_id');
             $table->string('address')->nullable();
             $table->longText('bio')->nullable();
+            $table->integer('rate')->nullable();
+            $table->integer('pkg')->nullable();
             $table->longText('notes')->nullable();
-            $table->boolean('active')->default(1);
+            $table->integer('points')->default(0);
+            $table->boolean('tech_modify')->nullable();
+            $table->boolean('tech_modify_by')->nullable();
+            $table->string('devise_token')->unique();
             $table->boolean('blocked')->default(0);
             $table->date('login');
             $table->foreignId('user_id')->constrained('users');

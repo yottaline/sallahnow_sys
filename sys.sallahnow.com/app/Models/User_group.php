@@ -11,5 +11,11 @@ class User_group extends Model
 
     protected $fillable = [
         'user_group_name',
+        'user_group_privileges'
     ];
+
+    public function user() {
+        return $this->hasOne(User::class);
+    }
+
 }
