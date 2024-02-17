@@ -57,8 +57,7 @@ CREATE TABLE IF NOT EXISTS `compatible_models` (
 
 CREATE TABLE IF NOT EXISTS `tech_packages` (
   `pkg_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pkg_name` VARCHAR(2048) NOT NULL COMMENT 'json en\ar',
-  `pkg_type` TINYINT UNSIGNED NOT NULL COMMENT '0:free, 1:silver, 2:gold, 3:diamond',
+  `pkg_type` TINYINT UNSIGNED NOT NULL COMMENT '1:free, 2:silver, 3:gold, 4:diamond',
   `pkg_period` INT UNSIGNED NOT NULL,
   `pkg_cost` DECIMAL(9, 2) NOT NULL,
   `pkg_points` INT UNSIGNED NOT NULL,
@@ -80,9 +79,11 @@ CREATE TABLE IF NOT EXISTS `tech_subscriptions` (
   `sub_end` DATE NOT NULL,
   `sub_status` BOOLEAN NOT NULL COMMENT '0:in-active, 1:active',
   `sub_register` DATETIME NOT NULL,
+  `sub_register_by` INT UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`sub_id`),
   KEY `sub_tech` (`sub_tech`),
-  KEY `sub_pkg` (`sub_pkg`)
+  KEY `sub_pkg` (`sub_pkg`),
+  KEY `sub_register_by` (`sub_register_by`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -95,8 +96,10 @@ CREATE TABLE IF NOT EXISTS `tech_transactions` (
   `trans_amount` DECIMAL(9, 2) NOT NULL,
   `trans_process` TINYINT UNSIGNED NOT NULL COMMENT '1:spend, 2:earn',
   `trans_create` DATETIME NOT NULL,
+  `trans_create_by` INT UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`trans_id`),
-  KEY `trans_tech` (`trans_tech`)
+  KEY `trans_tech` (`trans_tech`),
+  KEY `trans_create_by` (`trans_create_by`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -106,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `tech_points` (
   `points_count` INT UNSIGNED NOT NULL,
   `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:credit, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads',
   `points_target` INT UNSIGNED DEFAULT NULL,
-  `points_process` TINYINT UNSIGNED NOT NULL COMMENT '1spend, 2:earn',
+  `points_process` TINYINT UNSIGNED NOT NULL COMMENT '1:spend, 2:earn',
   `points_register` DATETIME NOT NULL,
   PRIMARY KEY (`points_id`),
   KEY `points_tech` (`points_tech`),
