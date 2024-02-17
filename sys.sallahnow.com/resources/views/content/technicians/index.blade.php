@@ -8,44 +8,6 @@
     </form>
 @endsection
 @section('content')
-      
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
-    <script src="{{ asset('/assets/js/jquery_validator/extend.js?v=1.1.0') }}"></script>
-
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script>
-        toastr.options.closeButton = true;
-        toastr.options.progressBar = true;
-        toastr.options.positionClass = "toast-bottom-left";
-        toastr.options.timeOut = 5000;
-        toastr.options.preventDuplicates = true;
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <link rel='stylesheet'
-        href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css'>
-    <script
-        src='https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js'>
-    </script>
-    <script>
-        const dtp_opt = {
-            icons: {
-                time: 'bi bi-clock',
-                date: 'bi bi-calendar',
-                up: 'bi bi-chevron-up',
-                down: 'bi bi-chevron-down',
-                previous: 'bi bi-chevron-left',
-                next: 'bi bi-chevron-right',
-                today: 'bi bi-calendar2-event',
-                clear: 'bi bi-eraser',
-                close: 'bi bi-x'
-            },
-            format: "YYYY-MM-DD",
-        };
-    </script>
     <div class="container-fluid" data-ng-app="myApp" data-ng-controller="myCtrl">
         <div class="row">
             <div class="col-12 col-sm-4 col-lg-3">
@@ -147,26 +109,28 @@
                                 {{-- name --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Full Name<b class="text-danger">&ast;</b></label>
+                                        <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name" maxlength="120"
-                                            data-ng-value="technicians[updateTechnician].name" required>
+                                            data-ng-value="technicians[updateTechnician].name" required id="fullName">
                                     </div>
                                 </div>
                                 {{-- identification --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Identification</label>
+                                        <label for="identificationT">Identification</label>
                                         <input class="form-control" name="identification" type="text"
-                                            data-ng-bind="technicians[updateTechnician].identification">
+                                            data-ng-bind="technicians[updateTechnician].identification"
+                                            id="IdentificationT">
                                     </div>
                                 </div>
 
                                 {{-- mobile --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Mobile<b class="text-danger">&ast;</b></label>
+                                        <label for="mobile">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="mobile" maxlength="24"
-                                            data-ng-value="technicians[updateTechnician].mobile" required>
+                                            data-ng-value="technicians[updateTechnician].mobile" required
+                                            id="mobile" />
                                     </div>
                                 </div>
                                 {{-- email --}}
@@ -182,25 +146,25 @@
                                 {{-- phone --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputPassword1">Phone</label>
+                                        <label for="phoneT">Phone</label>
                                         <input type="text" class="form-control" name="tel" maxlength="24"
-                                            data-ng-value="technicians[updateTechnician].tel">
+                                            data-ng-value="technicians[updateTechnician].tel" id="phoneT" />
                                     </div>
                                 </div>
                                 {{-- birthday --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Birthday<b class="text-danger">&ast;</b></label>
+                                        <label for="BirthdayT">Birthday<b class="text-danger">&ast;</b></label>
                                         <input id="inputBirthdate" type="text" class="form-control text-center"
                                             name="birth" maxlength="10"
-                                            data-ng-value="technicians[updateTechnician].mobile">
+                                            data-ng-value="technicians[updateTechnician].mobile" id="BirthdayT">
                                     </div>
                                 </div>
 
                                 {{-- country --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Country<b class="text-danger">&ast;</b></label>
+                                        <label>Country<b class="text-danger">&ast;</b></label>
                                         <select name="country_id" class="form-control" required>
                                             <option value="">-- select country --</option>
                                             <option value="1">sudan</option>
@@ -211,7 +175,7 @@
                                 {{-- state --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">State<b class="text-danger">&ast;</b></label>
+                                        <label>State<b class="text-danger">&ast;</b></label>
                                         <select name="state_id" class="form-control" required>
                                             <option value="">-- select state --</option>
                                             <option value="1">Khartoum</option>
@@ -223,7 +187,7 @@
                                 {{-- city --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">City<b class="text-danger">&ast;</b></label>
+                                        <label>City<b class="text-danger">&ast;</b></label>
                                         <select name="city_id" class="form-control" required>
                                             <option value="">-- select city --</option>
                                             <option value="1">Khartoum</option>
@@ -234,7 +198,7 @@
                                 {{-- area --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Arae<b class="text-danger">&ast;</b></label>
+                                        <label>Arae<b class="text-danger">&ast;</b></label>
                                         <select name="area_id" class="form-control" required>
                                             <option value="">-- select area --</option>
                                             <option value="1">Khartoum, Omdurman</option>
@@ -246,20 +210,12 @@
                                 {{-- address --}}
                                 <div class="col-12">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1">Address</label>
-                                        <input type="text" class="form-control" name="address"
+                                        <label for="addressTechnician">Address</label>
+                                        <input type="text" class="form-control" name="address" id="addressTechnician"
                                             data-ng-value="updateTechnician !== false ? technicians[updateTechnician].address : ''" />
                                     </div>
                                 </div>
 
-                                {{-- note --}}
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1">Notes</label>
-                                        <textarea class="form-control" name="notes" rows="3"
-                                            data-ng-bind="updateTechnician !== false ? technicians[updateTechnician].notes : ''"></textarea>
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="d-flex">
@@ -299,15 +255,17 @@
                                             toastr.success('Data processed successfully');
                                             $('#techModal').modal('hide');
                                             scope.$apply(() => {
-                                                if (updateTechnician === false) {
+                                                if (scope.updateTechnician === false) {
                                                     scope.technicians.unshift(response.data);
+                                                    scope.dataLoader();
                                                 } else {
-                                                    scope.technicians[updateTechnician] = response.data;
+                                                    scope.technicians[scope.updateTechnician] = response.data;
+                                                    scope.dataLoader();
                                                 }
                                             });
-                                        } else toastr.error("Error");
+                                        } else toastr.error(response.message);
                                     }).fail(function(jqXHR, textStatus, errorThrown) {
-                                        toastr.error("Error");
+                                        toastr.error("error");
                                     }).always(function() {
                                         $(form).find('button').prop('disabled', false);
                                     });

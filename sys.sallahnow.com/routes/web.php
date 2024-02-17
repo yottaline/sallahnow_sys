@@ -10,6 +10,7 @@ Route::get('/', function () {
 Route::prefix('users')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', 'UserController@index')->name('users');
     Route::post('load', 'UserController@load');
+    Route::post('search/{item}', 'UserController@search');
     Route::match(['post', 'put'], 'submit', 'UserController@submit');
     Route::put('update', 'UserController@update')->name('user_update');
     Route::put('update/active', 'UserController@updateActive')->name('user_update_active');
@@ -46,6 +47,7 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::get('/', 'TechnicianController@index');
     Route::post('load', 'TechnicianController@load');
     Route::match(['post', 'put'], 'submit', 'TechnicianController@submit');
+    Route::get( 'profile/{technician}', 'TechnicianController@profile');
 });
 
 
@@ -57,7 +59,6 @@ Route::prefix('brands')->middleware('auth')->group(function () {
 });
 
 Route::prefix('models')->middleware('auth')->group(function () {
-    Route::get('/', 'ModelController@index')->name('model_index');
     Route::post('load', 'ModelController@load');
     Route::match(['post', 'put'], 'submit', 'ModelController@submit');
     Route::post('getBrandsName', 'ModelController@getBrandsName');
@@ -65,8 +66,33 @@ Route::prefix('models')->middleware('auth')->group(function () {
 
 });
 
+Route::prefix('CompatibilityCategories')->middleware('auth')->group(function () {
+    Route::post('load', 'CompatibilityCategorieController@load');
+    Route::match(['post', 'put'], 'submit', 'CompatibilityCategorieController@submit');
+
+});
+
+Route::prefix('compatibilities')->middleware('auth')->group(function () {
+    Route::get('/', 'CompatibilityController@index');
+    Route::post('load', 'CompatibilityController@load');
+    Route::match(['post', 'put'], 'submit', 'CompatibilityController@submit');
+    Route::post('getCateName', 'CompatibilityController@getCateName');
+
+});
+
+Route::prefix('suggestions')->middleware('auth')->group(function () {
+    Route::get('/', 'CompatibilitiesSuggestionsController@index');
+    Route::post('load', 'CompatibilitiesSuggestionsController@load');
+    // Route::post('store', 'CompatibilitiesSuggestionsController@store')->name('i.suggestions');
+    Route::match(['post', 'put'], 'submit', 'CompatibilitiesSuggestionsController@submit');
+    Route::post('getCateName', 'CompatibilitiesSuggestionsController@getCateName');
+    Route::post('getTechnicianName', 'CompatibilitiesSuggestionsController@getTechnicianName');
+    Route::post('getUserName', 'CompatibilitiesSuggestionsController@getUserName');
+
+});
+
 Route::prefix('settings')->middleware('auth')->group(function () {
-    Route::get('/', 'SettingController@index')->name('setting_index');
+    Route::get('/', 'SettingController@index');
     Route::post('store/location', 'SettingController@storeLocation')->name('location_store');
 });
 Route::middleware('auth')->group(function () {

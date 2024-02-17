@@ -62,6 +62,9 @@ class UserController extends Controller
         ]);
     }
 
+    public function search($item){
+        echo json_encode($item);
+    }
 
     public function updateActive(Request $request)
     {

@@ -25,7 +25,6 @@ class TechnicianController extends Controller
 
     public function load()
     {
-        // TODO: get data DESC limited with offset #NEN
         $technicians = Technician::orderBy('created_at', 'desc')->limit(15)->get();
         echo json_encode($technicians);
     }
@@ -35,9 +34,8 @@ class TechnicianController extends Controller
         $request->validate([
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
-            'password'        => 'required',
            ]);
-      
+
         $param = [
             'name'              => $request->name,
             'email'             => $request->email,
@@ -84,6 +82,11 @@ class TechnicianController extends Controller
     }
 
 
+    public function profile($code) {
+        $technician = Technician::where('code', $code)->first();
+        return view('content.technicians.profile', compact('technician'));
+    }
+
 
     private function uniqidReal($lenght = 12)
     {
@@ -97,4 +100,3 @@ class TechnicianController extends Controller
         return substr(bin2hex($bytes), 0, $lenght);
     }
 }
-

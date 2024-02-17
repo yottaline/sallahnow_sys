@@ -245,6 +245,18 @@
                     });
                 }, 'json');
 
+                // $.post("/users/search/", {
+                //     limit: 24,
+                //     _token: '{{ csrf_token() }}'
+                // }, function(data) {
+                //     $('.loading-spinner').hide();
+                //     console.log(data)
+                //     // $scope.$apply(() => {
+                //     //     $scope.users = data;
+                //     //     $scope.page++;
+                //     // });
+                // }, 'json');
+
                 $.post("/roles/load/", {
                     _token: '{{ csrf_token() }}'
                 }, function(data) {

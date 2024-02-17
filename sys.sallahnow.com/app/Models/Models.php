@@ -27,4 +27,12 @@ class Models extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public function compatibilities(){
+        return $this->belongsToMany(Compatibility::class);
+    }
+
+    public function suggestions() {
+        return $this->belongsToMany(Compatibilities_suggestions::class);
+    }
 }
