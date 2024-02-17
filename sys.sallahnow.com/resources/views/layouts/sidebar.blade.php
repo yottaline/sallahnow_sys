@@ -12,15 +12,16 @@
                      <i class="bi bi-speedometer text-secondary me-2"></i><b>Dashboard</b>
                  </a>
              </li>
-             {{-- <li class="list-group-item nav-customers">
-                 <a class="link-dark d-block" href="#">
-                     <i class="bi bi-people text-secondary me-2"></i><b>Customers</b>
-                 </a>
-             </li> --}}
 
              <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="/technicians/">
                      <i class="bi bi-tools text-secondary me-2"></i><b>Technicians</b>
+                 </a>
+             </li>
+
+             <li class="list-group-item nav-customers">
+                 <a class="link-dark d-block" href="/centers/">
+                     <i class="bi bi-globe-central-south-asia text-secondary me-2"></i><b>Centers</b>
                  </a>
              </li>
 

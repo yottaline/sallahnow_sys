@@ -50,6 +50,14 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::get( 'profile/{technician}', 'TechnicianController@profile');
 });
 
+Route::prefix('centers')->middleware('auth')->group( function() {
+    Route::get('/', 'CenterController@index');
+    Route::post('load', 'CenterController@load');
+    Route::match(['post', 'put'], 'submit', 'CenterController@submit');
+    Route::get('getTechnician/{item}', 'CenterController@getTechnician');
+    Route::put('addOwner', 'CenterController@addOwner');
+    Route::post('getTechnicianName', 'CenterController@getTechnicianName');
+});
 
 Route::prefix('brands')->middleware('auth')->group(function () {
     Route::get('/', 'BrandController@index')->name('brand_index');

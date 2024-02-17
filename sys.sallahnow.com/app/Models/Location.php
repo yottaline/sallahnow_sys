@@ -15,4 +15,8 @@ class Location extends Model
         'parent',
         'visible'
     ];
+
+    public function centers() {
+        return $this->hasMany(Center::class);
+    }
 }
