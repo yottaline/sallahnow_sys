@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `tech_packages` (
   `pkg_period` INT UNSIGNED NOT NULL,
   `pkg_cost` DECIMAL(9, 2) NOT NULL,
   `pkg_points` INT UNSIGNED NOT NULL,
-  `pkg_priv` VARCHAR(4096) NOT NULL COMMENT 'json',
+  `pkg_priv` VARCHAR(4096) NOT NULL,
   PRIMARY KEY (`pkg_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -496,10 +496,10 @@ CREATE TABLE IF NOT EXISTS `technicians` (
   `tech_geo` VARCHAR(64) NOT NULL,
   `tech_desc` VARCHAR(1024),
   `tech_notes` VARCHAR(1024),
-  `tech_rate` TINYINT UNSIGNED DEFAULT NULL,
+  `tech_rate` DECIMAL(4, 2) UNSIGNED DEFAULT NULL,
   `tech_pkg` TINYINT UNSIGNED DEFAULT '0',
   `tech_points` INT UNSIGNED DEFAULT '0',
-  `tech_cedit` DECIMAL(9, 2) UNSIGNED DEFAULT '0',
+  `tech_credit` DECIMAL(9, 2) UNSIGNED DEFAULT '0',
   `tech_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
   `tech_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
   `tech_login` DATETIME DEFAULT NULL,
