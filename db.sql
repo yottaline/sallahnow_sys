@@ -55,6 +55,66 @@ CREATE TABLE IF NOT EXISTS `compatible_models` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `tech_packages` (
+  `pkg_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pkg_name` VARCHAR(2048) NOT NULL,
+  `pkg_period` INT UNSIGNED NOT NULL,
+  `pkg_cost` DECIMAL(9, 2) NOT NULL,
+  `pkg_points` INT UNSIGNED NOT NULL,
+  `pkg_priv` VARCHAR(4096) NOT NULL,
+  PRIMARY KEY (`pkg_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tech_subscriptions` (
+  `sub_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sub_transaction` INT UNSIGNED NOT NULL,
+  `sub_tech` INT UNSIGNED NOT NULL,
+  `sub_pkg` INT UNSIGNED NOT NULL,
+  `sub_cost` DECIMAL(9, 2) NOT NULL,
+  `sub_points` INT UNSIGNED NOT NULL,
+  `sub_period` INT UNSIGNED NOT NULL,
+  `sub_priv` VARCHAR(4096) NOT NULL,
+  `sub_start` DATE NOT NULL,
+  `sub_end` DATE NOT NULL,
+  `sub_status` BOOLEAN NOT NULL COMMENT '0:in-active, 1:active',
+  `sub_register` DATETIME NOT NULL,
+  PRIMARY KEY (`sub_id`),
+  KEY `sub_tech` (`sub_tech`),
+  KEY `sub_pkg` (`sub_pkg`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tech_transactions` (
+  `trans_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `trans_ref` VARCHAR(32) NOT NULL,
+  `trans_method` TINYINT UNSIGNED NOT NULL COMMENT '1:gateway, 2:cash, 3: wallet, 4:cobon, 5:transfer',
+  `trans_amount` DECIMAL(9, 2) NOT NULL,
+  `trans_process` TINYINT UNSIGNED NOT NULL COMMENT '1:spend, 2:earn',
+  `trans_create` DATETIME NOT NULL,
+  PRIMARY KEY (`pck_id`),
+  KEY `sub_tech` (`sub_tech`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tech_points` (
+  `points_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `points_count` INT UNSIGNED NOT NULL,
+  `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:purch, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads',
+  `points_target` INT UNSIGNED DEFAULT NULL,
+  `points_process` TINYINT UNSIGNED NOT NULL COMMENT '1spend, 2:earn',
+  `points_register` DATETIME NOT NULL,
+  PRIMARY KEY (`points_id`),
+  KEY `points_tech` (`points_tech`),
+  KEY `points_src` (`points_src`),
+  KEY `points_target` (`points_target`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `customers` (
   `customer_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `customer_code` VARCHAR(24) NOT NULL,
@@ -470,22 +530,6 @@ CREATE TABLE IF NOT EXISTS `tech_form` (
   `form_modify` DATETIME DEFAULT NULL,
   `form_create` DATETIME NOT NULL,
   PRIMARY KEY (`form_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `tech_points` (
-  `points_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `points_tech` INT UNSIGNED NOT NULL,
-  `points_amount` INT UNSIGNED NOT NULL,
-  `points_res` TINYINT UNSIGNED DEFAULT '0' COMMENT '0:pkg, 1:purch, 2:promo, 3:academy, 4:ticket, 5:ads',
-  `points_target` BIGINT UNSIGNED DEFAULT NULL,
-  `points_process` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '0:spend, 1:earn',
-  `points_time` DATETIME NOT NULL,
-  PRIMARY KEY (`points_id`),
-  KEY `points_res` (`points_res`),
-  KEY `points_tech` (`points_tech`),
-  KEY `points_target` (`points_target`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
