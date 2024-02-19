@@ -17,6 +17,9 @@ class Transaction extends Model
         'create_by',
         'technician_id'
     ];
+    protected $casts = [
+        'created_at'  => 'date:Y-m-d',
+    ];
 
     public function technician() {
         return $this->belongsTo(Technician::class);

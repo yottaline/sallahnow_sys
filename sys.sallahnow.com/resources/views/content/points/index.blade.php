@@ -64,6 +64,7 @@
                                         <th>Points Count</th>
                                         <th>Process type</th>
                                         <th>Point source</th>
+                                        <th>Date</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -82,7 +83,7 @@
                                                 class="badge bg-dark rounded-pill font-monospace"><%scrObj.name[point.process]%></span>
 
                                         </td>
-
+                                        <td data-ng-bind="point.created_at"></td>
                                         <td>
                                             <div class="col-fit">
                                                 <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"

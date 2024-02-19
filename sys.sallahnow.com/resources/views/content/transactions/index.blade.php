@@ -62,7 +62,7 @@
                                         <th>#</th>
                                         <th>Technician Name</th>
                                         <th>Amount</th>
-                                        <th>Datetime</th>
+                                        <th>Date</th>
                                         <th>Process type </th>
                                         <th>Method </th>
                                         <th></th>
