@@ -68,25 +68,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="tran in points track by $index">
-                                        <td data-ng-bind="tran.id"></td>
+                                    <tr data-ng-repeat="point in points track by $index">
+                                        <td data-ng-bind="point.id"></td>
                                         <td data-ng-bind="technicianName[$index].name"></td>
-                                        <td data-ng-bind="tran.count"></td>
+                                        <td data-ng-bind="point.count"></td>
                                         <td>
                                             <span
-                                                class="badge bg-<%procesObj.color[tran.process]%> rounded-pill font-monospace"><%procesObj.name[tran.process]%></span>
+                                                class="badge bg-<%procesObj.color[point.src]%> rounded-pill font-monospace"><%procesObj.name[point.src]%></span>
 
                                         </td>
                                         <td>
                                             <span
-                                                class="badge bg-dark rounded-pill font-monospace"><%scrObj.name[tran.process]%></span>
+                                                class="badge bg-dark rounded-pill font-monospace"><%scrObj.name[point.process]%></span>
 
                                         </td>
 
                                         <td>
                                             <div class="col-fit">
-                                                {{-- <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
-                                                    href="/points/profile/<% tran.reference %>" target="_blank"></a> --}}
+                                                <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
+                                                    href="/points/profile/<% point.technician_id %>" target="_blank"></a>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                     data-ng-click="setPoint($index)"></button>
                                                 <button class="btn btn-outline-danger btn-circle bi bi-stopwatch"

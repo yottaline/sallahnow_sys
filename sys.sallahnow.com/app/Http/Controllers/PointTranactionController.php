@@ -55,4 +55,8 @@ class PointTranactionController extends Controller
         ->get();
         echo json_encode($technician_name);
     }
+
+    public function profile($id) {
+        return view('content.points.profile');
+    }
 }

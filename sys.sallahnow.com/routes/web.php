@@ -127,6 +127,7 @@ Route::prefix('points')->middleware('auth')->group( function() {
     Route::post('load', 'PointTranactionController@load');
     Route::match(['post', 'put'], 'submit', 'PointTranactionController@submit');
     Route::post('subPointTechnician', 'PointTranactionController@technicianName');
+    Route::get('profile/{id}', 'TransactionController@profile');
 });
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');
