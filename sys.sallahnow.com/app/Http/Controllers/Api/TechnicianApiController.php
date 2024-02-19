@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Compatibilities_suggestions;
 use App\Models\Compatibility;
+use App\Models\Compatibility_categorie;
 use App\Models\Models;
 use App\Models\Technician;
 use Illuminate\Support\Str;
@@ -120,7 +121,7 @@ class TechnicianApiController extends Controller
 
     public function getCompatibilities() {
         if (request('search')) {
-            $compatibilities  = Compatibility::where('name', 'like', '%' . request('search') . '%')->get();
+            $compatibilities  = Compatibility::where('part', 'like', '%' . request('search') . '%')->get();
         } else {
             $compatibilities  = Compatibility::all();
         }
@@ -138,6 +139,11 @@ class TechnicianApiController extends Controller
             'user_id' => 1
         ]);
         $status->models()->attach($request->models);
+    }
+
+    public function getCategory() {
+        $categories  = Compatibility_categorie::all();
+        return response()->json($categories);
     }
 
     public function suggestions(){

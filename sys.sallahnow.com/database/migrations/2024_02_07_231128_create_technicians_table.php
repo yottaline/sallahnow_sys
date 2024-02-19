@@ -30,10 +30,11 @@ return new class extends Migration
             $table->integer('area_id');
             $table->string('address')->nullable();
             $table->longText('bio')->nullable();
-            $table->integer('rate')->nullable();
+            $table->decimal('rate', 9 ,2)->default('0');
             $table->integer('pkg')->nullable();
             $table->longText('notes')->nullable();
             $table->integer('points')->default(0);
+            $table->decimal('credit', 9 ,2)->default('0');
             $table->boolean('tech_modify')->nullable();
             $table->boolean('tech_modify_by')->nullable();
             $table->string('devise_token')->unique();

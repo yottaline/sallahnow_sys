@@ -23,5 +23,7 @@ Route::middleware('api')->group(function() {
         Route::put('update/{id}', 'TechnicianApiController@Update');
         Route::get('getModels', 'TechnicianApiController@getModels');
         Route::get('getCompatibilities', 'TechnicianApiController@getCompatibilities');
+
+        //
     });
 });
