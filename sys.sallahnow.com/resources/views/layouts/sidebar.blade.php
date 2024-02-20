@@ -12,15 +12,16 @@
                      <i class="bi bi-speedometer text-secondary me-2"></i><b>Dashboard</b>
                  </a>
              </li>
-             {{-- <li class="list-group-item nav-customers">
-                 <a class="link-dark d-block" href="#">
-                     <i class="bi bi-people text-secondary me-2"></i><b>Customers</b>
-                 </a>
-             </li> --}}
 
              <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="/technicians/">
                      <i class="bi bi-tools text-secondary me-2"></i><b>Technicians</b>
+                 </a>
+             </li>
+
+             <li class="list-group-item nav-customers">
+                 <a class="link-dark d-block" href="/centers/">
+                     <i class="bi bi-globe-central-south-asia text-secondary me-2"></i><b>Centers</b>
                  </a>
              </li>
 
@@ -54,7 +55,7 @@
                  </a>
              </li> --}}
 
-             {{-- <li class="list-group-item">
+             <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#paymentsCollapse" role="button"
                      aria-expanded="false" aria-controls="paymentsCollapse">
                      <i class="bi bi-wallet2 text-secondary me-2"></i><b>Finance</b>
@@ -62,14 +63,20 @@
                  <div class="collapse" id="paymentsCollapse">
                      <ul class="list-group list-group-flush">
                          <li class="list-group-item nav-subsc">
-                             <a class="link-dark d-block" href="#">
+                             <a class="link-dark d-block" href="/subscriptions/">
                                  <i class="bi bi-cart-check text-secondary me-2"></i><b>Subscriptions</b>
                              </a>
                          </li>
 
                          <li class="list-group-item nav-trans">
-                             <a class="link-dark d-block" href="#">
+                             <a class="link-dark d-block" href="/transactions/">
                                  <i class="bi bi-credit-card text-secondary me-2"></i><b>Transactions</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/points/">
+                                 <i class="bi bi-credit-card text-secondary me-2"></i><b>Points</b>
                              </a>
                          </li>
 
@@ -93,7 +100,7 @@
                      if (['subsc', 'trans', 'refunds', 'promos'].includes(navTarget))
                          paymentsCollapse.show();
                  </script>
-             </li> --}}
+             </li>
 
              <li class="list-group-item nav-users">
                  <a class="link-dark d-block" href="/users/">

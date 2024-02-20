@@ -31,6 +31,7 @@ class Technician extends Authenticatable implements JWTSubject
         'devise_token',
         'blocked',
         'login',
+        'credit',
         'user_id'
     ];
 
@@ -42,6 +43,17 @@ class Technician extends Authenticatable implements JWTSubject
         return $this->hasMany(Compatibilities_suggestions::class);
     }
 
+    public function subscription() {
+        return $this->hasOne(Subscriptions::class);
+    }
+
+    public function points() {
+        return $this->hasMany(PointTranaction::class);
+    }
+
+    public function transactions() {
+        return $this->hasMany(Transaction::class);
+    }
 
     public function getJWTIdentifier()
     {

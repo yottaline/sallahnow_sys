@@ -60,6 +60,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Category Name</th>
                                         <th>Name</th>
                                         <th></th>
                                     </tr>
@@ -68,6 +69,7 @@
                                     <tr data-ng-repeat="comp in compatibiliy track by $index">
                                         <td data-ng-bind="comp.id"></td>
                                         <td data-ng-bind="cateName[$index].name"></td>
+                                        <td data-ng-bind="jsonParse(comp.part)['en']"></td>
                                         <td>
                                             <div class="col-fit">
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -104,14 +106,14 @@
                                         <label for="NamEN">Name EN<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name_en" maxlength="24"
                                             id="NamEN"
-                                            data-ng-value="updateComp !== false ? compatibiliy[updateComp].part['en'] : ''">
+                                            data-ng-value="updateComp !== false ? jsonParse(compatibiliy[updateComp].part)['en'] : ''">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="NamAR">Name AR</label>
                                         <input type="text" class="form-control" name="name_ar" id="NamAR"
-                                            data-ng-value="updateComp !== false ? compatibiliy[updateComp].part : ''">
+                                            data-ng-value="updateComp !== false ? jsonParse(compatibiliy[updateComp].part)['ar'] : ''">
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -156,6 +158,7 @@
         var scope, app = angular.module('myApp', []);
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
+            $scope.jsonParse = (str) => JSON.parse(str);
             $scope.updateComp = false;
             $scope.cateName = false;
             $scope.compatibiliy = [];
@@ -233,54 +236,54 @@
             scope = $scope;
         });
 
-        // $(function() {
-        //     $('#compatibilityForm form').on('submit', function(e) {
-        //         e.preventDefault();
-        //         var form = $(this),
-        //             formData = new FormData(this),
-        //             action = form.attr('action'),
-        //             method = form.attr('method'),
-        //             controls = form.find('button, input'),
-        //             spinner = $('#locationModal .loading-spinner');
-        //         spinner.show();
-        //         controls.prop('disabled', true);
-        //         $.ajax({
-        //             url: action,
-        //             type: method,
-        //             data: formData,
-        //             processData: false,
-        //             contentType: false,
-        //         }).done(function(data, textStatus, jqXHR) {
-        //             var response = JSON.parse(data);
-        //             console.log(data)
-        //             if (response.status) {
-        //                 toastr.success('Data processed successfully');
-        //                 $('#compatibilityForm').modal('hide');
-        //                 scope.$apply(() => {
-        //                     if (scope.updateComp === false) {
-        //                         scope.compatibiliy.unshift(response.data);
-        //                         $scope.dataLoader();
-        //                     } else {
-        //                         scope.compatibiliy[scope.updateComp] = response.data;
-        //                         $scope.dataLoader();
-        //                     }
-        //                 });
-        //             } else toastr.error("Error");
-        //         }).fail(function(jqXHR, textStatus, errorThrown) {
-        //             // error msg
-        //         }).always(function() {
-        //             spinner.hide();
-        //             controls.prop('disabled', false);
-        //         });
+        $(function() {
+            $('#compatibilityForm form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    console.log(data)
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#compatibilityForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updateComp === false) {
+                                scope.compatibiliy.unshift(response.data);
+                                $scope.dataLoader();
+                            } else {
+                                scope.compatibiliy[scope.updateComp] = response.data;
+                                $scope.dataLoader();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
 
-        //     })
-        // });
-        // $(function() {
-        //     $('#searchForm').on('submit', function(e) {
-        //         e.preventDefault();
-        //         scope.$apply(() => scope.q = $(this).find('input').val());
-        //         scope.dataLoader(true);
-        //     });
-        // });
+            })
+        });
+        $(function() {
+            $('#searchForm').on('submit', function(e) {
+                e.preventDefault();
+                scope.$apply(() => scope.q = $(this).find('input').val());
+                scope.dataLoader(true);
+            });
+        });
     </script>
 @endsection

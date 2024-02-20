@@ -73,7 +73,11 @@
                                         <td data-ng-bind="cateName[$index].name"></td>
                                         <td data-ng-bind="technicianName[$index].name"></td>
                                         <td data-ng-bind="userName[$index].name"></td>
-                                        <td data-ng-bind="sugg.status"></td>
+                                        <td>
+                                            <span
+                                                class="badge bg-<%statusObj.color[sugg.status]%> rounded-pill font-monospace"><%statusObj.name[sugg.status]%></span>
+
+                                        </td>
                                         <td>
                                             <div class="col-fit">
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -192,9 +196,16 @@
 @endsection
 @section('js')
     <script>
-        var scope, app = angular.module('myApp', []);
+        var scope, app = angular.module('myApp', [], function($interpolateProvider) {
+            $interpolateProvider.startSymbol('<%');
+            $interpolateProvider.endSymbol('%>');
+        });
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
+            $scope.statusObj = {
+                name: ['New', 'Approved', 'Rejected'],
+                color: ['secondary', 'success', 'danger']
+            }
             $scope.suggestionId = false;
             $scope.technicianName = false;
             $scope.cateName = false;
