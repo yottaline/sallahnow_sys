@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->tinyInteger('method');
-            $table->decimal('amount', 9,2);
+            $table->decimal('amount', 9, 2);
             $table->tinyInteger('process');
-            $table->longText('reference')->unique();
+            $table->string('reference', 32)->unique();
             $table->integer('create_by');
             $table->foreignId('technician_id')->constrained('technicians')->cascadeOnDelete();
             $table->timestamps();
