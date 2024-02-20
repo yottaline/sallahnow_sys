@@ -99,6 +99,36 @@ Route::prefix('suggestions')->middleware('auth')->group(function () {
 
 });
 
+Route::prefix('packages')->middleware('auth')->group( function() {
+    Route::post('load', 'PackageController@load');
+    Route::match(['post', 'put'], 'submit', 'PackageController@submit');
+});
+
+Route::prefix('subscriptions')->middleware('auth')->group( function() {
+   Route::get('/', 'SubscriptionsController@index');
+   Route::post('load', 'SubscriptionsController@load');
+   Route::match(['post', 'put'], 'submit', 'SubscriptionsController@submit');
+   Route::post('subGetTechnician', 'SubscriptionsController@technicianName');
+   Route::post('subGetUser', 'SubscriptionsController@userName');
+   Route::put('change', 'SubscriptionsController@changeStatus');
+});
+
+Route::prefix('transactions')->middleware('auth')->group( function() {
+    Route::get('/' , 'TransactionController@index');
+    Route::post('load', 'TransactionController@load');
+    Route::match(['post', 'put'], 'submit', 'TransactionController@submit');
+    Route::post('subTranTechnician', 'TransactionController@technicianName');
+    Route::put('change', 'TransactionController@changeProcess');
+    Route::get('profile/{reference}', 'TransactionController@profile');
+});
+
+Route::prefix('points')->middleware('auth')->group( function() {
+    Route::get('/', 'PointTranactionController@index');
+    Route::post('load', 'PointTranactionController@load');
+    Route::match(['post', 'put'], 'submit', 'PointTranactionController@submit');
+    Route::post('subPointTechnician', 'PointTranactionController@technicianName');
+    Route::get('profile/{id}', 'TransactionController@profile');
+});
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');
     Route::post('store/location', 'SettingController@storeLocation')->name('location_store');

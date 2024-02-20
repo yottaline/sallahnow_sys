@@ -506,6 +506,157 @@
             </div>
             <!-- end add new compatibility_categories  Modal -->
         </div>
+
+        {{-- packages section  --}}
+        <div class="models mt-5">
+            <div class="row">
+                <div class="col-12 col-sm-4 col-lg-3">
+                    <div class="card card-box">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="roleFilter">brands Name</label>
+                                <select name="" id="" class="form-select">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="roleFilter">User Name</label>
+                                <select name="" id="" class="form-select">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-8 col-lg-9">
+                    <div class="card card-box">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                    <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                        role="status"></span><span>PACGAGES</span>
+                                </h5>
+                                <div>
+                                    <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                        data-ng-click="setPackage(false)"></button>
+                                    <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
+                                        data-ng-click="dataLoader(true)"></button>
+                                </div>
+
+                            </div>
+                            <div data-ng-if="packages.length" class="table-responsive">
+                                <table class="table table-hover" id="brand_table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Type</th>
+                                            <th>Period</th>
+                                            <th>Cost</th>
+                                            <th>Points</th>
+                                            <th>Ptiv</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="package in packages">
+                                            <td data-ng-bind="package.id"></td>
+                                            <td>
+                                                <span
+                                                    class="badge bg-dark rounded-pill font-monospace p-2"><%typeObject.name[package.type]%></span>
+                                            </td>
+                                            <td data-ng-bind="package.period"></td>
+                                            <td data-ng-bind="package.cost"></td>
+                                            <td data-ng-bind="package.points"></td>
+                                            <td></td>
+                                            <td>
+                                                <div class="col-fit">
+                                                    <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                        data-ng-click="setPackage($index)"></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div data-ng-if="!packages.length" class="text-center py-5 text-secondary">
+                                <i class="bi bi-people  display-4"></i>
+                                <h5>No records</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- start add new package  Modal -->
+            <div class="modal fade" id="PackageForm" tabindex="-1" role="dialog" aria-labelledby="PackageFormLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form method="POST" action="/packages/submit/" enctype="multipart/form-data">
+                                @csrf
+                                <input data-ng-if="updatePackage !== false" type="hidden" name="_method"
+                                    value="put">
+                                <input type="hidden" name="package_id"
+                                    data-ng-value="updatePackage !== false ? packages[updatePackage].id : 0">
+                                <div class="mb-3">
+                                    <label for="packageType">Type<b class="text-danger">&ast;</b></label>
+                                    <select name="type" class="form-control" id="packageType" required>
+                                        <option value=""> -- SELECT TYPE NAME --</option>
+                                        <option value="1">Free</option>
+                                        <option value="2">Silver</option>
+                                        <option value="3">Gold</option>
+                                        <option value="4">Diamond</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-3">
+                                            <label for="period">Period<b class="text-danger">&ast;</b></label>
+                                            <input type="text" class="form-control" name="period" required
+                                                id="period"
+                                                data-ng-value="updatePackage !== false ? packages[updatePackage].period : ''" />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-3">
+                                            <label for="cost">Cost</label>
+                                            <input type="text" class="form-control" name="cost" id="cost"
+                                                data-ng-value="updatePackage !== false ? packages[updatePackage].cost : ''">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-3">
+                                            <label for="point">Points<b class="text-danger">&ast;</b></label>
+                                            <input type="text" class="form-control" name="point" id="point"
+                                                data-ng-value="updatePackage !== false ? packages[updatePackage].points : ''">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-3">
+                                            <label for="priv">Priv<b class="text-danger">&ast;</b></label>
+                                            <input type="text" class="form-control" name="priv" id="priv"
+                                                data-ng-value="updatePackage !== false ? packages[updatePackage].prive : ''">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-outline-secondary me-auto"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end add new package  Modal -->
+        </div>
     </div>
 @endsection
 @section('js')
@@ -546,6 +697,13 @@
             $scope.updateCompCate = false;
             $scope.compatibility_categories = [];
             $scope.page = 1;
+
+            // packages
+            $scope.updatePackage = false;
+            $scope.packages = [];
+            $scope.typeObject = {
+                name: ['', 'Free', 'Silver', 'Gold', 'Diamond'],
+            }
 
             $scope.jsonParse = str => JSON.parse(str);
             $scope.locationModal = function(type, parent) {
@@ -676,12 +834,36 @@
                 $('#CompatibilityCategoriesForm').modal('show');
             };
 
+            $scope.loadPackageData = function(reload = false) {
+                $('.loading-spinner').show();
+                if (reload) {
+                    $scope.page = 1;
+                }
+                $.post("/packages/load/", {
+                    page: $scope.page,
+                    limit: 24,
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.packages = data;
+                        $scope.page++;
+                    });
+                }, 'json');
+            }
+
+            $scope.setPackage = (indx) => {
+                $scope.updatePackage = indx;
+                $('#PackageForm').modal('show');
+            };
+
             $scope.loadData(0, 'countries');
             $scope.loadBrandsData();
             $scope.getUserNameModel();
             $scope.lodaModelsData();
             $scope.getBrandName();
             $scope.lodaCompatibilityCategoriessData()
+            $scope.loadPackageData();
             scope = $scope;
 
             // create new location
@@ -858,6 +1040,50 @@
                 })
             })
 
+            // create and update packages Categories
+            $(function() {
+                $('#PackageForm form').on('submit', function(e) {
+                    e.preventDefault();
+                    var form = $(this),
+                        formData = new FormData(this),
+                        action = form.attr('action'),
+                        method = form.attr('method'),
+                        controls = form.find('button, input'),
+                        spinner = $('#locationModal .loading-spinner');
+                    spinner.show();
+                    controls.prop('disabled', true);
+                    $.ajax({
+                        url: action,
+                        type: method,
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                    }).done(function(data, textStatus, jqXHR) {
+                        var response = JSON.parse(data);
+                        console.log(data)
+                        if (response.status) {
+                            toastr.success('Data processed successfully');
+                            $('#PackageForm').modal('hide');
+                            scope.$apply(() => {
+                                if (scope.updatePackage === false) {
+                                    scope.packages.unshift(response.data);
+                                    $scope.loadPackageData();
+                                } else {
+                                    scope.packages[scope.updatePackage] = response
+                                        .data;
+                                    $scope.loadPackageData();
+                                }
+                            });
+                        } else toastr.error("Error");
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        // error msg
+                    }).always(function() {
+                        spinner.hide();
+                        controls.prop('disabled', false);
+                    });
+
+                })
+            })
         });
     </script>
 @endsection

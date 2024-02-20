@@ -65,7 +65,7 @@ class TechnicianController extends Controller
             $status = Technician::where('id', $id)->update($param);
         }
 
-         $record = Technician::where('id', $id)->get();
+         $record = Technician::where('id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
