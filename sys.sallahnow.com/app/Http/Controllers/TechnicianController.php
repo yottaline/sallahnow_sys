@@ -6,6 +6,7 @@ use App\Models\Technician;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Hash;
 
 // use function Pest\Laravel\json;
@@ -34,7 +35,7 @@ class TechnicianController extends Controller
         $request->validate([
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
-           ]);
+        ]);
 
         $param = [
             'name'              => $request->name,
@@ -60,12 +61,12 @@ class TechnicianController extends Controller
             $param['devise_token'] = '';
             $param['user_id'] = Auth::user()->id;
             $status = Technician::create($param);
-           $id = $status->id;
+            $id = $status->id;
         } else {
             $status = Technician::where('id', $id)->update($param);
         }
 
-         $record = Technician::where('id', $id)->get();
+        $record = Technician::where('id', $id)->get();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
@@ -81,9 +82,12 @@ class TechnicianController extends Controller
         return back();
     }
 
+    public function profile($code)
+    {
+        $technician = DB::table('technicians')
+            ->leftJoin('users', 'users.id', '=', 'technicians.user_id')
+            ->where('code', $code)->get()->first();
 
-    public function profile($code) {
-        $technician = Technician::where('code', $code)->first();
         return view('content.technicians.profile', compact('technician'));
     }
 
