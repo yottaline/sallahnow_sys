@@ -7,16 +7,20 @@ use App\Models\Compatibilities_suggestions;
 use App\Models\Compatibility;
 use App\Models\Compatibility_categorie;
 use App\Models\Models;
+use App\Models\Package;
+use App\Models\Subscriptions;
 use App\Models\Technician;
+use App\ResponseApi;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class TechnicianApiController extends Controller
 {
+    use ResponseApi;
     public function __construct()
     {
-        $this->middleware('auth:technician-api', ['except' => ['login', 'sign_in']]);
+        $this->middleware('auth:technician-api', ['except' => ['login', 'register']]);
     }
 
     public function register(Request $request)
@@ -116,7 +120,7 @@ class TechnicianApiController extends Controller
             'code'            => $code
         ]);
 
-        return response('updated successfully');
+        return $this->returnSuccess('updated successfully');
     }
 
     public function getCompatibilities() {
@@ -126,7 +130,7 @@ class TechnicianApiController extends Controller
             $compatibilities  = Compatibility::all();
         }
 
-        return response()->json($compatibilities);
+        return $this->returnData('compatibilities', $compatibilities);
     }
 
     public function addSuggestions(Request $request){
@@ -143,18 +147,75 @@ class TechnicianApiController extends Controller
 
     public function getCategory() {
         $categories  = Compatibility_categorie::all();
-        return response()->json($categories);
+        return $this->returnData('categories', $categories);
     }
 
     public function suggestions(){
         $suggestions = Compatibilities_suggestions::all();
-        return response()->json($suggestions);
+        return $this->returnData('suggestions', $suggestions);
     }
 
     public function getModels()
     {
         $models = Models::all();
-        return response()->json($models);
+        return $this->returnData('models', $models);
+    }
+
+    public function getPackages() {
+        $packages = Package::all();
+        return $this->returnData('packages', $packages);
+    }
+
+    public function getSubscriptions() {
+        $subscriptions = Subscriptions::all();
+        return $this->returnData('subscriptions', $subscriptions);
+    }
+
+    public function changeStatus($id) {
+        $subscription = Subscriptions::where('id', $id)->first();
+        if($subscription->status == 1){
+           $status = Subscriptions::where('id', $id)->update(['status' => 0]);
+        }
+        else{
+            $status = Subscriptions::where('id',  $id)->update(['status' => 1]);
+        }
+        if(!$status){
+            return $this->returnError('status not change');
+        }
+        return $this->returnSuccess('status change successfully');
+    }
+
+    public function subNewPackage(Request $request) {
+        $package = Package::where('id', $request->package_id)->first();
+        $pam = [
+            'package_id'     => $request->package_id,
+            'package_points' =>  $package->points,
+            'package_cost'   => $package->cost,
+            'package_period' => $package->period,
+            'package_priv'   => $package->priv,
+            'technician_id'  => $request->technician_name,
+            'start'          => $request->start,
+            'end'            => $request->end,
+            'register_by'    => auth()->user()->id
+        ];
+
+        $technician = Subscriptions::where('id', $request->technician_name)->first();
+
+        $id = $request->sub_id;
+        if(!$id) {
+            if($technician){
+                Subscriptions::where('id', $request->technician_name)->update(['status' => 0]);
+                $status  = Subscriptions::create($pam);
+                $id      = $status->id;
+            }else {
+                $status  = Subscriptions::create($pam);
+                $id      = $status->id;
+            }
+        }
+        else {
+            $status = Subscriptions::where('id', $id)->update($pam);
+        }
+        return response()->json('created',$status);
     }
 
     protected function respondWithToken($token)
