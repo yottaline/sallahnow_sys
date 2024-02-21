@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('trans_create_by');
             $table->foreignId('technician_id')->constrained('technicians')->cascadeOnDelete();
             $table->timestamps();
-            // $table->date('trans_created_at');
         });
     }
 
