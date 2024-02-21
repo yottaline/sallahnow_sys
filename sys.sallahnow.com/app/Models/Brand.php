@@ -13,7 +13,7 @@ class Brand extends Model
         'brand_name',
         'brand_logo',
         'brand_visible',
-        'brand_user_id'
+        'user_id'
     ];
 
     public function user() {

@@ -25,12 +25,12 @@ class CompatibilityCategorieController extends Controller
         $id = $request->cate_id;
         if(!$id){
             $status = Compatibility_categorie::create([
-                'name' => $request->name
+                'cate_name' => $request->name
             ]);
         $id = $status->id;
         }else{
             $status = Compatibility_categorie::where('id', $id)->update([
-                'name' => $request->name
+                'cate_name' => $request->name
             ]);
         }
         $record = Compatibility_categorie::where('id', $id)->first();

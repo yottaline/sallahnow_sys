@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('technicians', function (Blueprint $table) {
             $table->id();
             $table->integer('tech_center')->nullable();
+            $table->string('tech_code', 24)->unique();
             $table->string('tech_name', 100);
             $table->string('tech_email', 100)->nullable();
             $table->string('tech_email_verefied')->nullable();

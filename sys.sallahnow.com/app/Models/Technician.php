@@ -19,7 +19,7 @@ class Technician extends Authenticatable implements JWTSubject
         'tech_mobile',
         'tech_tel',
         'tech_password',
-        'identification',
+        'tech_identification',
         'tech_birth',
         'country_id',
         'state_id',
@@ -69,4 +69,9 @@ class Technician extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function getAuthPassword()
+{
+    return $this->tech_password;
+}
 }

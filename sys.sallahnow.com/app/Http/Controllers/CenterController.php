@@ -21,11 +21,14 @@ class CenterController extends Controller
 
     public function load() {
         $centers = Center::orderBy('created_at', 'desc')->limit(15)->get();
+
         $technician_name = DB::table('technicians')
         ->join('centers', 'technicians.id', '=', 'centers.owner')
-        ->select('centers.center_whatsapp','technicians.code')->orderBy('centers.created_at', 'desc')
+        ->select('centers.center_whatsapp','technicians.tech_code')->orderBy('centers.created_at', 'desc')
         ->get();
+
         $centers->technicians = $technician_name;
+
         echo json_encode($centers);
     }
 
@@ -76,7 +79,7 @@ class CenterController extends Controller
     }
 
     public function getTechnician($item) {
-        $technician_name = Technician::where('code', 'like', '%' . $item . '%')->get();
+        $technician_name = Technician::where('tech_code', 'like', '%' . $item . '%')->get();
         echo json_encode($technician_name);
     }
 
@@ -90,11 +93,11 @@ class CenterController extends Controller
         ]);
     }
 
-    // public function getTechnicianName() {
-    //     $technician_name = DB::table('technicians')
-    //     ->join('centers', 'technicians.id', '=', 'centers.owner')
-    //     ->select('centers.name','technicians.name')->orderBy('centers.created_at', 'desc')
-    //     ->get();
-    //     echo json_encode($technician_name);
-    // }
+    public function getTechnicianName() {
+        // $technician_name = DB::table('technicians')
+        // ->join('centers', 'technicians.id', '=', 'centers.owner')
+        // ->select('centers.name','technicians.tech_name')->orderBy('centers.created_at', 'desc')
+        // ->get();
+        // echo json_encode($technician_name);
+    }
 }

@@ -132,6 +132,7 @@ Route::prefix('points')->middleware('auth')->group( function() {
 });
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');
+    Route::get('load', 'SettingController@load');
     Route::post('store/location', 'SettingController@storeLocation')->name('location_store');
 });
 Route::middleware('auth')->group(function () {

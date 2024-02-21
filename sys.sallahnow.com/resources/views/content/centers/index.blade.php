@@ -448,7 +448,7 @@
                     success: function(res) {
                         $.each(res, function(key, value) {
                             $('#TechnicianName').append('<option id="class" value="' + value.id +
-                                '">' + value.name + '</option>');
+                                '">' + value.tech_name + '</option>');
                         });
                     }
                 });
