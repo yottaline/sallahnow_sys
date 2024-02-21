@@ -75,7 +75,7 @@ class TechnicianApiController extends Controller
         $credentials = request(['mobile', 'password']);
 
         if (!$token = auth('technician-api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized'], 104);
         }
 
         return $this->respondWithToken($token);

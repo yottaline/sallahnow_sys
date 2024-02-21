@@ -266,6 +266,7 @@
                                         } else toastr.error(response.message);
                                     }).fail(function(jqXHR, textStatus, errorThrown) {
                                         toastr.error("error");
+                                        $('#techModal').modal('hide');
                                     }).always(function() {
                                         $(form).find('button').prop('disabled', false);
                                     });

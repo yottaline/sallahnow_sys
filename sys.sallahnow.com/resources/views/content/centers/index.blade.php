@@ -130,7 +130,7 @@
                                     <div class="mb-3">
                                         <label for="Whatsapp">Whatsapp</label>
                                         <input class="form-control" name="whatsapp" type="text"
-                                            data-ng-bind="centers[centerUpdate].whatsapp" id="Whatsapp">
+                                            data-ng-bind="centers[centerUpdate].center_whatsapp" id="Whatsapp">
                                     </div>
                                 </div>
                                 {{-- email --}}
@@ -407,6 +407,7 @@
                         $('.loading-spinner').hide();
                         $scope.$apply(() => {
                             $scope.centers = data;
+                            console.log(data)
                             $scope.page++;
                         });
                     }, 'json');
@@ -420,19 +421,19 @@
                     $('#add_owner').modal('show');
                 }
 
-                $scope.getTechnicianName = function() {
-                    $.post("/centers/getTechnicianName/", {
-                        _token: '{{ csrf_token() }}'
-                    }, function(data) {
-                        $('.loading-spinner').hide();
-                        $scope.$apply(() => {
-                            $scope.technicianName = data;
-                        });
-                    }, 'json');
-                }
+                // $scope.getTechnicianName = function() {
+                //     $.post("/centers/getTechnicianName/", {
+                //         _token: '{{ csrf_token() }}'
+                //     }, function(data) {
+                //         $('.loading-spinner').hide();
+                //         $scope.$apply(() => {
+                //             $scope.technicianName = data;
+                //         });
+                //     }, 'json');
+                // }
 
                 $scope.dataLoader();
-                $scope.getTechnicianName();
+                // $scope.getTechnicianName();
                 scope = $scope;
             });
 

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_groups', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('user_group_name');
-            $table->text('user_group_privileges');
+            $table->id();
+            $table->string('user_group_name', 42);
+            $table->string('user_group_privileges',2048);
             $table->timestamps();
         });
     }

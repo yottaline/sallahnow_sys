@@ -37,26 +37,26 @@ class TechnicianController extends Controller
            ]);
 
         $param = [
-            'name'              => $request->name,
-            'email'             => $request->email,
-            'tel'               => $request->tel,
-            'mobile'            => $request->mobile,
-            'birth'             => $request->birth,
-            'country_id'        => $request->country_id,
-            'state_id'          => $request->state_id,
-            'city_id'           => $request->city_id,
-            'area_id'           => $request->area_id,
-            'address'           => $request->address,
+            'tech_name'              => $request->name,
+            'tech_email'             => $request->email,
+            'tech_tel'               => $request->tel,
+            'tech_mobile'            => $request->mobile,
+            'tech_birth'             => $request->birth,
+            'country_id'            => $request->country_id,
+            'state_id'              => $request->state_id,
+            'city_id'              => $request->city_id,
+            'area_id'              => $request->area_id,
+            'tech_address'           => $request->address,
             'identification'    => $request->identification,
-            'notes'             => $request->notes,
-            'login'             => now(), // TODO: login is nunable
+            'tech_notes'             => $request->notes,
+            'tech_login'             => now(), // TODO: login is nunable
         ];
 
         $id = intval($request->technician_id);
         // STATUS SHOULD BE BOOLEAN
         if (!$id) {
-            $param['code'] = strtoupper($this->uniqidReal());
-            $param['password'] = '';
+            $param['tech_code'] = strtoupper($this->uniqidReal());
+            $param['tech_password'] = '';
             $param['devise_token'] = '';
             $param['user_id'] = Auth::user()->id;
             $status = Technician::create($param);

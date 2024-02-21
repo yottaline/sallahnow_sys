@@ -40,8 +40,8 @@ class BrandController extends Controller
 
                 $logoPath = url('Image/Brands/', $logoName);
         $status = Brand::create([
-                    'name' => $request->name,
-                    'logo' => $logoPath,
+                    'brand_name' => $request->name,
+                    'brand_logo' => $logoPath,
                     'user_id' => auth()->user()->id
                 ]);
             };
@@ -57,8 +57,8 @@ class BrandController extends Controller
 
                 $logoPath = url('Image/Brands/', $logoName);
         $status = Brand::where('id', $id)->update([
-                    'name' => $request->name,
-                    'logo' => $logoPath,
+                    'brand_name' => $request->name,
+                    'brand_logo' => $logoPath,
                     'user_id' => auth()->user()->id
                 ]);
         }
@@ -72,7 +72,7 @@ class BrandController extends Controller
     public function getUsersName(){
         $userName = DB::table('users')
         ->join('brands', 'users.id', '=', 'brands.user_id')
-        ->select('brands.name','users.name')
+        ->select('brands.brand_name','users.user_name')
         ->get();
         echo json_encode($userName);
     }

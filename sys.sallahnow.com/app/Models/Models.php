@@ -12,10 +12,10 @@ class Models extends Model
     public $title = 'models';
 
     protected $fillable = [
-        'name',
-        'photo',
-        'url',
-        'visible',
+        'model_name',
+        'model_photo',
+        'model_url',
+        'model_visible',
         'brand_id',
         'user_id',
     ];

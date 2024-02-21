@@ -10,16 +10,16 @@ class Subscriptions extends Model
     use HasFactory;
 
     protected $fillable = [
-        'start',
-        'end',
-        'status',
+        'sub_start',
+        'sub_end',
+        'sub_status',
         'technician_id',
         'package_id',
-        'package_points',
-        'package_cost',
-        'package_period',
+        'sub_package_points',
+        'sub_package_cost',
+        'sub_package_period',
         'package_priv',
-        'register_by'
+        'sub_register_by'
     ];
 
     public function technicians() {

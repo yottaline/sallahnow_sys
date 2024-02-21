@@ -15,59 +15,63 @@ class PermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        User_group::create([
-            'user_group_name' => 'Admin',
-            'user_group_privileges'  => '["add-users","view-users","update-users"]'
-        ]);
+        $user = new User_group();
+        $user->user_group_name = 'Admin';
+        $user->user_group_privileges = '[add-users,view-users,update-users]';
+        $user->save();
+        // User_group::create([
+        //     'user_group_name' => 'Admin',
+        //     'user_group_privileges'  => '[add-users,view-users,update-users]',
+        // ]);
 
         Package::create([
-            'type'     => 1,
-            'period'   => 0,
-            'cost'     => 0,
-            'points'   => 0,
-            'priv'     => ''
+            'pkg_type'     => 1,
+            'pkg_period'   => 0,
+            'pkg_cost'     => 0,
+            'pkg_points'   => 0,
+            'pkg_priv'     => ''
         ]);
         Package::create([
-            'type'     => 2,
-            'period'   => 1,
-            'cost'     => 10,
-            'points'   => 100,
-            'priv'     => ''
+            'pkg_type'     => 2,
+            'pkg_period'   => 1,
+            'pkg_cost'     => 10,
+            'pkg_points'   => 100,
+            'pkg_priv'     => ''
         ]);
         Package::create([
-            'type'     => 2,
-            'period'   => 6,
-            'cost'     => 55,
-            'points'   => 110,
-            'priv'     => ''
+            'pkg_type'     => 2,
+            'pkg_period'   => 6,
+            'pkg_cost'     => 55,
+            'pkg_points'   => 110,
+            'pkg_priv'     => ''
         ]);
         Package::create([
-            'type'     => 2,
-            'period'   => 12,
-            'cost'     => 100,
-            'points'   => 115,
-            'priv'     => ''
+            'pkg_type'     => 2,
+            'pkg_period'   => 12,
+            'pkg_cost'     => 100,
+            'pkg_points'   => 115,
+            'pkg_priv'     => ''
         ]);
         Package::create([
-            'type'     => 3,
-            'period'   => 6,
-            'cost'     => 70,
-            'points'   => 210,
-            'priv'     => ''
+            'pkg_type'     => 3,
+            'pkg_period'   => 6,
+            'pkg_cost'     => 70,
+            'pkg_points'   => 210,
+            'pkg_priv'     => ''
         ]);
         Package::create([
-            'type'     => 3,
-            'period'   => 12,
-            'cost'     => 120,
-            'points'   => 215,
-            'priv'     => ''
+            'pkg_type'     => 3,
+            'pkg_period'   => 12,
+            'pkg_cost'     => 120,
+            'pkg_points'   => 215,
+            'pkg_priv'     => ''
         ]);
         Package::create([
-            'type'     => 4,
-            'period'   => 12,
-            'cost'     => 150,
-            'points'   => 1000,
-            'priv'     => ''
+            'pkg_type'     => 4,
+            'pkg_period'   => 12,
+            'pkg_cost'     => 150,
+            'pkg_points'   => 1000,
+            'pkg_priv'     => ''
         ]);
 
     }

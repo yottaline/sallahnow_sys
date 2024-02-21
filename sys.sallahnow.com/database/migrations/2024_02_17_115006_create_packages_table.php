@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('packages', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->tinyInteger('type');
-            $table->integer('period');
-            $table->decimal('cost',9,2);
-            $table->integer('points');
-            $table->longText('priv');
+            $table->id();
+            $table->tinyInteger('pkg_type');
+            $table->integer('pkg_period');
+            $table->decimal('pkg_cost',9,2);
+            $table->integer('pkg_points');
+            $table->string('pkg_priv');
             $table->timestamps();
         });
     }

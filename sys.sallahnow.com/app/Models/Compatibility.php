@@ -10,7 +10,7 @@ class Compatibility extends Model
     use HasFactory;
 
     protected $fillable = [
-        'part',
+        'compatibility_part',
         'compatibility_categorie_id'
     ];
 

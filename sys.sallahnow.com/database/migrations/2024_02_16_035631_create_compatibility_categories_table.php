@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibility_categories', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
+            $table->id();
+            $table->string('cate_name');
             $table->boolean('visible')->default('1');
             $table->timestamps();
         });

@@ -107,6 +107,7 @@ Route::prefix('packages')->middleware('auth')->group( function() {
 Route::prefix('subscriptions')->middleware('auth')->group( function() {
    Route::get('/', 'SubscriptionsController@index');
    Route::post('load', 'SubscriptionsController@load');
+   Route::get('search/{item}', 'SubscriptionsController@search');
    Route::match(['post', 'put'], 'submit', 'SubscriptionsController@submit');
    Route::post('subGetTechnician', 'SubscriptionsController@technicianName');
    Route::post('subGetUser', 'SubscriptionsController@userName');

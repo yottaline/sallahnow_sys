@@ -34,31 +34,28 @@ class UserController extends Controller
         $request->validate([
             'name'     => 'required|string',
             'mobile'   => 'required|numeric',
-            'password' => 'required'
+            'password' => 'required',
+            'email'    => 'email|unique:users,email'
         ]);
-        $id = intval($request->user_id);
-        if(!$id) {
-        $status = User::create([
+
+        $parma = [
             'name'      => $request->name,
             'email'     => $request->email,
             'user_group_id'     => $request->role_id,
             'mobile'    => $request->mobile,
             'password'  => $request->password
-        ]);
+        ];
 
+        $id = intval($request->user_id);
+        if(!$id) {
+        $status = User::create($parma);
         $record = User::where('id', $status->id)->get();
         }else{
-        $status = User::where('id', $id)->update([
-                'name'      => $request->name,
-                'email'     => $request->email,
-                'user_group_id'     => $request->role_id,
-                'mobile'    => $request->mobile,
-                'password'  => $request->password
-            ]);
+        $status = User::where('id', $id)->update($parma);
         }
         echo json_encode([
             'status' => boolval($status),
-            // 'data' => $record,
+            'data' => $record,
         ]);
     }
 
@@ -69,7 +66,7 @@ class UserController extends Controller
     public function updateActive(Request $request)
     {
         $id = $request->user_id;
-        User::where('id', $id)->update(['active' => $request->active]);
+        User::where('id', $id)->update(['user_active' => $request->active]);
         session()->flash('Add', 'Active User has been updated successfully');
         return back();
     }
