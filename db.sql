@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `compats_categories` (
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `compatible_models` (
-  `compatible_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `compatible_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `compatible_src` INT UNSIGNED NOT NULL COMMENT 'compats.compat_id',
   `compatible_model` INT UNSIGNED NOT NULL COMMENT 'models.model_id',
   PRIMARY KEY (`compatible_id`),
@@ -228,11 +228,11 @@ CREATE TABLE IF NOT EXISTS `compatible_models` (
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `compats_sugg` (
-  `sugg_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sugg_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `sugg_category` INT UNSIGNED NOT NULL COMMENT 'compats_categories.category_id',
-  `sugg_model` INT UNSIGNED NOT NULL COMMENT 'models.model_id',
   `sugg_tech` INT UNSIGNED NOT NULL COMMENT 'technicians.tech_id',
   `sugg_status` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '0:new, 1:accepted, 2:rejected',
+  `sugg_points` INT UNSIGNED DEFAULT NULL,
   `sugg_act_note` VARCHAR(1024) DEFAULT NULL,
   `sugg_act_by` INT UNSIGNED DEFAULT NULL,
   `sugg_act_time` DATETIME DEFAULT NULL,
@@ -241,6 +241,17 @@ CREATE TABLE IF NOT EXISTS `compats_sugg` (
   KEY `sugg_model` (`sugg_model`),
   KEY `sugg_tech` (`sugg_tech`),
   KEY `sugg_act_by` (`sugg_act_by`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `compats_sugg_models` (
+  `csugg_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sugg_src` INT UNSIGNED NOT NULL COMMENT 'compats_sugg.sugg_id',
+  `sugg_model` INT UNSIGNED NOT NULL COMMENT 'models.model_id',
+  PRIMARY KEY (`csugg_id`),
+  KEY `sugg_src` (`sugg_src`),
+  KEY `sugg_model` (`sugg_model`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -522,7 +533,7 @@ CREATE TABLE IF NOT EXISTS `req_repairs_reviews` (
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `support_attachments` (
-  `attach_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `attach_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `attach_file` VARCHAR(24) NOT NULL,
   `attach_ticket` INT UNSIGNED DEFAULT NULL,
   `attach_reply` INT UNSIGNED DEFAULT NULL,
@@ -546,7 +557,7 @@ CREATE TABLE IF NOT EXISTS `support_categories` (
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `support_replies` (
-  `reply_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `reply_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `reply_ticket` INT UNSIGNED NOT NULL,
   `reply_context` VARCHAR(1024) NOT NULL,
   `reply_type` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '0:admin, 1:tech',
