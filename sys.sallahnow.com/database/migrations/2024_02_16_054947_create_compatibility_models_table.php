@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibility_models', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->foreignId('compatibility_id')->constrained('compatibilities')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('models_id')->constrained('models')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();

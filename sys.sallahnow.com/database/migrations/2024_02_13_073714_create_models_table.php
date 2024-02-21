@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('models', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('photo');
-            $table->string('url');
-            $table->boolean('visible')->default(1);
+            $table->id();
+            $table->string('model_name', 24);
+            $table->string('model_photo', 120);
+            $table->string('model_url', 120);
+            $table->boolean('model_visible')->default(1);
             $table->foreignId('brand_id')->constrained('brands')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();

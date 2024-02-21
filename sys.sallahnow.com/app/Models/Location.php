@@ -10,10 +10,10 @@ class Location extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'type',
-        'parent',
-        'visible'
+        'location_name',
+        'location_type',
+        'location_parent',
+        'location_visible'
     ];
 
     public function centers() {

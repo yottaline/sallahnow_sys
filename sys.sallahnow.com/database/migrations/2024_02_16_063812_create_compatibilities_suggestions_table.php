@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('compatibilities_suggestions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->tinyInteger('status')->default('0');
-            $table->longText('act_not');
+            $table->string('act_not');
             $table->date('act_time');
             $table->foreignId('category_id')->constrained('compatibility_categories')->cascadeOnDelete();
             $table->foreignId('technician_id')->constrained('technicians')->cascadeOnDelete();

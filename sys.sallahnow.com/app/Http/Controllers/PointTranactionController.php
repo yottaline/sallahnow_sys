@@ -26,11 +26,11 @@ class PointTranactionController extends Controller
 
         $id = $request->point_id;
         $param = [
-            'count'    => $request->Count,
-            'src'    => $request->point_source,
-            'target'   => 1,
-            'process' => $request->process,
-            'technician_id' => $request->technician_name,
+            'points_count'    => $request->Count,
+            'points_src'    => $request->point_source,
+            'points_target'   => 1,
+            'points_process' => $request->process,
+            'points_technician_id' => $request->technician_name,
         ];
 
         if(!$id) {

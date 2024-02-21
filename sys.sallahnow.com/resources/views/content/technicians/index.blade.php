@@ -55,31 +55,31 @@
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="technician in technicians track by $index">
-                                        <td data-ng-bind="technician.code"
+                                        <td data-ng-bind="technician.tech_code"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
-                                            <span data-ng-bind="technician.name" class="fw-bold"></span><br>
-                                            <small data-ng-if="+technician.mobile"
+                                            <span data-ng-bind="technician.tech_name" class="fw-bold"></span><br>
+                                            <small data-ng-if="+technician.tech_mobile"
                                                 class="me-1 db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-phone me-1"></i>
-                                                <span data-ng-bind="technician.mobile" class="fw-normal"></span>
+                                                <span data-ng-bind="technician.tech_mobile" class="fw-normal"></span>
                                             </small>
-                                            <small data-ng-if="+technician.tel"
+                                            <small data-ng-if="+technician.tech_tel"
                                                 class="me-1 db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-telephone me-1"></i>
-                                                <span data-ng-bind="technician.tel" class="fw-normal"></span>
+                                                <span data-ng-bind="technician.tech_tel" class="fw-normal"></span>
                                             </small>
-                                            <small data-ng-if="+technician.email"
+                                            <small data-ng-if="+technician.tech_email"
                                                 class="db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-envelope-at me-1"></i>
-                                                <span data-ng-bind="technician.email" class="fw-normal"></span>
+                                                <span data-ng-bind="technician.tech_email" class="fw-normal"></span>
                                             </small>
                                         </td>
                                         <td class="text-center">-</td>
                                         <td class="text-center">-</td>
                                         <td class="col-fit">
                                             <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
-                                                href="/technicians/profile/<% technician.code %>" target="_blank"></a>
+                                                href="/technicians/profile/<% technician.tech_code %>" target="_blank"></a>
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                 data-ng-click="setUser($index)"></button>
                                         </td>
@@ -111,7 +111,8 @@
                                     <div class="mb-3">
                                         <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name" maxlength="120"
-                                            data-ng-value="technicians[updateTechnician].name" required id="fullName">
+                                            data-ng-value="technicians[updateTechnician].tech_name" required
+                                            id="fullName">
                                     </div>
                                 </div>
                                 {{-- identification --}}
@@ -119,7 +120,7 @@
                                     <div class="mb-3">
                                         <label for="identificationT">Identification</label>
                                         <input class="form-control" name="identification" type="text"
-                                            data-ng-bind="technicians[updateTechnician].identification"
+                                            data-ng-bind="technicians[updateTechnician].tech_identification"
                                             id="IdentificationT">
                                     </div>
                                 </div>
@@ -129,7 +130,7 @@
                                     <div class="mb-3">
                                         <label for="mobile">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="mobile" maxlength="24"
-                                            data-ng-value="technicians[updateTechnician].mobile" required
+                                            data-ng-value="technicians[updateTechnician].tech_mobile" required
                                             id="mobile" />
                                     </div>
                                 </div>
@@ -139,7 +140,7 @@
                                         <label for="exampleInputEmail1">Email</label>
                                         <input type="email" class="form-control" name="email"
                                             id="exampleInputEmail1"
-                                            data-ng-value="updateTechnician !== false ? technicians[updateTechnician].email : ''">
+                                            data-ng-value="updateTechnician !== false ? technicians[updateTechnician].tech_email : ''">
                                     </div>
                                 </div>
 
@@ -148,7 +149,7 @@
                                     <div class="mb-3">
                                         <label for="phoneT">Phone</label>
                                         <input type="text" class="form-control" name="tel" maxlength="24"
-                                            data-ng-value="technicians[updateTechnician].tel" id="phoneT" />
+                                            data-ng-value="technicians[updateTechnician].tech_tel" id="phoneT" />
                                     </div>
                                 </div>
                                 {{-- birthday --}}
@@ -157,7 +158,7 @@
                                         <label for="BirthdayT">Birthday<b class="text-danger">&ast;</b></label>
                                         <input id="inputBirthdate" type="text" class="form-control text-center"
                                             name="birth" maxlength="10"
-                                            data-ng-value="technicians[updateTechnician].mobile" id="BirthdayT">
+                                            data-ng-value="technicians[updateTechnician].tech_birth" id="BirthdayT">
                                     </div>
                                 </div>
 
@@ -212,7 +213,7 @@
                                     <div class="mb-3">
                                         <label for="addressTechnician">Address</label>
                                         <input type="text" class="form-control" name="address" id="addressTechnician"
-                                            data-ng-value="updateTechnician !== false ? technicians[updateTechnician].address : ''" />
+                                            data-ng-value="updateTechnician !== false ? technicians[updateTechnician].tech_address : ''" />
                                     </div>
                                 </div>
 
@@ -266,6 +267,7 @@
                                         } else toastr.error(response.message);
                                     }).fail(function(jqXHR, textStatus, errorThrown) {
                                         toastr.error("error");
+                                        $('#techModal').modal('hide');
                                     }).always(function() {
                                         $(form).find('button').prop('disabled', false);
                                     });

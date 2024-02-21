@@ -29,7 +29,7 @@ class CompatibilityController extends Controller
         $id = $request->comp_id;
         if(!$id) {
           $status = Compatibility::create([
-                'part'  => $part,
+                'compatibility_part'  => $part,
                 'compatibility_categorie_id' => $request->cate_id,
             ]);
 
@@ -37,7 +37,7 @@ class CompatibilityController extends Controller
             $id = $status->id;
         }else {
             $status = Compatibility::where('id', $id)->update([
-                'part'  => $part,
+                'compatibility_part'  => $part,
                 'compatibility_categorie_id' => $request->cate_id,
             ]);
         };

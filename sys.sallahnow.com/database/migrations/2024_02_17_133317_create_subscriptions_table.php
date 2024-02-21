@@ -13,16 +13,17 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->date('start');
-            $table->date('end');
-            $table->boolean('status')->default('1');
+            $table->date('sub_start');
+            $table->date('sub_end');
+            $table->boolean('sub_status')->default('1');
             $table->foreignId('technician_id')->constrained('technicians');
             $table->foreignId('package_id')->constrained('packages');
-            $table->integer('package_points');
-            $table->decimal('package_cost', 9, 2);
-            $table->integer('package_period');
-            $table->longText('package_priv');
-            $table->integer('register_by')->nullable();
+            $table->integer('sub_package_points');
+            $table->decimal('sub_package_cost', 9, 2);
+            $table->integer('sub_package_period');
+            $table->string('package_priv')->nullable();
+            $table->integer('sub_register_by')->nullable();
+            // $table->date('sub_created_at');
             $table->timestamps();
         });
     }

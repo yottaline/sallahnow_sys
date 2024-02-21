@@ -12,26 +12,26 @@ class Technician extends Authenticatable implements JWTSubject
     use HasFactory;
 
     protected $fillable = [
-        'center',
-        'name',
-        'code',
-        'email',
-        'mobile',
-        'tel',
-        'password',
-        'identification',
-        'birth',
+        'tech_center',
+        'tech_name',
+        'tech_code',
+        'tech_email',
+        'tech_mobile',
+        'tech_tel',
+        'tech_password',
+        'tech_identification',
+        'tech_birth',
         'country_id',
         'state_id',
         'city_id',
         'area_id',
-        'address',
-        'bio',
-        'notes',
+        'tech_address',
+        'tech_bio',
+        'tech_notes',
         'devise_token',
-        'blocked',
-        'login',
-        'credit',
+        'tech_blocked',
+        'tech_login',
+        'tech_credit',
         'user_id'
     ];
 
@@ -69,4 +69,9 @@ class Technician extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function getAuthPassword()
+{
+    return $this->tech_password;
+}
 }

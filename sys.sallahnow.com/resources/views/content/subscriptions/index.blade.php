@@ -4,7 +4,8 @@
 @endsection
 @section('search')
     <form id="searchForm" role="search">
-        <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" placeholder="Search...">
+        <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" id="searchInput"
+            placeholder="Search...">
     </form>
 @endsection
 @section('content')
@@ -53,8 +54,7 @@
                             </div>
 
                         </div>
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
+                        <h5 class="text-dark" id="data"> </h5>
                         <div data-ng-if="subscriptions.length" class="table-responsive">
                             <table class="table table-hover" id="subscriptions_table">
                                 <thead>
@@ -72,14 +72,14 @@
                                 <tbody>
                                     <tr data-ng-repeat="sub in subscriptions track by $index">
                                         <td data-ng-bind="sub.id"></td>
-                                        <td data-ng-bind="technicianName[$index].name"></td>
-                                        <td data-ng-bind="sub.package_cost"></td>
+                                        <td data-ng-bind="sub.technician_id"></td>
+                                        <td data-ng-bind="sub.sub_package_cost"></td>
                                         <td data-ng-bind="userName[$index].name"></td>
-                                        <td data-ng-bind="sub.start"></td>
-                                        <td data-ng-bind="sub.end"></td>
+                                        <td data-ng-bind="sub.sub_start"></td>
+                                        <td data-ng-bind="sub.sub_end"></td>
                                         <td>
                                             <span
-                                                class="badge bg-<%statusObj.color[sub.status]%> rounded-pill font-monospace"><%statusObj.name[sub.status]%></span>
+                                                class="badge bg-<%statusObj.color[sub.sub_status]%> rounded-pill font-monospace"><%statusObj.name[sub.sub_status]%></span>
 
                                         </td>
 
@@ -148,7 +148,7 @@
                                         <label>Subscription Start<b class="text-danger">&ast;</b></label>
                                         <input id="subStart" type="text" class="form-control text-center"
                                             name="start" maxlength="10"
-                                            data-ng-value="subscriptions[updateSubscription].start" />
+                                            data-ng-value="subscriptions[updateSubscription].sub_start" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -156,7 +156,7 @@
                                         <label>Subscription End<b class="text-danger">&ast;</b></label>
                                         <input id="subEnd" type="text" class="form-control text-center"
                                             name="end" maxlength="10"
-                                            data-ng-value="subscriptions[updateSubscription].end">
+                                            data-ng-value="subscriptions[updateSubscription].sub_end">
                                     </div>
                                 </div>
                             </div>
@@ -234,27 +234,28 @@
                     $('.loading-spinner').hide();
                     $scope.$apply(() => {
                         $scope.subscriptions = data;
+                        console.log(data)
                         $scope.page++;
                     });
                 }, 'json');
 
-                $.post("/technicians/load/", {
+                $.post("/subscriptions/subGetTechnician/", {
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
                     $scope.$apply(() => {
-                        $scope.technicians = data;
+                        $scope.technicianName = data;
                     });
                 }, 'json');
 
-                $.post("/packages/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.packages = data;
-                    });
-                }, 'json');
+                // $.post("/packages/load/", {
+                //     _token: '{{ csrf_token() }}'
+                // }, function(data) {
+                //     $('.loading-spinner').hide();
+                //     $scope.$apply(() => {
+                //         $scope.packages = data;
+                //     });
+                // }, 'json');
             }
 
             $scope.setSubscriotion = (indx) => {
@@ -267,16 +268,7 @@
                 $('#changeStatus').modal('show');
             };
 
-            $scope.getTechnicianName = function() {
-                $.post("/subscriptions/subGetTechnician/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.technicianName = data;
-                    });
-                }, 'json');
-            }
+
 
             $scope.getUserName = function() {
                 $.post("/subscriptions/subGetUser/", {
@@ -290,8 +282,8 @@
             }
 
             $scope.dataLoader();
-            $scope.getTechnicianName();
-            $scope.getUserName();
+            // $scope.getTechnicianName();
+            // $scope.getUserName();
             scope = $scope;
         });
 
@@ -411,6 +403,24 @@
                 });
 
             })
+        });
+
+        $('#searchInput').on('change', function() {
+            var idState = this.value;
+            console.log(idState);
+            $('#data').html('');
+            $.ajax({
+                url: 'search/' + idState,
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    $.each(res, function(key, value) {
+                        $('#data').append('<sapn class="text-primary"> Search result : ' + value
+                            .name +
+                            '</sapn>');
+                    });
+                }
+            });
         });
     </script>
 @endsection

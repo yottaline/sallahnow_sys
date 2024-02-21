@@ -26,10 +26,10 @@ class TransactionController extends Controller
 
         $id = $request->tran_id;
         $param = [
-            'method'    => $request->method,
-            'amount'    => $request->amount,
-            'process'   => $request->process,
-            'create_by' => auth()->user()->id,
+            'trans_method'    => $request->method,
+            'trans_amount'    => $request->amount,
+            'trans_process'   => $request->process,
+            'trans_create_by' => auth()->user()->id,
             'technician_id' => $request->technician_name,
         ];
 

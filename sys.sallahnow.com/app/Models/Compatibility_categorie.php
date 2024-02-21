@@ -9,7 +9,7 @@ class Compatibility_categorie extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
+        'cate_name',
         'visible'
     ];
 

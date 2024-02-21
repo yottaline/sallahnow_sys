@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('point_tranactions', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('count');
-            $table->tinyInteger('src');
-            $table->integer('target')->nullable();
-            $table->tinyInteger('process');
+            $table->id();
+            $table->integer('points_count');
+            $table->tinyInteger('points_src');
+            $table->integer('points_target');
+            $table->tinyInteger('points_process');
             $table->foreignId('technician_id')->constrained('technicians')->cascadeOnDelete();
             $table->timestamps();
+            // $table->date('points_register');
         });
     }
 

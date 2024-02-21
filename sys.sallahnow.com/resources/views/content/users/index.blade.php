@@ -9,23 +9,16 @@
 @endsection
 @section('content')
     <div class="container-fluid" data-ng-app="myApp" data-ng-controller="myCtrl">
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
         <div class="row">
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="roleFilter">Role</label>
-                            <select name="" id="" class="form-select">
-                                <option value=""></option>
+                            <select class="js-example-basic-single form-select" name="state">
+                                <option value="AL">Alabama</option>
+                                ...
+                                <option value="WY">Wyoming</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -245,18 +238,6 @@
                     });
                 }, 'json');
 
-                // $.post("/users/search/", {
-                //     limit: 24,
-                //     _token: '{{ csrf_token() }}'
-                // }, function(data) {
-                //     $('.loading-spinner').hide();
-                //     console.log(data)
-                //     // $scope.$apply(() => {
-                //     //     $scope.users = data;
-                //     //     $scope.page++;
-                //     // });
-                // }, 'json');
-
                 $.post("/roles/load/", {
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
@@ -283,7 +264,7 @@
         });
 
         $(function() {
-            $('#userFomr form').on('submit', function(e) {
+            $('#useForm form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this),
                     formData = new FormData(this),
@@ -301,10 +282,9 @@
                     contentType: false,
                 }).done(function(data, textStatus, jqXHR) {
                     var response = JSON.parse(data);
-                    console.log(data)
                     if (response.status) {
                         toastr.success('Data processed successfully');
-                        $('#modelForm').modal('hide');
+                        $('#useForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.updateUser === false) {
                                 scope.users.unshift(response.data);
@@ -316,7 +296,8 @@
                         });
                     } else toastr.error("Error");
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    // error msg
+                    toastr.error(jqXHR.responseJSON.message);
+                    $('#useForm').modal('hide');
                 }).always(function() {
                     spinner.hide();
                     controls.prop('disabled', false);
@@ -330,6 +311,9 @@
                 scope.$apply(() => scope.q = $(this).find('input').val());
                 scope.dataLoader(true);
             });
+        });
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2();
         });
     </script>
 @endsection

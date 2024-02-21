@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibilities', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->text('part');
+            $table->id();
+            $table->string('compatibility_part',120);
             $table->foreignId('compatibility_categorie_id')->constrained('compatibility_categories')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

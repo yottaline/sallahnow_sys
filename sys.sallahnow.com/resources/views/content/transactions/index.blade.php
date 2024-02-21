@@ -72,16 +72,16 @@
                                     <tr data-ng-repeat="tran in transactions track by $index">
                                         <td data-ng-bind="tran.reference"></td>
                                         <td data-ng-bind="technicianName[$index].name"></td>
-                                        <td data-ng-bind="tran.amount"></td>
+                                        <td data-ng-bind="tran.trans_amount"></td>
                                         <td data-ng-bind="tran.created_at"></td>
                                         <td>
                                             <span
-                                                class="badge bg-<%procesObj.color[tran.process]%> rounded-pill font-monospace"><%procesObj.name[tran.process]%></span>
+                                                class="badge bg-<%procesObj.color[tran.ptrans_rocess]%> rounded-pill font-monospace"><%procesObj.name[tran.ptrans_rocess]%></span>
 
                                         </td>
                                         <td>
                                             <span
-                                                class="badge bg-dark rounded-pill font-monospace"><%methodObj.name[tran.process]%></span>
+                                                class="badge bg-dark rounded-pill font-monospace"><%methodObj.name[tran.ptrans_rocess]%></span>
 
                                         </td>
 
@@ -125,11 +125,11 @@
                                         <label for="method">Method</label>
                                         <select name="method" class="form-control" id="method">
                                             <option value="">-- SELECT METHOD NAME</option>
-                                            <option value="1">Gateway</option>
+                                            {{-- <option value="1">Gateway</option> --}}
                                             <option value="2">Cash</option>
                                             <option value="3">Wallet</option>
-                                            <option value="4">Cobon</option>
-                                            <option value="5">Transfer</option>
+                                            {{-- <option value="4">Cobon</option> --}}
+                                            {{-- <option value="5">Transfer</option> --}}
                                         </select>
                                     </div>
                                 </div>

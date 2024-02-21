@@ -24,7 +24,7 @@ class User extends Authenticatable
         'password',
         'mobile',
         'active',
-        'user_group_id',
+        'user_group_id'
     ];
 
     /**

@@ -22,11 +22,11 @@ class PackageController extends Controller
         $id = $request->package_id;
 
         $pam = [
-            'type'     => $request->type,
-            'period'   => $request->period,
-            'cost'     => $request->cost,
-            'points'    => $request->point,
-            'priv'     => ''
+            'pkg_type'     => $request->type,
+            'pkg_period'   => $request->period,
+            'pkg_cost'     => $request->cost,
+            'pkg_points'    => $request->point,
+            'pkg_priv'     => ''
         ];
 
         if(!$id) {

@@ -10,10 +10,12 @@ class Package extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type',
-        'period',
-        'cost',
-        'points',
-        'priv'
+        'pkg_type',
+        'pkg_period',
+        'pkg_cost',
+        'pkg_points',
+        'pkg_priv'
     ];
+
+    public $timestamps = false;
 }

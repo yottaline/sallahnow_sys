@@ -10,11 +10,12 @@ class PointTranaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'count',
-        'src',
-        'target',
-        'process',
-        'technician_id'
+        'points_count',
+        'points_src',
+        'points_target',
+        'points_process',
+        'points_technician_id',
+        'points_register'
     ];
 
     protected $casts = [

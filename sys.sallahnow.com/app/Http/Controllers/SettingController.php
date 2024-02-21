@@ -14,24 +14,27 @@ class SettingController extends Controller
     }
 
     public function index() {
-        $locations = Location::all();
+        return view('content.settings.index');
+    }
 
-        return view('content.settings.index', compact('locations'));
+    public function load() {
+        $location = Location::orderBy('created_at', 'desc')->get();
+        echo json_encode($location);
     }
 
     public function storeLocation(Request $request) {
-        return $request;
         $location_names = ['en' => $request->location_name_en, 'ar' => $request->location_name_ar];
         $json_encode_location = json_encode($location_names);
-
-        Location::create([
-            'name'     => $json_encode_location,
-            'type'     => $request->location_type,
-            'parent'   => $request->location_parent,
+       $status = Location::create([
+            'location_name'     => $json_encode_location,
+            'location_type'     => $request->location_type,
+            'location_parent'   => $request->location_parent,
         ]);
 
-        session()->flash('Add', 'Location data has been added successfully');
-        return back();
+        echo json_encode([
+            'status' => boolval($status),
+            // 'data' => $record,
+        ]);
     }
 
 }

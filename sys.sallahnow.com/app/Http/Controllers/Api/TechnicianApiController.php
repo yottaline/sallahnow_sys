@@ -27,9 +27,9 @@ class TechnicianApiController extends Controller
     {
 
         $request->validate([
-            'name'         => 'required',
-            'mobile'       => 'required|numeric',
-            'password'     => 'required',
+            'tech_name'         => 'required',
+            'tech_mobile'       => 'required|numeric',
+            'tech_password'     => 'required',
             'country_id'   => 'required',
             'state_id'     => 'required',
             'city_id'      => 'required',
@@ -37,29 +37,28 @@ class TechnicianApiController extends Controller
         ]);
 
 
-        $code = Str::random(4);
+        $code = strtoupper($this->uniqidReal());
         Technician::create([
-            'name'            => $request->name,
-            'email'           => $request->email,
-            'mobile'          => $request->mobile,
-            'tel'             => $request->tel,
-            'password'        => Hash::make($request->password),
-            'identification'  => $request->identification,
-            'birth'           => $request->birth,
-            'country_id'      => $request->country_id,
-            'state_id'        => $request->state_id,
-            'city_id'         => $request->city_id,
-            'area_id'         => $request->area_id,
-            'address'         => $request->address,
-            'bio'             => $request->bio,
-            'login'           => $request->login,
-            'devise_token'    => '03df25c845d460bcd',
-            'user_id'         => 1,
-            'code'            => $code
+            'tech_name'            => $request->tech_name,
+            'tech_email'           => $request->tech_email,
+            'tech_mobile'          => $request->tech_mobile,
+            'tech_tel'             => $request->tel,
+            'tech_password'        => Hash::make($request->tech_password),
+            'tech_identification'       => $request->identification,
+            'tech_birth'           => $request->birth,
+            'country_id'           => $request->country_id,
+            'state_id'             => $request->state_id,
+            'city_id'              => $request->city_id,
+            'area_id'              => $request->area_id,
+            'tech_address'         => $request->address,
+            'tech_bio'             => $request->bio,
+            'devise_token'         => '03df25c845d460bcd',
+            'user_id'              => 1,
+            'tech_code'            => $code,
+            'tech_login'           => now()
         ]);
 
-
-        $credentials = request(['mobile', 'password']);
+        $credentials = request(['tech_mobile', 'tech_password']);
 
         if (!$token = auth('technician-api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -71,11 +70,12 @@ class TechnicianApiController extends Controller
 
     public function login()
     {
+        return request(['tech_mobile', 'tech_password']);
 
-        $credentials = request(['mobile', 'password']);
+        $credentials = request(['tech_mobile', 'tech_password']);
 
         if (!$token = auth('technician-api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized'], 104);
         }
 
         return $this->respondWithToken($token);
@@ -225,6 +225,18 @@ class TechnicianApiController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('technician-api')->factory()->getTTL() * 999999
         ]);
+    }
+
+    private function uniqidReal($lenght = 12)
+    {
+        if (function_exists("random_bytes")) {
+            $bytes = random_bytes(ceil($lenght / 2));
+        } elseif (function_exists("openssl_random_pseudo_bytes")) {
+            $bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
+        } else {
+            throw new \Exception("no cryptographically secure random function available");
+        }
+        return substr(bin2hex($bytes), 0, $lenght);
     }
 
 }

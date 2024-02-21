@@ -212,9 +212,9 @@
                                     <tbody>
                                         <tr data-ng-repeat="brand in brands track by $index">
                                             <td data-ng-bind="brand.id"></td>
-                                            <td data-ng-bind="brand.name"></td>
+                                            <td data-ng-bind="brand.brand_name"></td>
                                             <td>
-                                                <img alt="" ng-src="<% brand.logo %>" width="30px">
+                                                <img alt="" ng-src="<% brand.brand_logo %>" width="30px">
                                             </td>
                                             <td data-ng-bind="userName[$index].name"></td>
                                             <td>
@@ -456,7 +456,7 @@
                                     <tbody>
                                         <tr data-ng-repeat="cate in compatibility_categories">
                                             <td data-ng-bind="cate.id"></td>
-                                            <td data-ng-bind="cate.name"></td>
+                                            <td data-ng-bind="cate.cate_name"></td>
                                             <td>
                                                 <div class="col-fit">
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -562,11 +562,11 @@
                                             <td data-ng-bind="package.id"></td>
                                             <td>
                                                 <span
-                                                    class="badge bg-dark rounded-pill font-monospace p-2"><%typeObject.name[package.type]%></span>
+                                                    class="badge bg-dark rounded-pill font-monospace p-2"><%typeObject.name[package.pkg_type]%></span>
                                             </td>
-                                            <td data-ng-bind="package.period"></td>
-                                            <td data-ng-bind="package.cost"></td>
-                                            <td data-ng-bind="package.points"></td>
+                                            <td data-ng-bind="package.pkg_period"></td>
+                                            <td data-ng-bind="package.pkg_cost"></td>
+                                            <td data-ng-bind="package.pkg_points"></td>
                                             <td></td>
                                             <td>
                                                 <div class="col-fit">
@@ -733,7 +733,8 @@
 
             $scope.loadData = function(parent, target) {
                 $(`#${target}Box .loading-spinner`).show();
-                $.post('https://sallahnow.yottaline.com/api/settings/locations_load', {
+                // 'https://sallahnow.yottaline.com/api/settings/locations_load'
+                $.get('/settings/load/', {
                     type: parent ? (+parent.location_type + 1) : 1,
                     parent: parent ? parent.location_id : 0,
                 }, function(data) {
@@ -886,17 +887,19 @@
                         processData: false,
                         contentType: false,
                     }).done(function(data, textStatus, jqXHR) {
-                        // if (response.status) {
-                        //     toastr.success('Data processed successfully');
-                        //     $('#locationModal').modal('hide');
-                        //     scope.$apply(() => {
-                        //         if (updateTechnician === false) {
-                        //             scope.technicians.unshift(response.data);
-                        //         } else {
-                        //             scope.technicians[updateTechnician] = response.data;
-                        //         }
-                        //     });
-                        // } else toastr.error("Error");
+                        var response = JSON.parse(data);
+                        if (response.status) {
+                            toastr.success('Data processed successfully');
+                            $('#locationModal').modal('hide');
+                            scope.$apply(() => {
+                                if (updateTechnician === false) {
+                                    scope.technicians.unshift(response.data);
+                                } else {
+                                    scope.technicians[updateTechnician] = response
+                                        .data;
+                                }
+                            });
+                        } else toastr.error("Error");
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                         // error msg
                     }).always(function() {

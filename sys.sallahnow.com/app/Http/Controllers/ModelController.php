@@ -43,9 +43,9 @@ class ModelController extends Controller
 
                 $photoPath = url('Image/Brands/', $photoName);
                 $status = Models::create([
-                    'name'     => $request->name,
-                    'url'      => $request->url,
-                    'photo'    => $photoPath,
+                    'model_name'     => $request->name,
+                    'model_url'      => $request->url,
+                    'model_photo'    => $photoPath,
                     'brand_id' => $request->brand,
                     'visible'  => 1,
                     'user_id'  => auth()->user()->id
@@ -63,8 +63,8 @@ class ModelController extends Controller
 
                 $photoPath = url('Image/Brands/', $photoName);
                 $status = Models::where('id', $id)->update([
-                    'name' => $request->name,
-                    'photo' => $photoPath,
+                    'model_name' => $request->name,
+                    'model_photo' => $photoPath,
                     'user_id' => auth()->user()->id
                 ]);
             };
@@ -78,7 +78,7 @@ class ModelController extends Controller
     public function getBrandsName(){
         $brandName = DB::table('brands')
         ->join('models', 'brands.id', '=', 'models.brand_id')
-        ->select('models.name','brands.name')->orderBy('models.created_at', 'desc')
+        ->select('models.model_name','brands.brand_name')->orderBy('models.created_at', 'desc')
         ->get();
         echo json_encode($brandName);
     }
@@ -86,7 +86,7 @@ class ModelController extends Controller
     public function getUsersName(){
         $userName = DB::table('users')
         ->join('models', 'users.id', '=', 'models.user_id')
-        ->select('models.name','users.name')
+        ->select('models.model_name','users.user_name')
         ->get();
         echo json_encode($userName);
     }

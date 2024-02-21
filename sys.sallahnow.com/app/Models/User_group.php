@@ -14,6 +14,8 @@ class User_group extends Model
         'user_group_privileges'
     ];
 
+    // public $timestamps = false;
+
     public function user() {
         return $this->hasOne(User::class);
     }

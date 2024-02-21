@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('brands', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('logo');
-            $table->boolean('visible')->default(1);
+            $table->id();
+            $table->string('brand_name', 24);
+            $table->string('brand_logo', 24);
+            $table->boolean('brand_visible')->default(1);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->noActionOnUpdate();
             $table->timestamps();
         });
