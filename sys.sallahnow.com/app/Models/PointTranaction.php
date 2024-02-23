@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class PointTranaction extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
         'points_count',
         'points_src',
         'points_target',
         'points_process',
-        'points_technician_id',
         'points_register'
     ];
 

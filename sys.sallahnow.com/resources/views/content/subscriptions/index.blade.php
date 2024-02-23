@@ -61,7 +61,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Technician Name</th>
-                                        <th>Package Cost</th>
+                                        <th>Package Points</th>
                                         <th>User Name</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
@@ -71,10 +71,10 @@
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="sub in subscriptions track by $index">
-                                        <td data-ng-bind="sub.id"></td>
-                                        <td data-ng-bind="sub.technician_id"></td>
-                                        <td data-ng-bind="sub.sub_package_cost"></td>
-                                        <td data-ng-bind="userName[$index].name"></td>
+                                        <td data-ng-bind="sub.sub_id"></td>
+                                        <td data-ng-bind="sub.tech_name"></td>
+                                        <td data-ng-bind="sub.sub_points"></td>
+                                        <td data-ng-bind="sub.user_name"></td>
                                         <td data-ng-bind="sub.sub_start"></td>
                                         <td data-ng-bind="sub.sub_end"></td>
                                         <td>
@@ -114,7 +114,7 @@
                             @csrf @method('POST')
                             <input data-ng-if="updateSubscription !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="sub_id"
-                                data-ng-value="updateSubscription !== false ? subscriptions[updateSubscription].id : 0">
+                                data-ng-value="updateSubscription !== false ? subscriptions[updateSubscription].sub_id : 0">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="mb-3">
@@ -181,7 +181,8 @@
                     <div class="modal-body">
                         <form method="POST" action="/subscriptions/change/">
                             @csrf @method('PUT')
-                            <input type="hidden" name="sub_id" data-ng-value="subscriptions[updateSubscription].id">
+                            <input type="hidden" name="sub_id"
+                                data-ng-value="subscriptions[updateSubscription].sub_id">
                             <p>Are you sure the subscription status has changed?</p>
                             <div class="row">
                                 <div class="d-flex">
@@ -239,15 +240,6 @@
                     });
                 }, 'json');
 
-                $.post("/subscriptions/subGetTechnician/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.technicianName = data;
-                    });
-                }, 'json');
-
                 // $.post("/packages/load/", {
                 //     _token: '{{ csrf_token() }}'
                 // }, function(data) {
@@ -268,22 +260,7 @@
                 $('#changeStatus').modal('show');
             };
 
-
-
-            $scope.getUserName = function() {
-                $.post("/subscriptions/subGetUser/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.userName = data;
-                    });
-                }, 'json');
-            }
-
             $scope.dataLoader();
-            // $scope.getTechnicianName();
-            // $scope.getUserName();
             scope = $scope;
         });
 
@@ -297,8 +274,9 @@
                 dataType: 'json',
                 success: function(res) {
                     $.each(res, function(key, value) {
-                        $('#TechnicianName').append('<option id="class" value="' + value.id +
-                            '">' + value.name + '</option>');
+                        $('#TechnicianName').append('<option id="class" value="' + value
+                            .tech_id +
+                            '">' + value.tech_name + '</option>');
                     });
                 }
             });
@@ -344,11 +322,11 @@
                         scope.$apply(() => {
                             if (scope.updateSubscription === false) {
                                 scope.subscriptions.unshift(response.data);
-                                $scope.dataLoader();
+                                scope.dataLoader();
                             } else {
                                 scope.subscriptions[scope.updateSubscription] = response
                                     .data;
-                                $scope.dataLoader();
+                                scope.dataLoader();
                             }
                         });
                     } else toastr.error("Error");
@@ -387,11 +365,11 @@
                         $('#changeStatus').modal('hide');
                         scope.$apply(() => {
                             if (scope.updateSubscription === false) {
-                                $scope.dataLoader(true);
+                                $cope.dataLoader(true);
                             } else {
                                 scope.subscriptions[scope.updateSubscription] = response
                                     .data;
-                                $scope.dataLoader();
+                                scope.dataLoader();
                             }
                         });
                     } else toastr.error("Error");

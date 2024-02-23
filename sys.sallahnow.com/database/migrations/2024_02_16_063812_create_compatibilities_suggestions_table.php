@@ -12,14 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibilities_suggestions', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->tinyInteger('status')->default('0');
-            $table->string('act_not');
-            $table->date('act_time');
-            $table->foreignId('category_id')->constrained('compatibility_categories')->cascadeOnDelete();
-            $table->foreignId('technician_id')->constrained('technicians')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->timestamps();
+            $table->integer('sugg_id')->autoIncrement();
+            $table->tinyInteger('sugg_status')->default('0');
+            $table->integer('sugg_points');
+            $table->string('sugg_act_note');
+            $table->integer('sugg_category');
+            $table->integer('sugg_tech');
+            $table->integer('sugg_act_by');
+            // $table->timestamps();
+            $table->date('sugg_act_time');
+
+            $table->foreign('sugg_category')->references('category_id')->on('compatibility_categories');
+            $table->foreign('sugg_tech')->references('tech_id')->on('technicians');
+            $table->foreign('sugg_act_by')->references('id')->on('users');
         });
     }
 

@@ -14,43 +14,26 @@ class CompatibilitiesSuggestionsController extends Controller
     }
 
     public function load() {
-        $suggestions = Compatibilities_suggestions::orderBy('created_at', 'desc')->limit(15)->get();
+        $suggestions = DB::table('compatibilities_suggestions')
+        ->join('technicians', 'compatibilities_suggestions.sugg_tech', '=', 'technicians.tech_id')
+        ->join('users', 'compatibilities_suggestions.sugg_act_by', '=', 'users.id')
+        ->join('compatibility_categories', 'compatibilities_suggestions.sugg_category', '=', 'compatibility_categories.category_id')
+        ->orderBy('sugg_act_time', 'desc')->limit(15)->offset(0)->get();
         echo json_encode($suggestions);
     }
 
     public function store(Request $request) {
-        return $request;
+        // return $request;
         $status = Compatibilities_suggestions::create([
-            'status' => 0,
-            'act_not' => '',
-            'act_time' => now(),
-            'category_id' => $request->cate_id,
-            'technician_id'  => $request->technician_id,
-            'user_id' => 1
+            'sugg_status' => 0,
+            'sugg_points' => '',
+            'sugg_act_note' => '',
+            'sugg_act_time' => now(),
+            'sugg_category' => $request->cate_id,
+            'sugg_tech'  => $request->technician_id,
+            'sugg_act_by' => auth()->user()->id
         ]);
         $status->models()->attach(1);
     }
 
-    public function getCateName() {
-        $cate_name = DB::table('compatibility_categories')
-        ->join('compatibilities_suggestions', 'compatibility_categories.id', '=', 'compatibilities_suggestions.category_id')
-        ->orderBy('compatibilities_suggestions.created_at', 'desc')
-        ->get();
-        echo json_encode($cate_name);
-    }
-
-    public function getTechnicianName() {
-        $technician_name = DB::table('technicians')
-        ->join('compatibilities_suggestions', 'technicians.id', '=', 'compatibilities_suggestions.technician_id')
-        ->orderBy('compatibilities_suggestions.created_at', 'desc')
-        ->get();
-        echo json_encode($technician_name);
-    }
-    public function getUserName() {
-        $user_name = DB::table('users')
-        ->join('compatibilities_suggestions', 'users.id', '=', 'compatibilities_suggestions.user_id')
-        ->orderBy('compatibilities_suggestions.created_at', 'desc')
-        ->get();
-        echo json_encode($user_name);
-    }
 }

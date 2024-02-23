@@ -46,7 +46,7 @@
                                     <button class="input-group-text" id="basic-addon1">
                                         <i class="bi-eye" data-ng-click="setPermissions(role)"></i>
                                     </button>
-                                    @if (in_array('add-users', json_decode(auth()->user()->role->user_group_privileges)))
+                                    @if (in_array('add-users', explode(',', auth()->user()->role->ugroup_privileges)))
                                         <button class="input-group-text" id="basic-addon1">
                                             <i class="bi-caret-right-fill" data-ng-click="getPermissions(role)"></i>
                                         </button>

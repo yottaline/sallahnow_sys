@@ -18,7 +18,9 @@ class PointTranactionController extends Controller
     }
 
     public function load() {
-        $points = PointTranaction::orderBy('created_at', 'desc')->limit(15)->get();
+        $points = DB::table('point_tranactions')
+        ->join('technicians', 'point_tranactions.points_tech', '=', 'technicians.tech_id')
+        ->orderBy('points_register', 'desc')->limit(15)->offset(0)->get();
         echo json_encode($points);
     }
 
@@ -48,13 +50,13 @@ class PointTranactionController extends Controller
         ]);
     }
 
-    public function technicianName() {
-        $technician_name = DB::table('technicians')
-        ->join('point_tranactions', 'technicians.id', '=', 'point_tranactions.technician_id')
-        ->orderBy('point_tranactions.created_at', 'desc')
-        ->get();
-        echo json_encode($technician_name);
-    }
+    // public function technicianName() {
+    //     $technician_name = DB::table('technicians')
+    //     ->join('point_tranactions', 'technicians.id', '=', 'point_tranactions.technician_id')
+    //     ->orderBy('point_tranactions.created_at', 'desc')
+    //     ->get();
+    //     echo json_encode($technician_name);
+    // }
 
     public function profile($id) {
         return view('content.points.profile');

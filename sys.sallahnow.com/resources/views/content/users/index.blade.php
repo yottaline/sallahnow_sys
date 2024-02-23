@@ -15,12 +15,12 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="roleFilter">Role</label>
-                            <select class="js-example-basic-single form-select" name="state">
-                                <option value="AL">Alabama</option>
-                                ...
-                                <option value="WY">Wyoming</option>
+                            <select class="js-example-basic-single form-control" name="state">
+                                <option data-ng-repeat="role in roles" data-ng-value="role.ugroup_id"
+                                    data-ng-bind="role.ugroup_name"></option>
                             </select>
                         </div>
+                        {{-- It will be worked on soon --}}
                         <div class="mb-3">
                             <label for="roleFilter">Status</label>
                             <select name="" id="" class="form-select">
@@ -56,15 +56,23 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Mobile</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="u in users track by $index">
                                         <td data-ng-bind="u.id"></td>
-                                        <td data-ng-bind="u.name"></td>
+                                        <td data-ng-bind="u.user_name"></td>
                                         <td data-ng-bind="u.email"></td>
-                                        <td data-ng-bind="u.mobile"></td>
+                                        <td data-ng-bind="u.user_mobile"></td>
+                                        <td data-ng-bind="u.ugroup_name"></td>
+                                        <td>
+                                            <span
+                                                class="badge bg-<%statusObject.color[u.user_active]%> rounded-pill font-monospace"><%statusObject.name[u.user_active]%></span>
+
+                                        </td>
                                         <td>
                                             <div class="col-fit">
                                                 <button class="btn btn-outline-success btn-circle bi bi-person-lock"
@@ -102,7 +110,7 @@
                             <div class="mb-3">
                                 <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="name" maxlength="120" id="fullName"
-                                    required data-ng-value="updateUser !== false ? users[updateUser].name : ''">
+                                    required data-ng-value="updateUser !== false ? users[updateUser].user_name : ''">
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6">
@@ -110,7 +118,7 @@
                                         <label for="mobiel">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="mobile" maxlength="24"
                                             id="mobiel"
-                                            data-ng-value="updateUser !== false ? users[updateUser].mobile : ''">
+                                            data-ng-value="updateUser !== false ? users[updateUser].user_mobile : ''">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -143,8 +151,8 @@
                                         <label for="role">Roles</label>
                                         <select name="role_id" class="form-control" id="role">
                                             <option value="">-- SELECT ROLE NAME</option>
-                                            <option data-ng-repeat="role in roles" data-ng-value="role.id"
-                                                data-ng-bind="role.user_group_name"></option>
+                                            <option data-ng-repeat="role in roles" data-ng-value="role.ugroup_id"
+                                                data-ng-bind="role.ugroup_name"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -167,13 +175,13 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <form method="POST" action="{{ route('user_update_active') }}">
+                        <form method="POST" action="/users/update/active/">
                             @csrf @method('PUT')
                             <input hidden data-ng-value="users[userId].id" name="user_id">
                             <label for="form-control">Active</label>
                             <select name="active" class="form-control">
                                 <option value="">-- select status --</option>
-                                <option value="1">Enabled</option>
+                                <option value="1">Active</option>
                                 <option value="0">Blocked</option>
                             </select>
                             <div class="d-flex mt-3">
@@ -213,9 +221,16 @@
 @endsection
 @section('js')
     <script>
-        var scope, app = angular.module('myApp', []);
+        var scope, app = angular.module('myApp', [], function($interpolateProvider) {
+            $interpolateProvider.startSymbol('<%');
+            $interpolateProvider.endSymbol('%>');
+        });
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
+            $scope.statusObject = {
+                name: ['blocked', 'active'],
+                color: ['danger', 'success']
+            };
             $scope.updateUser = false;
             $scope.userId = 0;
             $scope.users = [];
@@ -288,15 +303,16 @@
                         scope.$apply(() => {
                             if (scope.updateUser === false) {
                                 scope.users.unshift(response.data);
-                                $scope.dataLoader();
+                                scope.dataLoader(true);
                             } else {
                                 scope.users[scope.updateUser] = response.data;
-                                $scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(jqXHR.responseJSON.message);
+                    toastr.error("error");
+                    controls.log(jqXHR.responseJSON.message);
                     $('#useForm').modal('hide');
                 }).always(function() {
                     spinner.hide();
@@ -305,6 +321,50 @@
 
             })
         });
+
+        $(function() {
+            $('#edit_active form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#edit_active').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updateUser === false) {
+                                scope.users.unshift(response.data);
+                                scope.dataLoader(true);
+                            } else {
+                                scope.users[scope.updateUser] = response.data;
+                                scope.dataLoader(true);
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    toastr.error("error");
+                    controls.log(jqXHR.responseJSON.message);
+                    $('#useForm').modal('hide');
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        })
         $(function() {
             $('#searchForm').on('submit', function(e) {
                 e.preventDefault();

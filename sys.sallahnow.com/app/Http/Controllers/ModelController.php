@@ -18,7 +18,8 @@ class ModelController extends Controller
     }
 
     public function load() {
-        $models = Models::orderBy('created_at', 'desc')->get();
+        $models =  DB::table('models')
+        ->join('brands', 'models.model_brand', '=', 'brands.id')->limit(15)->offset(0)->get();
         echo json_encode($models);
     }
 
@@ -46,9 +47,8 @@ class ModelController extends Controller
                     'model_name'     => $request->name,
                     'model_url'      => $request->url,
                     'model_photo'    => $photoPath,
-                    'brand_id' => $request->brand,
+                    'model_brand' => $request->brand,
                     'visible'  => 1,
-                    'user_id'  => auth()->user()->id
                 ]);
             };
             $record = Models::where('id', $status->id)->get();

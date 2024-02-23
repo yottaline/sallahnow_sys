@@ -24,6 +24,7 @@ class BrandController extends Controller
     }
 
     public function store(Request $request) {
+        // return $request;
         $request->validate([
             'name'   => 'required|max:250',
             'logo'   => 'required'
@@ -34,15 +35,14 @@ class BrandController extends Controller
             if($request->file('logo')){
                 $logo = $request->file('logo');
                 $logoName = $logo->hashName();
-                $location = 'Image/Brands';
+                $location = '/';
 
                 $logo->move($location , $logoName);
 
-                $logoPath = url('Image/Brands/', $logoName);
+                $logoPath = url('/', $logoName);
         $status = Brand::create([
                     'brand_name' => $request->name,
                     'brand_logo' => $logoPath,
-                    'user_id' => auth()->user()->id
                 ]);
             };
         $record = Brand::where('id', $status->id)->get();
@@ -59,7 +59,6 @@ class BrandController extends Controller
         $status = Brand::where('id', $id)->update([
                     'brand_name' => $request->name,
                     'brand_logo' => $logoPath,
-                    'user_id' => auth()->user()->id
                 ]);
         }
         }

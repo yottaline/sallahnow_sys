@@ -22,12 +22,9 @@ class SubscriptionsController extends Controller
     }
 
     public function load() {
-        $subscriptions = Subscriptions::orderBy('created_at', 'desc')->limit(15)->get();
-        $technician_name = DB::table('technicians')
-        ->join('subscriptions', 'technicians.id', '=', 'subscriptions.technician_id')->select('technicians.name')
-        ->orderBy('subscriptions.created_at', 'desc')
-        ->get();
-        $subscriptions->technician = $technician_name;
+        $subscriptions = DB::table('subscriptions')
+        ->join('technicians', 'subscriptions.sub_tech', '=', 'technicians.tech_id')
+        ->join('users', 'subscriptions.sub_register_by','=', 'users.id')->orderBy('subscriptions.sub_register', 'desc')->limit(15)->offset(0)->get();
         echo json_encode($subscriptions);
     }
 
@@ -43,25 +40,26 @@ class SubscriptionsController extends Controller
 
 
     public function submit(Request $request) {
-        $package = Package::where('id', $request->package_id)->first();
+       $package = Package::where('pkg_id', $request->package_id)->first();
         $pam = [
-            'package_id'     => $request->package_id,
-            'sub_package_points' =>  $package->pkg_points,
-            'sub_package_cost'   => $package->pkg_cost,
-            'sub_package_period' => $package->pkg_period,
-            'package_priv'       => 'ty',
-            'technician_id'      => $request->technician_name,
+            'sub_pkg'     => $request->package_id,
+            'sub_points' =>  $package->pkg_points,
+            'sub_cost'   => $package->pkg_cost,
+            'sub_period'         => $package->pkg_period,
+            'sub_priv'           => 'ty',
+            'sub_tech'           => $request->technician_name,
             'sub_start'          => $request->start,
             'sub_register_by'    => auth()->user()->id,
+            'sub_register'       => now()
         ];
 
         $end = Carbon::parse($request->start)->addMonth($package->pkg_period);
-        $technician = Subscriptions::where('id', $request->technician_name)->first();
+        $technician = Subscriptions::where('sub_tech', $request->technician_name)->get();
         $id = $request->sub_id;
         if(!$id) {
+           $pam['sub_end'] = $end;
             if($technician){
-                Subscriptions::where('id', $request->technician_name)->update(['sub_status' => 0]);
-                $pam['sub_end'] = $end;
+                Subscriptions::where('sub_tech', $request->technician_name)->update(['sub_status' => 0]);
                 $status  = Subscriptions::create($pam);
                 $id      = $status->id;
             }else {
@@ -70,10 +68,10 @@ class SubscriptionsController extends Controller
             }
         }
         else {
-            $status = Subscriptions::where('id', $id)->update($pam);
+            $status = Subscriptions::where('sub_id', $id)->update($pam);
         }
 
-        $record =  Subscriptions::where('id', $id)->first();
+        $record =  Subscriptions::where('sub_id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
@@ -82,9 +80,7 @@ class SubscriptionsController extends Controller
 
     public function technicianName() {
         $technician_name = DB::table('technicians')
-        ->join('subscriptions', 'technicians.id', '=', 'subscriptions.technician_id')
-        ->orderBy('subscriptions.created_at', 'desc')
-        ->get();
+        ->join('subscriptions', 'technicians.tech_id', '=', 'subscriptions.sub_tech')->get();
         echo json_encode($technician_name);
     }
 
@@ -98,12 +94,12 @@ class SubscriptionsController extends Controller
 
     public function changeStatus(Request $request) {
         $id = $request->sub_id;
-        $sub = Subscriptions::where('id', $id)->first();
+        $sub = Subscriptions::where('sub_id', $id)->first();
         if($sub->sub_status == 1){
-           $status = Subscriptions::where('id', $id)->update(['sub_status' => 0]);
+           $status = Subscriptions::where('sub_id', $id)->update(['sub_status' => 0]);
         }
         elseif($sub->sub_status == 0){
-            $status = Subscriptions::where('id',  $id)->update(['sub_status' => 1]);
+            $status = Subscriptions::where('sub_id',  $id)->update(['sub_status' => 1]);
         }
 
         echo json_encode([

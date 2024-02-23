@@ -10,6 +10,9 @@ use function Pest\Laravel\json;
 class UserGroupController extends Controller
 {
     public function index(){
+
+        // $roles = User_group::where('id', 1)->first();
+        // return explode(',',$roles->user_group_privileges);
         return view('content.user_groups.roles.index');
     }
 
@@ -19,19 +22,21 @@ class UserGroupController extends Controller
     }
 
     public function store(Request $request) {
+        return $request;
         $request->validate(['name' => 'required']);
         User_group::create([
-            'user_group_name' => $request->name,
-            'user_group_privileges'  => 0
+            'ugroup_name' => $request->name,
+            'ugroup_privileges'  => 0
         ]);
         session()->flash('Add', 'Role data has been added successfully');
         return back();
     }
     public function addPermissions(Request $request) {
+        // return (',', $arr);
         $request->validate(['role_id' => 'required']);
-
-        User_group::where('id', $request->role_id)->update([
-            'user_group_privileges' => $request->name
+        $arr = implode(',',$request->name);
+        User_group::where('ugroup_id', $request->role_id)->update([
+            'ugroup_privileges' => $arr
         ]);
         session()->flash('Add', 'Permissions data has been added successfully');
         return back();
@@ -39,7 +44,7 @@ class UserGroupController extends Controller
 
     public function getPermissions($id) {
        $permissions = User_group::find($id);
-       return json_decode($permissions->user_group_privileges);
+       return json_decode($permissions->ugroup_privileges);
        echo json_encode($id);
     }
 }

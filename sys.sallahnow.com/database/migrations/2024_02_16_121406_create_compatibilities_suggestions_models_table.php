@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibilities_suggestions_models', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->foreignId('models_id')->constrained('models')->cascadeOnDelete();
-            $table->foreignId('comp_sug_id')->constrained('compatibilities_suggestions')->cascadeOnDelete();
+            $table->integer('csugg_id')->autoIncrement();
+            $table->integer('sugg_src');
+            $table->integer('sugg_model');
             $table->timestamps();
+
+            $table->foreign('sugg_src')->references('sugg_id')->on('compatibilities_suggestions');
+            $table->foreign('sugg_model')->references('model_id')->on('models');
         });
     }
 

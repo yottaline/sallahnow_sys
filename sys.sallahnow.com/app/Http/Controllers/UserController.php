@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -24,7 +25,9 @@ class UserController extends Controller
 
     public function load()
     {
-        $users = User::orderBy('created_at', 'desc')->limit(15)->get();
+        $users = DB::table('users')
+        ->join('user_groups', 'users.user_group', '=', 'user_groups.ugroup_id')
+        ->orderBy('users.user_create', 'desc')->limit(15)->offset(0)->get();
         echo json_encode($users);
     }
 
@@ -35,24 +38,26 @@ class UserController extends Controller
             'name'     => 'required|string',
             'mobile'   => 'required|numeric',
             'password' => 'required',
-            'email'    => 'email|unique:users,email'
+            // 'email'    => 'email|unique:users,user_email'
         ]);
 
         $parma = [
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'user_group_id'     => $request->role_id,
-            'mobile'    => $request->mobile,
-            'password'  => $request->password
+            'user_name'      => $request->name,
+            'email'          => $request->email,
+            'password'       => $request->password,
+            'user_group'     => $request->role_id,
+            'user_mobile'    => $request->mobile,
+            'user_create'    => now()
         ];
 
         $id = intval($request->user_id);
         if(!$id) {
         $status = User::create($parma);
-        $record = User::where('id', $status->id)->get();
+        $id     = $status->id;
         }else{
         $status = User::where('id', $id)->update($parma);
         }
+        $record = User::where('id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
@@ -66,9 +71,12 @@ class UserController extends Controller
     public function updateActive(Request $request)
     {
         $id = $request->user_id;
-        User::where('id', $id)->update(['user_active' => $request->active]);
-        session()->flash('Add', 'Active User has been updated successfully');
-        return back();
+       $status = User::where('id', $id)->update(['user_active' => $request->active]);
+       $record = User::where('id', $id)->first();
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $record,
+        ]);
     }
 
     public function addRole(Request $request, Permission $permission)

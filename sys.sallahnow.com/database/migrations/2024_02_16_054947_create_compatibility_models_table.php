@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibility_models', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('compatibility_id')->constrained('compatibilities')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('models_id')->constrained('models')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('compatible_id')->autoIncrement();
+            $table->integer('compatible_src');
+            $table->integer('compatible_model');
+
+            $table->foreign('compatible_src')->references('compat_id')->on('compatibilities');
+            $table->foreign('compatible_model')->references('model_id')->on('models');
             $table->timestamps();
         });
     }

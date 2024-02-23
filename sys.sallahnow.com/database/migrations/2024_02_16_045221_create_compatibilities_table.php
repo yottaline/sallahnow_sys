@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibilities', function (Blueprint $table) {
-            $table->id();
-            $table->string('compatibility_part',120);
-            $table->foreignId('compatibility_categorie_id')->constrained('compatibility_categories')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
+            $table->integer('compat_id')->autoIncrement();
+            $table->string('compat_part',120);
+            $table->integer('compat_category');
+            // $table->timestamps();
+
+
+            $table->foreign('compat_category')->references('category_id')->on('compatibility_categories');
         });
     }
 

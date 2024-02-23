@@ -62,7 +62,6 @@
                                         <th>#</th>
                                         <th>Technician Name</th>
                                         <th>Amount</th>
-                                        <th>Date</th>
                                         <th>Process type </th>
                                         <th>Method </th>
                                         <th></th>
@@ -70,29 +69,28 @@
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="tran in transactions track by $index">
-                                        <td data-ng-bind="tran.reference"></td>
-                                        <td data-ng-bind="technicianName[$index].name"></td>
+                                        <td data-ng-bind="tran.trans_ref"></td>
+                                        <td data-ng-bind="tran.tech_name"></td>
                                         <td data-ng-bind="tran.trans_amount"></td>
-                                        <td data-ng-bind="tran.created_at"></td>
                                         <td>
                                             <span
-                                                class="badge bg-<%procesObj.color[tran.ptrans_rocess]%> rounded-pill font-monospace"><%procesObj.name[tran.ptrans_rocess]%></span>
+                                                class="badge bg-<%procesObj.color[tran.trans_process]%> rounded-pill font-monospace"><%procesObj.name[tran.trans_process]%></span>
 
                                         </td>
                                         <td>
                                             <span
-                                                class="badge bg-dark rounded-pill font-monospace"><%methodObj.name[tran.ptrans_rocess]%></span>
+                                                class="badge bg-dark rounded-pill font-monospace"><%methodObj.name[tran.trans_method]%></span>
 
                                         </td>
 
                                         <td>
                                             <div class="col-fit">
                                                 <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
-                                                    href="/transactions/profile/<% tran.reference %>" target="_blank"></a>
+                                                    href="/transactions/profile/<% tran.trans_ref %>" target="_blank"></a>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                     data-ng-click="setTransaction($index)"></button>
-                                                <button class="btn btn-outline-danger btn-circle bi bi-stopwatch"
-                                                    data-ng-click="changePero($index)"></button>
+                                                {{-- <button class="btn btn-outline-danger btn-circle bi bi-stopwatch"
+                                                    data-ng-click="changePero($index)"></button> --}}
                                             </div>
                                         </td>
                                     </tr>
@@ -115,10 +113,10 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <form method="POST" action="/transactions/submit/">
-                            @csrf @method('POST')
+                            @csrf
                             <input data-ng-if="updateTransactions !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="tran_id"
-                                data-ng-value="updateTransactions !== false ? transactions[updateTransactions].id : 0">
+                                data-ng-value="updateTransactions !== false ? transactions[updateTransactions].trans_id : 0">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="mb-3">
@@ -149,7 +147,7 @@
                                     <div class="mb-3">
                                         <label>Amount<b class="text-danger">&ast;</b></label>
                                         <input id="amount" type="text" class="form-control" name="amount"
-                                            data-ng-value="transactions[updateTransactions].amount" />
+                                            data-ng-value="transactions[updateTransactions].trans_amount" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -244,27 +242,18 @@
                     });
                 }, 'json');
 
-                $.post("/technicians/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.technicians = data;
-                    });
-                }, 'json');
-
-                $.post("/packages/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.packages = data;
-                    });
-                }, 'json');
+                // $.post("/packages/load/", {
+                //     _token: '{{ csrf_token() }}'
+                // }, function(data) {
+                //     $('.loading-spinner').hide();
+                //     $scope.$apply(() => {
+                //         $scope.packages = data;
+                //     });
+                // }, 'json');
             }
 
             $scope.setTransaction = (indx) => {
-                $scope.updateSubscription = indx;
+                $scope.updateTransactions = indx;
                 $('#tranForm').modal('show');
             };
 
@@ -273,19 +262,7 @@
                 $('#changePerotus').modal('show');
             };
 
-            $scope.getTechnicianName = function() {
-                $.post("/transactions/subTranTechnician/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.technicianName = data;
-                    });
-                }, 'json');
-            }
-
             $scope.dataLoader();
-            $scope.getTechnicianName();
             scope = $scope;
         });
 
@@ -299,8 +276,9 @@
                 dataType: 'json',
                 success: function(res) {
                     $.each(res, function(key, value) {
-                        $('#TechnicianName').append('<option id="class" value="' + value.id +
-                            '">' + value.name + '</option>');
+                        $('#TechnicianName').append('<option id="class" value="' + value
+                            .tech_id +
+                            '">' + value.tech_name + '</option>');
                     });
                 }
             });
@@ -332,11 +310,11 @@
                         scope.$apply(() => {
                             if (scope.updateTransactions === false) {
                                 scope.transactions.unshift(response.data);
-                                $scope.dataLoader();
+                                scope.dataLoader(true);
                             } else {
                                 scope.transactions[scope.updateTransactions] = response
                                     .data;
-                                $scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");

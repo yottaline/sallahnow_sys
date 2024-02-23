@@ -225,7 +225,6 @@
                 name: ['', 'Pkg', 'Credit', 'Cobon', 'Academy', 'Ticket', 'Transfer', 'Sugg', 'Ads'],
             }
             $scope.updatePoint = false;
-            $scope.technicianName = false;
             $scope.points = [];
             $scope.page = 1;
             $scope.dataLoader = function(reload = false) {
@@ -256,19 +255,7 @@
                 $('#changePerotus').modal('show');
             };
 
-            $scope.getTechnicianName = function() {
-                $.post("/points/subPointTechnician/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.technicianName = data;
-                    });
-                }, 'json');
-            }
-
             $scope.dataLoader();
-            $scope.getTechnicianName();
             scope = $scope;
         });
 
@@ -315,11 +302,11 @@
                         scope.$apply(() => {
                             if (scope.updatePoint === false) {
                                 scope.points.unshift(response.data);
-                                $scope.dataLoader();
+                                scope.dataLoader();
                             } else {
                                 scope.points[scope.updatePoint] = response
                                     .data;
-                                $scope.dataLoader();
+                                scope.dataLoader();
                             }
                         });
                     } else toastr.error("Error");

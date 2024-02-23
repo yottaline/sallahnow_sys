@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Center;
 use App\Models\Technician;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
@@ -20,45 +21,41 @@ class CenterController extends Controller
     }
 
     public function load() {
-        $centers = Center::orderBy('created_at', 'desc')->limit(15)->get();
-
-        $technician_name = DB::table('technicians')
-        ->join('centers', 'technicians.id', '=', 'centers.owner')
-        ->select('centers.center_whatsapp','technicians.tech_code')->orderBy('centers.created_at', 'desc')
-        ->get();
-
-        $centers->technicians = $technician_name;
-
+        $centers = DB::table('centers')
+        ->join('technicians', 'centers.center_owner', '=', 'technicians.tech_id')
+        ->orderBy('centers.center_create', 'desc')->limit(15)->offset(0)->get();
         echo json_encode($centers);
     }
 
     public function submit(Request $request) {
+        // return $request;
         $request->validate([
             'name' => 'required'
         ]);
 
         $logo = $request->file('logo');
         $logoName = $logo->hashName();
-        $location = 'Image/Center/';
+        $location = 'Image/';
         $logo->move($location , $logoName);
 
-        $logoPath = url('Image/Center', $logoName);
+        $logoPath = url('Image/', $logoName);
 
         $parm = [
-            'name'       => $request->name,
-            'mobile'     => $request->mobile,
-            'whatsapp'   => $request->center_whatsapp,
-            'email'      => $request->email,
-            'tel'        => $request->tel,
-            'logo'       => $logoPath,
-            'tax_number' => $request->center_tax,
-            'cr_number'  => $request->center_cr,
-            'country_id' => $request->country_id,
-            'state_id'   => $request->state_id,
-            'city_id'    => $request->city_id,
-            'area_id'    => $request->area_id,
-            'address'    => $request->address,
-            'owner'      => 1
+            'center_name'       => $request->name,
+            'center_mobile'     => $request->mobile,
+            'center_whatsapp'   => $request->center_whatsapp,
+            'center_email'      => $request->email,
+            'center_tel'        => $request->tel,
+            'center_logo'       => $logoPath,
+            'center_tax'        => $request->center_tax,
+            'center_cr'         => $request->center_cr,
+            'center_country'    => $request->country_id,
+            'center_state'      => $request->state_id,
+            'center_city'       => $request->city_id,
+            'center_area'       => $request->area_id,
+            'center_address'    => $request->address,
+            'center_owner'      => $request->technician_name,
+            'center_create'     => Carbon::now()
             ];
 
 
@@ -66,12 +63,12 @@ class CenterController extends Controller
         $id = $request->center_id;
         if(!$id) {
             $status = Center::create($parm);
-            $id = $status->id;
+            $id = $status->center_id;
         }else {
-            $status = Center::where('id', $id)->update($parm);
+            $status = Center::where('center_id', $id)->update($parm);
         }
 
-        $record =  Center::where('id', $id)->first();
+        $record =  Center::where('center_id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
@@ -95,7 +92,7 @@ class CenterController extends Controller
 
     public function getTechnicianName() {
         // $technician_name = DB::table('technicians')
-        // ->join('centers', 'technicians.id', '=', 'centers.owner')
+        // ->join('centers', 'technicians.tech_id', '=', 'centers.owner')
         // ->select('centers.name','technicians.tech_name')->orderBy('centers.created_at', 'desc')
         // ->get();
         // echo json_encode($technician_name);
