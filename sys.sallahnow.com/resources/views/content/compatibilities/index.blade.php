@@ -182,18 +182,6 @@
                     });
                 }, 'json');
 
-                $.post("/users/search/", {
-                    limit: 24,
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    console.log(data)
-                    // $scope.$apply(() => {
-                    //     $scope.users = data;
-                    //     $scope.page++;
-                    // });
-                }, 'json');
-
                 $.post("/CompatibilityCategories/load/", {
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
@@ -203,25 +191,14 @@
                     });
                 }, 'json');
 
-                $.post("/models/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.models = data;
-                    });
-                }, 'json');
-            }
-
-            $scope.getCateName = function() {
-                $.post("/compatibilities/getCateName/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.cateName = data;
-                    });
-                }, 'json');
+                // $.post("/models/load/", {
+                //     _token: '{{ csrf_token() }}'
+                // }, function(data) {
+                //     $('.loading-spinner').hide();
+                //     $scope.$apply(() => {
+                //         $scope.models = data;
+                //     });
+                // }, 'json');
             }
 
 
@@ -232,7 +209,6 @@
             };
 
             $scope.dataLoader();
-            $scope.getCateName();
             scope = $scope;
         });
 

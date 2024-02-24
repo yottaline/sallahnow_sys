@@ -26,12 +26,13 @@ class TechnicianController extends Controller
 
     public function load()
     {
-        $technicians = Technician::orderBy('created_at', 'desc')->limit(15)->get();
+        $technicians = Technician::orderBy('tech_register', 'desc')->limit(15)->get();
         echo json_encode($technicians);
     }
 
     public function submit(Request $request)
     {
+        // return $request;
         $request->validate([
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
@@ -43,33 +44,32 @@ class TechnicianController extends Controller
             'tech_tel'               => $request->tel,
             'tech_mobile'            => $request->mobile,
             'tech_birth'             => $request->birth,
-            'country_id'            => $request->country_id,
-            'state_id'              => $request->state_id,
-            'city_id'              => $request->city_id,
-            'area_id'              => $request->area_id,
+            'tech_country'            => $request->country_id,
+            'tech_state'              => $request->state_id,
+            'tech_city'              => $request->city_id,
+            'tech_area'              => $request->area_id,
             'tech_address'           => $request->address,
-            'identification'    => $request->identification,
+            'tech_identification'    => $request->identification,
             'tech_notes'             => $request->notes,
-            'tech_login'             => now(), // TODO: login is nunable
+            'tech_register'          => now()
         ];
 
         $id = intval($request->technician_id);
-        // STATUS SHOULD BE BOOLEAN
+
         if (!$id) {
             $param['tech_code'] = strtoupper($this->uniqidReal());
             $param['tech_password'] = '';
-            $param['devise_token'] = '';
-            $param['user_id'] = Auth::user()->id;
+            $param['devise_token'] = 'q';
+            $param['tech_register_by'] = Auth::user()->id;
             $status = Technician::create($param);
-            $id = $status->id;
+
+           $id = $status->tech_id;
+
         } else {
-            $status = Technician::where('id', $id)->update($param);
+            $status = Technician::where('tech_id', $id)->update($param);
         }
 
-
-        $record = Technician::where('id', $id)->get();
-        //$record = Technician::where('id', $id)->first();
-
+         $record = Technician::where('tech_id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
@@ -77,20 +77,17 @@ class TechnicianController extends Controller
     }
 
 
-    public function updateActive(Request $request)
-    {
-        $id = $request->technician_id;
-        Technician::where('id', $id)->update(['blocked' => $request->blocked]);
-        session()->flash('Add', 'Active Technician has been updated successfully');
-        return back();
-    }
+    // public function updateActive(Request $request)
+    // {
+    //     $id = $request->technician_id;
+    //     Technician::where('id', $id)->update(['tech_blocked' => $request->blocked]);
+    //     session()->flash('Add', 'Active Technician has been updated successfully');
+    //     return back();
+    // }
 
-    public function profile($code)
-    {
-        $technician = DB::table('technicians')
-            ->leftJoin('users', 'users.id', '=', 'technicians.user_id')
-            ->where('code', $code)->get()->first();
 
+    public function profile($code) {
+        $technician = Technician::where('tech_code', $code)->first();
         return view('content.technicians.profile', compact('technician'));
     }
 

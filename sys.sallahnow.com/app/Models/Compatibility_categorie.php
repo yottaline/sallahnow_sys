@@ -9,9 +9,10 @@ class Compatibility_categorie extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'cate_name',
-        'visible'
+        'category_name',
+        'category_visible'
     ];
+    public $timestamps = false;
 
     public function compatibilities() {
         return $this->hasMany(Compatibility::class);

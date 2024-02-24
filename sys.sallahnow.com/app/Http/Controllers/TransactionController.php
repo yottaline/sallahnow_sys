@@ -18,7 +18,8 @@ class TransactionController extends Controller
     }
 
     public function load() {
-        $transactions = Transaction::orderBy('created_at', 'desc')->limit(15)->get();
+        $transactions = DB::table('transactions')
+        ->join('technicians', 'transactions.trans_tech', '=', 'technicians.tech_id')->limit(15)->offset(0)->get();
         echo json_encode($transactions);
     }
 
@@ -30,39 +31,39 @@ class TransactionController extends Controller
             'trans_amount'    => $request->amount,
             'trans_process'   => $request->process,
             'trans_create_by' => auth()->user()->id,
-            'technician_id' => $request->technician_name,
+            'trans_tech' => 1,
         ];
 
         if(!$id) {
-            $param['reference'] = strtoupper($this->uniqidReal());
+            $param['trans_ref'] = strtoupper($this->uniqidReal());
             $status = Transaction::create($param);
-            $id = $status->id;
+            $id = $status->trans_id;
         }
         else {
-            $status = Transaction::where('id', $id)->update($param);
+            $status = Transaction::where('trans_id', $id)->update($param);
         }
 
-        $record = Transaction::where('id', $id)->first();
+        $record = Transaction::where('trans_id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
         ]);
     }
 
-    public function technicianName() {
-        $technician_name = DB::table('technicians')
-        ->join('transactions', 'technicians.id', '=', 'transactions.technician_id')
-        ->orderBy('transactions.created_at', 'desc')
-        ->get();
-        echo json_encode($technician_name);
-    }
+    // public function technicianName() {
+    //     $technician_name = DB::table('technicians')
+    //     ->join('transactions', 'technicians.tech_id', '=', 'transactions.technician_id')
+    //     ->orderBy('transactions.created_at', 'desc')
+    //     ->get();
+    //     echo json_encode($technician_name);
+    // }
 
     public function changeProcess(Request $request) {
         return 1;
     }
 
     public function profile($reference) {
-        $transactions = Transaction::where('reference', $reference)->get();
+        $transactions = Transaction::where('trans_ref', $reference)->get();
         return view('content.transactions.profile');
     }
 

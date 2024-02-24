@@ -12,19 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->integer('sub_id')->autoIncrement();
             $table->date('sub_start');
             $table->date('sub_end');
             $table->boolean('sub_status')->default('1');
-            $table->foreignId('technician_id')->constrained('technicians');
-            $table->foreignId('package_id')->constrained('packages');
-            $table->integer('sub_package_points');
-            $table->decimal('sub_package_cost', 9, 2);
-            $table->integer('sub_package_period');
-            $table->string('package_priv')->nullable();
+            $table->integer('sub_tech');
+            $table->integer('sub_pkg');
+            $table->integer('sub_points');
+            $table->decimal('sub_cost', 9, 2);
+            $table->integer('sub_period');
+            $table->string('sub_priv',4096)->nullable();
             $table->integer('sub_register_by')->nullable();
-            // $table->date('sub_created_at');
-            $table->timestamps();
+            $table->date('sub_register');
+            // $table->timestamps();
+
+            $table->foreign('sub_tech')->references('tech_id')->on('technicians');
+            $table->foreign('sub_pkg')->references('pkg_id')->on('packages');
+
         });
     }
 

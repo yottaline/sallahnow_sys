@@ -55,35 +55,36 @@
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="center in centers track by $index">
-                                        <td data-ng-bind="center.id"
+                                        <td data-ng-bind="center.center_id"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
-                                            <span data-ng-bind="center.name" class="fw-bold"></span><br>
-                                            <small data-ng-if="+center.mobile"
+                                            <span data-ng-bind="center.center_name" class="fw-bold"></span><br>
+                                            <small data-ng-if="+center.center_mobile"
                                                 class="me-1 db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-phone me-1"></i>
-                                                <span data-ng-bind="center.mobile" class="fw-normal"></span>
+                                                <span data-ng-bind="center.center_mobile" class="fw-normal"></span>
                                             </small>
-                                            <small data-ng-if="+center.tel"
+                                            <small data-ng-if="+center.center_tel"
                                                 class="me-1 db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-telephone me-1"></i>
-                                                <span data-ng-bind="center.tel" class="fw-normal"></span>
+                                                <span data-ng-bind="center.center_tel" class="fw-normal"></span>
                                             </small>
-                                            <small data-ng-if="center.email"
+                                            <small data-ng-if="center.center_email"
                                                 class="db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-envelope-at me-1"></i>
-                                                <span data-ng-bind="center.email" class="fw-normal"></span>
+                                                <span data-ng-bind="center.center_email" class="fw-normal"></span>
                                             </small>
                                         </td>
-                                        <td class="text-center" data-ng-bind="technicianName[$index].name"></td>
+                                        <td class="text-center" data-ng-bind="center.tech_name"></td>
                                         <td class="text-center">
-                                            <img src="<% center.logo %>" alt="" srcset="" width="30px">
+                                            <img src="<% center.center_logo %>" alt="" srcset=""
+                                                width="30px">
                                         </td>
                                         <td class="col-fit">
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                 data-ng-click="setCenter($index)"></button>
-                                            <button class="btn btn-outline-success btn-circle bi bi-person-fill-add"
-                                                data-ng-click="addOwnaer($index)"></button>
+                                            {{-- <button class="btn btn-outline-success btn-circle bi bi-person-fill-add"
+                                                data-ng-click="addOwnaer($index)"></button> --}}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -106,14 +107,14 @@
                         <form id="cenForm" method="post" action="/centers/submit" enctype="multipart/form-data">
                             @csrf
                             <input data-ng-if="centerUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="center_id" data-ng-value="centers[centerUpdate].id">
+                            <input type="hidden" name="center_id" data-ng-value="centers[centerUpdate].center_id">
                             <div class="row">
                                 {{-- name --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="fullName">Center Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name" maxlength="120"
-                                            data-ng-value="centers[centerUpdate].name" id="fullName">
+                                            data-ng-value="centers[centerUpdate].center_name" id="fullName">
                                     </div>
                                 </div>
 
@@ -122,14 +123,14 @@
                                     <div class="mb-3">
                                         <label for="mobile">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="mobile" maxlength="24"
-                                            data-ng-value="centers[centerUpdate].mobile" id="mobile" />
+                                            data-ng-value="centers[centerUpdate].center_mobile" id="mobile" />
                                     </div>
                                 </div>
                                 {{-- Whatsapp --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="Whatsapp">Whatsapp</label>
-                                        <input class="form-control" name="whatsapp" type="text"
+                                        <input class="form-control" name="center_whatsapp" type="text"
                                             data-ng-bind="centers[centerUpdate].center_whatsapp" id="Whatsapp">
                                     </div>
                                 </div>
@@ -139,7 +140,7 @@
                                         <label for="exampleInputEmail1">Email</label>
                                         <input type="email" class="form-control" name="email"
                                             id="exampleInputEmail1"
-                                            data-ng-value="centerUpdate !== false ? centers[centerUpdate].email : ''">
+                                            data-ng-value="centerUpdate !== false ? centers[centerUpdate].center_email : ''">
                                     </div>
                                 </div>
 
@@ -148,7 +149,7 @@
                                     <div class="mb-3">
                                         <label for="phoneT">Phone</label>
                                         <input type="text" class="form-control" name="tel" maxlength="24"
-                                            data-ng-value="centers[centerUpdate].tel" id="phoneT" />
+                                            data-ng-value="centers[centerUpdate].center_tel" id="phoneT" />
                                     </div>
                                 </div>
 
@@ -156,7 +157,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="TaxNumber">Tax Number</label>
-                                        <input type="text" class="form-control" name="tax_number" maxlength="24"
+                                        <input type="text" class="form-control" name="center_tax" maxlength="24"
                                             data-ng-value="centers[centerUpdate].center_tax" id="TaxNumber" />
                                     </div>
                                 </div>
@@ -165,7 +166,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="CrNumber">Cr Number</label>
-                                        <input type="text" class="form-control" name="cr_number" maxlength="24"
+                                        <input type="text" class="form-control" name="center_cr" maxlength="24"
                                             data-ng-value="centers[centerUpdate].center_cr" id="CrNumber" />
                                     </div>
                                 </div>
@@ -229,7 +230,24 @@
                                     <div class="mb-3">
                                         <label for="addressCenter">Address</label>
                                         <input type="text" class="form-control" name="address" id="addressCenter"
-                                            data-ng-value="centerUpdate !== false ? centers[centerUpdate].address : ''" />
+                                            data-ng-value="centerUpdate !== false ? centers[centerUpdate].center_address : ''" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-12">
+                                        <div class="mb-3">
+                                            <input type="search" class="form-control" name="search"
+                                                placeholder="Search..." id="search">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-12">
+                                        <div class="mb-3">
+                                            <label for="TechnicianName">Technician Name<b
+                                                    class="text-danger">&ast;</b></label>
+                                            <select class="form-control" name="technician_name"
+                                                id="TechnicianName"></select>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -301,7 +319,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="add_owner" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        {{-- <div class="modal fade" id="add_owner" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -376,7 +394,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     @endsection
     @section('js')
         <script>
@@ -447,7 +465,8 @@
                     dataType: 'json',
                     success: function(res) {
                         $.each(res, function(key, value) {
-                            $('#TechnicianName').append('<option id="class" value="' + value.id +
+                            $('#TechnicianName').append('<option id="class" value="' + value
+                                .tech_id +
                                 '">' + value.tech_name + '</option>');
                         });
                     }

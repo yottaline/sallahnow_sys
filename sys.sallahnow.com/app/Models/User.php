@@ -19,13 +19,17 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'user_id',
+        'user_name',
         'email',
         'password',
-        'mobile',
-        'active',
-        'user_group_id'
+        'user_mobile',
+        'user_active',
+        'user_group',
+        'user_create'
     ];
+
+    public $timestamps = false;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -33,7 +37,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'user_password',
         'remember_token',
     ];
 
@@ -52,7 +56,7 @@ class User extends Authenticatable
     }
 
     public function role() {
-        return $this->belongsTo(User_group::class, 'user_group_id');
+        return $this->belongsTo(User_group::class, 'user_group', 'ugroup_id');
     }
 
     public function brands () {

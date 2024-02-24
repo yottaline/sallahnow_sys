@@ -69,10 +69,10 @@
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="sugg in suggestions track by $index">
-                                        <td data-ng-bind="sugg.id"></td>
-                                        <td data-ng-bind="cateName[$index].name"></td>
-                                        <td data-ng-bind="technicianName[$index].name"></td>
-                                        <td data-ng-bind="userName[$index].name"></td>
+                                        <td data-ng-bind="sugg.sugg_id"></td>
+                                        <td data-ng-bind="sugg.category_name"></td>
+                                        <td data-ng-bind="sugg.tech_name"></td>
+                                        <td data-ng-bind="sugg.name"></td>
                                         <td>
                                             <span
                                                 class="badge bg-<%statusObj.color[sugg.status]%> rounded-pill font-monospace"><%statusObj.name[sugg.status]%></span>
@@ -146,7 +146,8 @@
         <!-- end add new suggestion  Modal -->
 
 
-        {{-- <div class="modal fade" id="compatibilityForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        {{-- <div class="modal fade" id="compatibilityForm" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -230,23 +231,24 @@
                         $scope.page++;
                     });
                 }, 'json');
-                $.post("/CompatibilityCategories/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.categories = data;
-                    });
-                }, 'json');
 
-                $.post("/technicians/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.technicians = data;
-                    });
-                }, 'json');
+                // $.post("/CompatibilityCategories/load/", {
+                //     _token: '{{ csrf_token() }}'
+                // }, function(data) {
+                //     $('.loading-spinner').hide();
+                //     $scope.$apply(() => {
+                //         $scope.categories = data;
+                //     });
+                // }, 'json');
+
+                // $.post("/technicians/load/", {
+                //     _token: '{{ csrf_token() }}'
+                // }, function(data) {
+                //     $('.loading-spinner').hide();
+                //     $scope.$apply(() => {
+                //         $scope.technicians = data;
+                //     });
+                // }, 'json');
             }
 
             $scope.setSuggestion = (indx) => {
@@ -254,44 +256,7 @@
                 $('#suggestionForm').modal('show');
             };
 
-            $scope.getCateName = function() {
-                $.post("/suggestions/getCateName/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.cateName = data;
-                    });
-                }, 'json');
-            }
-
-            $scope.getTechnicianName = function() {
-                $.post("/suggestions/getTechnicianName/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.technicianName = data;
-                    });
-                }, 'json');
-            }
-
-            $scope.getUserName = function() {
-                $.post("/suggestions/getUserName/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.userName = data;
-                    });
-                }, 'json');
-            }
-
             $scope.dataLoader();
-            $scope.getCateName();
-            $scope.getTechnicianName();
-            $scope.getUserName();
-            scope = $scope;
         });
 
         $(function() {

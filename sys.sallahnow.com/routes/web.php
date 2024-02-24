@@ -13,7 +13,7 @@ Route::prefix('users')->middleware(['auth', 'verified'])->group(function () {
     Route::post('search/{item}', 'UserController@search');
     Route::match(['post', 'put'], 'submit', 'UserController@submit');
     Route::put('update', 'UserController@update')->name('user_update');
-    Route::put('update/active', 'UserController@updateActive')->name('user_update_active');
+    Route::put('update/active', 'UserController@updateActive');
     Route::get('add_role', 'UserController@addRole')->name('user_add_role');
     Route::post('add_role_to_user/{user}', 'UserController@addRoleToUser')->name('user_add_role_to_user');
     Route::delete('delete/user', 'UserController@delete')->name('user_delete');
@@ -91,11 +91,8 @@ Route::prefix('compatibilities')->middleware('auth')->group(function () {
 Route::prefix('suggestions')->middleware('auth')->group(function () {
     Route::get('/', 'CompatibilitiesSuggestionsController@index');
     Route::post('load', 'CompatibilitiesSuggestionsController@load');
-    // Route::post('store', 'CompatibilitiesSuggestionsController@store')->name('i.suggestions');
+    Route::post('store', 'CompatibilitiesSuggestionsController@store')->name('i.suggestions');
     Route::match(['post', 'put'], 'submit', 'CompatibilitiesSuggestionsController@submit');
-    Route::post('getCateName', 'CompatibilitiesSuggestionsController@getCateName');
-    Route::post('getTechnicianName', 'CompatibilitiesSuggestionsController@getTechnicianName');
-    Route::post('getUserName', 'CompatibilitiesSuggestionsController@getUserName');
 
 });
 
@@ -118,7 +115,7 @@ Route::prefix('transactions')->middleware('auth')->group( function() {
     Route::get('/' , 'TransactionController@index');
     Route::post('load', 'TransactionController@load');
     Route::match(['post', 'put'], 'submit', 'TransactionController@submit');
-    Route::post('subTranTechnician', 'TransactionController@technicianName');
+    // Route::post('subTranTechnician', 'TransactionController@technicianName');
     Route::put('change', 'TransactionController@changeProcess');
     Route::get('profile/{reference}', 'TransactionController@profile');
 });

@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('models', function (Blueprint $table) {
-            $table->id();
+            $table->integer('model_id')->autoIncrement();
             $table->string('model_name', 24);
             $table->string('model_photo', 120);
             $table->string('model_url', 120);
+            $table->integer('model_brand');
             $table->boolean('model_visible')->default(1);
-            $table->foreignId('brand_id')->constrained('brands')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
+            // $table->timestamps();
+
+            $table->foreign('model_brand')->references('brand_id')->on('brands');
         });
     }
 

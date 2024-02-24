@@ -8,18 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Subscriptions extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
+        'sub_id',
         'sub_start',
         'sub_end',
         'sub_status',
-        'technician_id',
-        'package_id',
-        'sub_package_points',
-        'sub_package_cost',
-        'sub_package_period',
-        'package_priv',
-        'sub_register_by'
+        'sub_tech',
+        'sub_pkg',
+        'sub_points',
+        'sub_cost',
+        'sub_period',
+        'sub_priv',
+        'sub_register_by',
+        'sub_register'
     ];
 
     public function technicians() {

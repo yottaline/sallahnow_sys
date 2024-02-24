@@ -104,7 +104,8 @@
                         <form id="techForm" method="post" action="/technicians/submit">
                             @csrf
                             <input data-ng-if="updateTechnician !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="technician_id" data-ng-value="technicians[updateTechnician].id">
+                            <input type="hidden" name="technician_id"
+                                data-ng-value="technicians[updateTechnician].tech_id">
                             <div class="row">
                                 {{-- name --}}
                                 <div class="col-12 col-md-6">
@@ -120,7 +121,7 @@
                                     <div class="mb-3">
                                         <label for="identificationT">Identification</label>
                                         <input class="form-control" name="identification" type="text"
-                                            data-ng-bind="technicians[updateTechnician].tech_identification"
+                                            data-ng-value="technicians[updateTechnician].tech_identification"
                                             id="IdentificationT">
                                     </div>
                                 </div>

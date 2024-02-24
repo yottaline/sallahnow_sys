@@ -18,8 +18,10 @@ class CompatibilityController extends Controller
     }
 
     public function load(){
-        $compatibiliy = Compatibility::all();
-        echo json_encode($compatibiliy);
+        $compatibilities = DB::table('compatibilities')
+        ->join('compatibility_categories', 'compatibilities.compat_category', '=', 'compatibility_categories.category_id')
+        ->limit(15)->offset(0)->get();
+        echo json_encode($compatibilities);
     }
 
     public function submit(Request $request){

@@ -10,11 +10,12 @@ class User_group extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_group_name',
-        'user_group_privileges'
+        'ugroup_id',
+        'ugroup_name',
+        'ugroup_privileges'
     ];
 
-    // public $timestamps = false;
+    public $timestamps = false;
 
     public function user() {
         return $this->hasOne(User::class);

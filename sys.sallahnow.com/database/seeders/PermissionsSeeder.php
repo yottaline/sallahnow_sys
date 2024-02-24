@@ -16,8 +16,8 @@ class PermissionsSeeder extends Seeder
     public function run(): void
     {
         $user = new User_group();
-        $user->user_group_name = 'Admin';
-        $user->user_group_privileges = '[add-users,view-users,update-users]';
+        $user->ugroup_name = 'Admin';
+        $user->ugroup_privileges = '[add-users,view-users,update-users]';
         $user->save();
         // User_group::create([
         //     'user_group_name' => 'Admin',

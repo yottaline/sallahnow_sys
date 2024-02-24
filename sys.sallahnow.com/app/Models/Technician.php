@@ -10,33 +10,43 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Technician extends Authenticatable implements JWTSubject
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
+        'tech_id',
         'tech_center',
         'tech_name',
         'tech_code',
         'tech_email',
+        'tech_email_verefied',
         'tech_mobile',
+        'tech_mobile_verefied',
         'tech_tel',
         'tech_password',
         'tech_identification',
         'tech_birth',
-        'country_id',
-        'state_id',
-        'city_id',
-        'area_id',
+        'tech_country',
+        'tech_state',
+        'tech_city',
+        'tech_area',
+        'tech_rate',
+        'tech_pkg',
+        'tech_points',
         'tech_address',
         'tech_bio',
         'tech_notes',
         'devise_token',
         'tech_blocked',
         'tech_login',
+        'tech_modify',
         'tech_credit',
-        'user_id'
+        'tech_register_by',
+        'tech_modify_by',
+        'tech_register'
     ];
 
     public function user() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'tech_register_by');
     }
 
     public function suggestions() {

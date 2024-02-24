@@ -8,15 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable =[
+        'trans_id',
         'trans_method',
         'trans_amount',
         'trans_process',
-        'trans_reference',
+        'trans_ref',
         'trans_create_by',
-        'technician_id',
-        'reference'
+        'trans_tech'
     ];
     protected $casts = [
         'created_at'  => 'date:Y-m-d',

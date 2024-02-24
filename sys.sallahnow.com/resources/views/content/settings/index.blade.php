@@ -455,8 +455,8 @@
                                     </thead>
                                     <tbody>
                                         <tr data-ng-repeat="cate in compatibility_categories">
-                                            <td data-ng-bind="cate.id"></td>
-                                            <td data-ng-bind="cate.cate_name"></td>
+                                            <td data-ng-bind="cate.category_id"></td>
+                                            <td data-ng-bind="cate.category_name"></td>
                                             <td>
                                                 <div class="col-fit">
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -486,12 +486,12 @@
                             <form method="POST" action="/CompatibilityCategories/submit/"> @csrf <input
                                     data-ng-if="updateCompCate !== false" type="hidden" name="_method" value="put">
                                 <input type="hidden" name="cate_id"
-                                    data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].id : 0">
+                                    data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_id : 0">
                                 <div class="mb-3">
                                     <label for="CompatibilityCategoriesName">Compatibility Categories Name<b
                                             class="text-danger">&ast;</b></label>
                                     <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].name : ''"
+                                        data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_name : ''"
                                         id="CompatibilityCategoriesName" />
                                 </div>
                                 <div class="d-flex">
@@ -534,7 +534,7 @@
                             <div class="d-flex">
                                 <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
                                     <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
-                                        role="status"></span><span>PACGAGES</span>
+                                        role="status"></span><span>PACKAGES</span>
                                 </h5>
                                 <div>
                                     <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
