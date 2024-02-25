@@ -411,6 +411,27 @@ CREATE TABLE IF NOT EXISTS `posts` (
 
 -- --------------------------------------------------------
 
+DROP TABLE IF EXISTS `posts_comments`;
+CREATE TABLE IF NOT EXISTS `posts_comments` (
+  `comment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `comment_post` INT UNSIGNED NOT NULL,
+  `comment_context` VARCHAR(2048) NOT NULL,
+  `comment_visible` BOOLEAN DEFAULT NULL,
+  `comment_review` INT UNSIGNED DEFAULT NULL,
+  `comment_parent` INT UNSIGNED DEFAULT NULL,
+  `comment_user` INT UNSIGNED DEFAULT NULL,
+  `comment_tech` INT UNSIGNED DEFAULT NULL,
+  `comment_create` DATETIME NOT NULL,
+  PRIMARY KEY (`comment_id`),
+  KEY `comment_post` (`comment_post`),
+  KEY `comment_parent` (`comment_parent`),
+  KEY `comment_review` (`comment_review`),
+  KEY `comment_user` (`comment_user`),
+  KEY `comment_tech` (`comment_tech`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `posts_likes` (
   `like_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `like_tech` INT UNSIGNED NOT NULL,
