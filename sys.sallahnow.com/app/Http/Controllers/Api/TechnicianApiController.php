@@ -8,6 +8,11 @@ use App\Models\Compatibility;
 use App\Models\Compatibility_categorie;
 use App\Models\Models;
 use App\Models\Package;
+use App\Models\Post;
+use App\Models\Post_Comment;
+use App\Models\Post_Like;
+use App\Models\Post_View;
+use App\Models\Post_Views;
 use App\Models\Subscriptions;
 use App\Models\Technician;
 use App\ResponseApi;
@@ -28,7 +33,7 @@ class TechnicianApiController extends Controller
         $request->validate([
             'tech_name'         => 'required',
             'tech_mobile'       => 'required|numeric',
-            'tech_password'     => 'required',
+            'password'     => 'required',
             'country_id'   => 'required',
             'state_id'     => 'required',
             'city_id'      => 'required',
@@ -37,13 +42,13 @@ class TechnicianApiController extends Controller
 
 
         $code = strtoupper($this->uniqidReal());
-        $password_hash = Hash::make($request->tech_password);
+        // $password_hash = ;
      $status  = Technician::create([
             'tech_name'            => $request->tech_name,
             'tech_email'           => $request->tech_email,
             'tech_mobile'          => $request->tech_mobile,
             'tech_tel'             => $request->tel,
-            'tech_password'        => $password_hash,
+            'password'        => Hash::make($request->password),
             'tech_identification'  => $request->identification,
             'tech_birth'           => $request->birth,
             'tech_country'           => $request->country_id,
@@ -52,55 +57,27 @@ class TechnicianApiController extends Controller
             'tech_area'              => $request->area_id,
             'tech_address'           => $request->address,
             'tech_bio'               => $request->bio,
-            'devise_token'           => '0asf10500845d40b91',
+            'devise_token'           => '09"uid"f10900845d40b91',
             'tech_register_by'       => 1,
             'tech_code'              => $code,
             'tech_register'             => now()
         ]);
 
-        $technician_mobile = Technician::where('tech_mobile', $status->tech_mobile)->first();
-        if(!$technician_mobile){
-            return $this->returnError('the mobile not found', '420');
-        }
-        else{
-            if($technician_mobile->tech_blocked == 0){
-                return $password_hash . $technician_mobile->tech_password;
-                if($technician_mobile->tech_password == $password_hash){
-                    return $this->returnSuccess('register success');
-                }
-                else{
-                    return $this->returnError('the password not found', '451');
-                }
+        $credentials = request(['tech_mobile', 'password']);
 
-            }else{
-                return $this->returnError('the technician has blocked', '423');
-            }
+        if (! $token = auth('technician-api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // if( auth('technician-api')->attempt() =){
-        //     return 1;
-        // }else{
-        //     return 12;
-        // }
-
-        // $credentials = request(['tech_mobile', 'tech_password']);
-
-        // if ( = auth('technician-api')->attempt($credentials)) {
-        //     return response()->json(['error' => 'Unauthorized'], 401);
-        // }
-
-        // return $this->respondWithToken($token);
+        return $this->respondWithToken($token);
     }
 
 
     public function login()
     {
-        return request(['tech_mobile', 'tech_password']);
-
-        $credentials = request(['tech_mobile', 'tech_password']);
-
-        if (!$token = auth('technician-api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 104);
+        $credentials = request(['tech_mobile', 'password']);
+        if (! $token = auth('technician-api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
@@ -140,7 +117,7 @@ class TechnicianApiController extends Controller
             'address'         => $request->address,
             'bio'             => $request->bio,
             'login'           => $request->login,
-            'devise_token'    => '03df25c845d460bcdad7802d2vf6fc1dfde972',
+            'devise_token'    => '03df25c845ds460bcdad7802d2vf6fc1dfde972',
             'user_id'         => 1,
             'code'            => $code
         ]);
@@ -205,7 +182,7 @@ class TechnicianApiController extends Controller
             $status = Subscriptions::where('id',  $id)->update(['status' => 1]);
         }
         if(!$status){
-            return $this->returnError('status not change');
+            return $this->returnError('status not change', '100');
         }
         return $this->returnSuccess('status change successfully');
     }
@@ -243,12 +220,110 @@ class TechnicianApiController extends Controller
         return response()->json('created',$status);
     }
 
+    // posts
+    public function getPost(){
+        $posts = Post::all();
+        return $this->returnData('posts', $posts);
+    }
+
+    public function storePost(Request $request){
+        $request->validate([
+            'title'  => 'required',
+            'body'   => 'required'
+        ]);
+        $code = strtoupper($this->uniqidReal());
+        if($request->file('photo')){ #if has photo add photo
+
+            $photo = $request->file('photo');
+            $photoName = $photo->getClientOriginalName();
+            $photo->move('media/' , $photoName);
+            $photoPath = url('media/', $photoName);
+
+            $status = Post::create([
+                'post_code'        => $code,
+                'post_title'       => $request->title,
+                'post_body'        => $request->body,
+                'post_photo'       => $photoName,
+                'post_create_tech' => auth()->user()->id,
+                'post_archive_time' => now(),
+                'post_delete_user' => 0,
+                'post_create_time' => now()
+            ]);
+            $id =  $status->post_id;
+        }
+        else { # is not have a photo
+
+            $status = Post::create([
+                'post_code'        => $code,
+                'post_title'       => $request->title,
+                'post_body'        => $request->body,
+                'post_create_tech' => auth()->user()->id,
+                'post_archive_time' => now(),
+                'post_delete_user' => 0,
+                'post_create_time' => now()
+            ]);
+            $id =  $status->post_id;
+        }
+        $data = Post::where('post_id', $id)->first();
+        return $this->returnData('post', $data, 'post has created successfully');
+    }
+
+    public function addLike(Request $request) {
+        $request->validate([
+            'like_tech' => 'required|numeric',
+            'like_post' => 'required|numeric'
+        ]);
+
+        Post_Like::create([
+            'like_tech' => $request->like_tech,
+            'like_post' => $request->like_post
+        ]);
+        return $this->returnSuccess('Like post successfully');
+    }
+
+    public function showComment($post_id) {
+        $comments = Post_Comment::where('comment_post', $post_id)->get();
+        return $this->returnData('comments', $comments);
+    }
+
+    public function addComment(Request $request) {
+
+        $request->validate([
+            'comment_post'  => 'required|numeric',
+            'comment_context' => 'required',
+        ]);
+
+      Post_Comment::create([
+            'comment_post'      => $request->comment_post,
+            'comment_context'   => $request->comment_context,
+            'comment_tech'      => $request->comment_tech,
+            'comment_create'    => now()
+        ]);
+        return $this->returnSuccess('Comment created successfully');
+    }
+
+    public function postView($post_id) {
+        $views = Post_View::where('view_post', $post_id)->get();
+        return $this->returnData('post_views', $views);
+    }
+
+    public function addView(Request $request) {
+      $data = Post_View::create([
+            'view_device'  => $request->view_device,
+            'view_tech'    => $request->view_tech,
+            'view_post'    => $request->view_post
+        ]);
+        return $this->returnData('view', $data, 'post has created successfully');
+    }
+
+
+
     protected function respondWithToken($token)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('technician-api')->factory()->getTTL() * 999999
+            'expires_in' => auth('technician-api')->factory()->getTTL() * 9999
         ]);
     }
 
