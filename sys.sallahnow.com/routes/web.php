@@ -127,6 +127,22 @@ Route::prefix('points')->middleware('auth')->group( function() {
     Route::post('subPointTechnician', 'PointTranactionController@technicianName');
     Route::get('profile/{id}', 'TransactionController@profile');
 });
+
+Route::prefix('posts')->middleware('auth')->group( function() {
+    Route::get('/', 'PostController@index');
+    Route::post('load', 'PostController@load');
+    Route::get('create', 'PostController@create');
+    Route::get('create', 'PostController@create');
+    Route::get('edit/{code}', 'PostController@edit');
+    Route::post('submit','PostController@submit');
+    Route::post('update-data','PostController@updateData');
+    Route::post('add-attach', 'PostController@addAttach');
+    Route::delete('delete', 'PostController@delete');
+    // comments
+    Route::post('get-comment', 'PostController@getComment');
+    Route::post('add-comment', 'PostController@addComment');
+});
+
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');
     Route::get('load', 'SettingController@load');

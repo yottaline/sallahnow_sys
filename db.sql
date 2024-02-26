@@ -379,35 +379,56 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `post_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `post_code` VARCHAR(12) NOT NULL,
   `post_title` VARCHAR(255) NOT NULL,
-  `post_brief` VARCHAR(2048) NOT NULL,
-  `post_file` VARCHAR(24) NOT NULL,
-  `post_photo` VARCHAR(24) NOT NULL,
-  `post_languages` VARCHAR(255) NOT NULL COMMENT 'en,ar,fr',
+  `post_body` VARCHAR(2048) NOT NULL,
+  `post_file` VARCHAR(24) DEFAULT NULL,
+  `post_photo` VARCHAR(24) DEFAULT NULL,
   `post_type` TINYINT UNSIGNED NOT NULL DEFAULT '1',
   `post_cost` INT UNSIGNED NOT NULL DEFAULT '0',
-  `post_published` TINYINT UNSIGNED NOT NULL DEFAULT '0',
-  `post_publish_user` INT UNSIGNED DEFAULT NULL,
-  `post_publish_time` DATETIME DEFAULT NULL,
-  `post_archived` TINYINT UNSIGNED NOT NULL DEFAULT '0',
+  `post_allow_comments` BOOLEAN NOT NULL DEFAULT '1',
+  `post_archived` BOOLEAN NOT NULL DEFAULT '0',
   `post_archive_user` INT UNSIGNED DEFAULT NULL,
   `post_archive_time` DATETIME DEFAULT NULL,
-  `post_deleted` TINYINT UNSIGNED NOT NULL DEFAULT '0',
+  `post_deleted` BOOLEAN NOT NULL DEFAULT '0',
   `post_delete_user` INT UNSIGNED NOT NULL,
   `post_delete_time` DATETIME DEFAULT NULL,
   `post_views` INT UNSIGNED NOT NULL DEFAULT '0',
   `post_likes` INT UNSIGNED NOT NULL DEFAULT '0',
-  `post_create_user` INT UNSIGNED NOT NULL,
+  `post_create_tech` INT UNSIGNED DEFAULT NULL,
+  `post_create_user` INT UNSIGNED DEFAULT NULL,
   `post_create_time` DATETIME NOT NULL,
+  `post_modify_tech` INT UNSIGNED DEFAULT NULL,
   `post_modify_user` INT UNSIGNED DEFAULT NULL,
   `post_modify_time` DATETIME DEFAULT NULL,
   PRIMARY KEY (`post_id`),
   KEY `post_code` (`post_code`),
-  KEY `post_publish_user` (`post_publish_user`),
   KEY `post_archive_user` (`post_archive_user`),
   KEY `post_delete_user` (`post_delete_user`),
+  KEY `post_create_tech` (`post_create_tech`),
   KEY `post_create_user` (`post_create_user`),
+  KEY `post_modify_tech` (`post_modify_tech`)
   KEY `post_modify_user` (`post_modify_user`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `posts_comments`;
+CREATE TABLE IF NOT EXISTS `posts_comments` (
+  `comment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `comment_post` INT UNSIGNED NOT NULL,
+  `comment_context` VARCHAR(2048) NOT NULL,
+  `comment_visible` BOOLEAN DEFAULT NULL,
+  `comment_review` INT UNSIGNED DEFAULT NULL,
+  `comment_parent` INT UNSIGNED DEFAULT NULL,
+  `comment_user` INT UNSIGNED DEFAULT NULL,
+  `comment_tech` INT UNSIGNED DEFAULT NULL,
+  `comment_create` DATETIME NOT NULL,
+  PRIMARY KEY (`comment_id`),
+  KEY `comment_post` (`comment_post`),
+  KEY `comment_parent` (`comment_parent`),
+  KEY `comment_review` (`comment_review`),
+  KEY `comment_user` (`comment_user`),
+  KEY `comment_tech` (`comment_tech`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 

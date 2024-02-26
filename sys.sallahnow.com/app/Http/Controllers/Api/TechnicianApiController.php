@@ -25,7 +25,6 @@ class TechnicianApiController extends Controller
 
     public function register(Request $request)
     {
-
         $request->validate([
             'tech_name'         => 'required',
             'tech_mobile'       => 'required|numeric',
@@ -38,33 +37,59 @@ class TechnicianApiController extends Controller
 
 
         $code = strtoupper($this->uniqidReal());
-        Technician::create([
+        $password_hash = Hash::make($request->tech_password);
+     $status  = Technician::create([
             'tech_name'            => $request->tech_name,
             'tech_email'           => $request->tech_email,
             'tech_mobile'          => $request->tech_mobile,
             'tech_tel'             => $request->tel,
-            'tech_password'        => Hash::make($request->tech_password),
-            'tech_identification'       => $request->identification,
+            'tech_password'        => $password_hash,
+            'tech_identification'  => $request->identification,
             'tech_birth'           => $request->birth,
-            'country_id'           => $request->country_id,
-            'state_id'             => $request->state_id,
-            'city_id'              => $request->city_id,
-            'area_id'              => $request->area_id,
-            'tech_address'         => $request->address,
-            'tech_bio'             => $request->bio,
-            'devise_token'         => '03df25c845d460bcd',
-            'user_id'              => 1,
-            'tech_code'            => $code,
-            'tech_login'           => now()
+            'tech_country'           => $request->country_id,
+            'tech_state'             => $request->state_id,
+            'tech_city'              => $request->city_id,
+            'tech_area'              => $request->area_id,
+            'tech_address'           => $request->address,
+            'tech_bio'               => $request->bio,
+            'devise_token'           => '0asf10500845d40b91',
+            'tech_register_by'       => 1,
+            'tech_code'              => $code,
+            'tech_register'             => now()
         ]);
 
-        $credentials = request(['tech_mobile', 'tech_password']);
+        $technician_mobile = Technician::where('tech_mobile', $status->tech_mobile)->first();
+        if(!$technician_mobile){
+            return $this->returnError('the mobile not found', '420');
+        }
+        else{
+            if($technician_mobile->tech_blocked == 0){
+                return $password_hash . $technician_mobile->tech_password;
+                if($technician_mobile->tech_password == $password_hash){
+                    return $this->returnSuccess('register success');
+                }
+                else{
+                    return $this->returnError('the password not found', '451');
+                }
 
-        if (!$token = auth('technician-api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            }else{
+                return $this->returnError('the technician has blocked', '423');
+            }
         }
 
-        return $this->respondWithToken($token);
+        // if( auth('technician-api')->attempt() =){
+        //     return 1;
+        // }else{
+        //     return 12;
+        // }
+
+        // $credentials = request(['tech_mobile', 'tech_password']);
+
+        // if ( = auth('technician-api')->attempt($credentials)) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
+
+        // return $this->respondWithToken($token);
     }
 
 

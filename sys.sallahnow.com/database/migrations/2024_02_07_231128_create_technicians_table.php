@@ -40,7 +40,7 @@ return new class extends Migration
             $table->boolean('tech_modify_by')->nullable();
             $table->string('devise_token')->unique();
             $table->boolean('tech_blocked')->default(0);
-            $table->date('tech_login')->nullable();
+            $table->dateTime('tech_login')->nullable();
             $table->integer('tech_register_by');
             $table->date('tech_register');
             // $table->timestamps();

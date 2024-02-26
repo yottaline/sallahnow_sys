@@ -65,6 +65,14 @@ class Technician extends Authenticatable implements JWTSubject
         return $this->hasMany(Transaction::class);
     }
 
+    public function likes() {
+        return $this->hasMany(Post_Like::class, 'like_tech', 'tech_id');
+    }
+
+    public function comments() {
+        return $this->hasMany(Post_Comment::class);
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
