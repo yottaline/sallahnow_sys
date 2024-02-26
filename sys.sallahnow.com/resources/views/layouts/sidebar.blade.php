@@ -49,11 +49,11 @@
                  </a>
              </li>
 
-             {{-- <li class="list-group-item nav-news">
-                 <a class="link-dark d-block" href="{{ route('permission_index') }}">
-                     <i class="bi bi-ui-checks text-secondary me-2"></i><b>Permissions</b>
+             <li class="list-group-item nav-news">
+                 <a class="link-dark d-block" href="/posts/">
+                     <i class="bi bi-file-post-fill text-secondary me-2"></i><b>Posts</b>
                  </a>
-             </li> --}}
+             </li>
 
              <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#paymentsCollapse" role="button"
@@ -76,11 +76,11 @@
 
                          <li class="list-group-item nav-trans">
                              <a class="link-dark d-block" href="/points/">
-                                 <i class="bi bi-credit-card text-secondary me-2"></i><b>Points</b>
+                                 <i class="bi bi-ticket-perforated text-secondary me-2"></i><b>Points</b>
                              </a>
                          </li>
 
-                         <li class="list-group-item nav-refunds">
+                         {{-- <li class="list-group-item nav-refunds">
                              <a class="link-dark d-block" href="">
                                  <i class="bi bi-arrow-left-right text-secondary me-2"></i><b>Refund Requests</b>
                              </a>
@@ -90,7 +90,7 @@
                              <a class="link-dark d-block" href="#">
                                  <i class="bi bi-ticket-perforated text-secondary me-2"></i><b>Promocodes</b>
                              </a>
-                         </li>
+                         </li> --}}
                      </ul>
                  </div>
                  <script>

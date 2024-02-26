@@ -70,4 +70,8 @@ class User extends Authenticatable
         return $this->hasMany(Compatibilities_suggestions::class);
     }
 
+    public function comments() {
+        return $this->hasMany(Post_Comment::class);
+    }
+
 }

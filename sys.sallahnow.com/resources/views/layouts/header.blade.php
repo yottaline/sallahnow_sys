@@ -57,6 +57,10 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-sanitize.js"></script>
 
+
+
+
+
     @yield('style')
 
     <link rel="stylesheet" href="{{ asset('/assets/css/style.css?v=1.0.0') }}">

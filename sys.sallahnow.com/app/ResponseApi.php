@@ -4,11 +4,11 @@ namespace App;
 trait ResponseApi {
 
     // return error msg
-    public function returnError($msg){
+    public function returnError($msg, $number){
         return response() -> json(
             [
                 'status' => false,
-                'status_number'    => '460',
+                'status_number'    => $number,
                 'msg'    => $msg
             ]
         );
