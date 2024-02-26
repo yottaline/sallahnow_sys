@@ -6,6 +6,7 @@ use App\Models\Technician;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Hash;
 
 // use function Pest\Laravel\json;
@@ -35,7 +36,7 @@ class TechnicianController extends Controller
         $request->validate([
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
-           ]);
+        ]);
 
         $param = [
             'tech_name'              => $request->name,
@@ -61,7 +62,9 @@ class TechnicianController extends Controller
             $param['devise_token'] = 'q';
             $param['tech_register_by'] = Auth::user()->id;
             $status = Technician::create($param);
+
            $id = $status->tech_id;
+
         } else {
             $status = Technician::where('tech_id', $id)->update($param);
         }
