@@ -9,7 +9,7 @@ class Post_Comment extends Model
 {
     use HasFactory;
     public $timestamps = false;
-
+    public $table = 'post_comments';
     protected $fillable = [
         'comment_id',
         'comment_post',

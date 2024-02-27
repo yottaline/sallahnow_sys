@@ -38,6 +38,10 @@ class Post extends Model
         return $this->hasMany(Post_Like::class, 'like_post', 'post_id');
     }
 
+    public function views() {
+        return $this->hasMany(Post_View::class);
+    }
+
     public function comments() {
         return $this->hasMany(Post_Comment::class);
     }

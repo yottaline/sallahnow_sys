@@ -11,6 +11,7 @@ class Technician extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     public $timestamps = false;
+    protected $primaryKey = 'tech_id';
 
     protected $fillable = [
         'tech_id',
@@ -22,7 +23,7 @@ class Technician extends Authenticatable implements JWTSubject
         'tech_mobile',
         'tech_mobile_verefied',
         'tech_tel',
-        'tech_password',
+        'password',
         'tech_identification',
         'tech_birth',
         'tech_country',
@@ -73,6 +74,11 @@ class Technician extends Authenticatable implements JWTSubject
         return $this->hasMany(Post_Comment::class);
     }
 
+    public function post_views() {
+        return $this->hasMany(Post_View::class);
+    }
+
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -85,11 +91,11 @@ class Technician extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return ['tech_id'];
     }
 
     public function getAuthPassword()
 {
-    return $this->tech_password;
+    return $this->password;
 }
 }
