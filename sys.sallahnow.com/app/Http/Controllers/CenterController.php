@@ -34,11 +34,11 @@ class CenterController extends Controller
         ]);
 
         $logo = $request->file('logo');
-        $logoName = $logo->hashName();
-        $location = 'Image/';
+        $logoName = $logo->getClientOriginalName();
+        $location = 'Image/Centers/';
         $logo->move($location , $logoName);
 
-        $logoPath = url('Image/', $logoName);
+        $logoPath = url($location, $logoName);
 
         $parm = [
             'center_name'       => $request->name,
@@ -46,7 +46,7 @@ class CenterController extends Controller
             'center_whatsapp'   => $request->center_whatsapp,
             'center_email'      => $request->email,
             'center_tel'        => $request->tel,
-            'center_logo'       => $logoPath,
+            'center_logo'       => $logoName,
             'center_tax'        => $request->center_tax,
             'center_cr'         => $request->center_cr,
             'center_country'    => $request->country_id,
@@ -57,8 +57,6 @@ class CenterController extends Controller
             'center_owner'      => $request->technician_name,
             'center_create'     => Carbon::now()
             ];
-
-
 
         $id = $request->center_id;
         if(!$id) {

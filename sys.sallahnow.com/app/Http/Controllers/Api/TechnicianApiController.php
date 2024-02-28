@@ -33,7 +33,7 @@ class TechnicianApiController extends Controller
         $request->validate([
             'tech_name'         => 'required',
             'tech_mobile'       => 'required|numeric',
-            'password'     => 'required',
+            'tech_password'     => 'required',
             'country_id'   => 'required',
             'state_id'     => 'required',
             'city_id'      => 'required',
@@ -48,7 +48,7 @@ class TechnicianApiController extends Controller
             'tech_email'           => $request->tech_email,
             'tech_mobile'          => $request->tech_mobile,
             'tech_tel'             => $request->tel,
-            'password'        => Hash::make($request->password),
+            'tech_password'        => Hash::make($request->password),
             'tech_identification'  => $request->identification,
             'tech_birth'           => $request->birth,
             'tech_country'           => $request->country_id,
@@ -57,13 +57,13 @@ class TechnicianApiController extends Controller
             'tech_area'              => $request->area_id,
             'tech_address'           => $request->address,
             'tech_bio'               => $request->bio,
-            'devise_token'           => '09"uid"f10900845d40b91',
+            'devise_token'           => '09"uid"10900845d40b91',
             'tech_register_by'       => 1,
             'tech_code'              => $code,
             'tech_register'             => now()
         ]);
 
-        $credentials = request(['tech_mobile', 'password']);
+        $credentials = request(['tech_mobile', 'tech_password']);
 
         if (! $token = auth('technician-api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);

@@ -205,7 +205,6 @@
                                             <th>#</th>
                                             <th>Name</th>
                                             <th>Logo</th>
-                                            <th>User Name</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -214,9 +213,10 @@
                                             <td data-ng-bind="brand.id"></td>
                                             <td data-ng-bind="brand.brand_name"></td>
                                             <td>
-                                                <img alt="" ng-src="<% brand.brand_logo %>" width="30px">
+                                                <img alt=""
+                                                    ng-src="{{ asset('/Image/Brands/') }}/<% brand.brand_logo %>"
+                                                    width="30px">
                                             </td>
-                                            <td data-ng-bind="userName[$index].name"></td>
                                             <td>
                                                 <div class="col-fit">
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -246,11 +246,11 @@
                                 @csrf
                                 <input data-ng-if="updateBrand !== false" type="hidden" name="_method" value="put">
                                 <input type="hidden" name="brand_id"
-                                    data-ng-value="updateBrand !== false ? brands[updateBrand].id : 0">
+                                    data-ng-value="updateBrand !== false ? brands[updateBrand].brand_id : 0">
                                 <div class="mb-3">
                                     <label for="brandName">Brand Name<b class="text-danger">&ast;</b></label>
                                     <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateBrand !== false ? brands[updateBrand].name : ''"
+                                        data-ng-value="updateBrand !== false ? brands[updateBrand].brand_name : ''"
                                         id="brandName" />
                                 </div>
                                 <div class="mb-3">
@@ -317,20 +317,20 @@
                                             <th>Name</th>
                                             <th>Photo</th>
                                             <th>Brand Name</th>
-                                            <th>User Name</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr data-ng-repeat="model in models">
-                                            <td data-ng-bind="model.id"></td>
-                                            <td data-ng-bind="model.name"></td>
+                                            <td data-ng-bind="model.model_id"></td>
+                                            <td data-ng-bind="model.model_name"></td>
                                             <td>
-                                                <img alt="" ng-src="<% model.photo %>" width="30px">
+                                                <img alt=""
+                                                    ng-src="{{ asset('/Image/Models/') }}/<% model.model_photo %>"
+                                                    width="30px">
                                             </td>
-                                            <td data-ng-bind="brandName[$index].name">
+                                            <td data-ng-bind="model.brand_name">
                                             </td>
-                                            <td data-ng-bind="userName[$index].name"></td>
                                             <td>
                                                 <div class="col-fit">
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -388,8 +388,8 @@
                                     <label for="ModelBrandName">Brand Name<b class="text-danger">&ast;</b></label>
                                     <select name="brand" class="form-control" id="ModelBrandName">
                                         <option value="">-- SELECT BRAND NAME --</option>
-                                        <option data-ng-repeat="brand in brands track by $index" data-ng-value="brand.id"
-                                            data-ng-bind="brand.name">
+                                        <option data-ng-repeat="brand in brands track by $index"
+                                            data-ng-value="brand.brand_id" data-ng-bind="brand.brand_name">
                                         </option>
 
                                     </select>
@@ -766,16 +766,16 @@
                 $('#brandForm').modal('show');
             };
 
-            $scope.getUserNameModel = function() {
-                $.post("/models/getUserName/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.userName = data;
-                    });
-                }, 'json');
-            }
+            // $scope.getUserNameModel = function() {
+            //     $.post("/models/getUserName/", {
+            //         _token: '{{ csrf_token() }}'
+            //     }, function(data) {
+            //         $('.loading-spinner').hide();
+            //         $scope.$apply(() => {
+            //             $scope.userName = data;
+            //         });
+            //     }, 'json');
+            // }
 
             $scope.setModel = (indx) => {
                 $scope.updateModel = indx;
@@ -795,22 +795,23 @@
                     $('.loading-spinner').hide();
                     $scope.$apply(() => {
                         $scope.models = data;
+                        console.log(data)
                         $scope.page++;
                     });
                 }, 'json');
             }
 
 
-            $scope.getBrandName = function() {
-                $.post("/models/getBrandsName/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.brandName = data;
-                    });
-                }, 'json');
-            }
+            // $scope.getBrandName = function() {
+            //     $.post("/models/getBrandsName/", {
+            //         _token: '{{ csrf_token() }}'
+            //     }, function(data) {
+            //         $('.loading-spinner').hide();
+            //         $scope.$apply(() => {
+            //             $scope.brandName = data;
+            //         });
+            //     }, 'json');
+            // }
 
             $scope.lodaCompatibilityCategoriessData = function(reload = false) {
                 $('.loading-spinner').show();
@@ -860,9 +861,9 @@
 
             $scope.loadData(0, 'countries');
             $scope.loadBrandsData();
-            $scope.getUserNameModel();
+            // $scope.getUserNameModel();
             $scope.lodaModelsData();
-            $scope.getBrandName();
+            // $scope.getBrandName();
             $scope.lodaCompatibilityCategoriessData()
             $scope.loadPackageData();
             scope = $scope;

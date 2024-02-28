@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Technician;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +52,7 @@ class TechnicianController extends Controller
             'tech_address'           => $request->address,
             'tech_identification'    => $request->identification,
             'tech_notes'             => $request->notes,
-            'tech_register'          => now()
+            'tech_register'          => Carbon::now()
         ];
 
         $id = intval($request->technician_id);
@@ -59,7 +60,7 @@ class TechnicianController extends Controller
         if (!$id) {
             $param['tech_code'] = strtoupper($this->uniqidReal());
             $param['tech_password'] = '';
-            $param['devise_token'] = 'q';
+            $param['devise_token'] = strtoupper($this->uniqidReal());
             $param['tech_register_by'] = Auth::user()->id;
             $status = Technician::create($param);
 

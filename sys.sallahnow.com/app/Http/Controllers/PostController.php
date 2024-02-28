@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Post_Comment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -47,27 +48,27 @@ class PostController extends Controller
             'body'   => 'required'
         ]);
 
+        $photo = $request->file('photo');
+        $photoName = $photo->getClientOriginalName();
+        $location = 'Image/Posts/';
+        $photo->move($location , $photoName);
+        $photoPath = url($location, $photoName);
+
         $id = $request->id;
         if(!$id){
             $code = strtoupper($this->uniqidReal()); #post code
             if($request->file('photo')){ #if has photo add photo
 
-                $photo = $request->file('photo');
-                $photoName = $photo->hashName();
-                $photo->move('media/' , $photoName);
-                $photoPath = url('media/', $photoName);
-
                 $status = Post::create([
                     'post_code'        => $code,
                     'post_title'       => $request->title,
                     'post_body'        => $request->body,
-                    'post_photo'       => $photoPath,
+                    'post_photo'       => $photoName,
                     'post_create_user' => auth()->user()->id,
                     'post_archive_time' => now(),
                     'post_delete_user' => 0,
                     'post_create_time' => now()
                 ]);
-                $id =  $status->post_id;
             }
             else { # is not have a photo
 
@@ -80,22 +81,16 @@ class PostController extends Controller
                     'post_delete_user' => 0,
                     'post_create_time' => now()
                 ]);
-                $id =  $status->post_id;
-
             }
+            $id =  $status->post_id;
         }else {
             # update post
             if($request->file('photo')){
 
-                $photo = $request->file('photo');
-                $photoName = $photo->hashName();
-                $photo->move('media/' , $photoName);
-                $photoPath = url('media/', $photoName);
-
                 $status = Post::where('post_id', $id)->update([
                     'post_title'       => $request->title,
                     'post_body'        => $request->body,
-                    'post_photo'       => $photoPath,
+                    'post_photo'       => $photoName,
                     'post_create_user' => auth()->user()->id,
                     'post_delete_user' => 0,
                 ]);
@@ -144,11 +139,6 @@ class PostController extends Controller
         echo json_encode([
             'status' => boolval($status),
         ]);
-
-
-        // if(request()->hasFile('files')){
-        //  return $request->file('files')->getClientOriginalName();
-        // }
     }
 
     public function delete(Request $request){
@@ -172,6 +162,7 @@ class PostController extends Controller
         $status = Post_Comment::create([
             'comment_post'     => $request->post_id,
             'comment_context'  => $request->comment,
+            'comment_create'   => Carbon::now(),
             'comment_user'     => auth()->user()->id
         ]);
         $comment_id = $status->status;
