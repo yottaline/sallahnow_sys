@@ -364,6 +364,7 @@ CREATE TABLE IF NOT EXISTS `chat_msgs` (
   `msg_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `msg_room` INT UNSIGNED NOT NULL,
   `msg_from` INT UNSIGNED NOT NULL,
+  `msg_context` VARCHAR(1024) NOT NULL,
   `msg_create` DATETIME NOT NULL,
   PRIMARY KEY (`msg_room`),
   KEY `member_room` (`member_room`),
@@ -374,10 +375,30 @@ CREATE TABLE IF NOT EXISTS `chat_msgs` (
 
 CREATE TABLE IF NOT EXISTS `support_categories` (
   `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `category_name` VARCHAR(2048) NOT NULL,
+  `category_name` VARCHAR(2048) NOT NULL COMMENT "JSON en/ar",
   `category_cost` INT UNSIGNED NOT NULL DEFAULT '1',
-  `category_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  `category_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
   PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `support_tickets` (
+  `ticket_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ticket_code` VARCHAR(12) NOT NULL,
+  `ticket_brand` INT UNSIGNED NOT NULL,
+  `ticket_model` INT UNSIGNED NOT NULL,
+  `ticket_category` TINYINT UNSIGNED NOT NULL,
+  `ticket_cost` INT UNSIGNED NOT NULL DEFAULT '0',
+  `ticket_context` VARCHAR(4096) NOT NULL,
+  `ticket_status` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '1: Unread, 2: Opened, 3: Closed, 4: Solved, 5: Canceled',
+  `ticket_tech` INT UNSIGNED NOT NULL,
+  `ticket_create` DATETIME NOT NULL,
+  PRIMARY KEY (`ticket_id`),
+  KEY `ticket_brand` (`ticket_brand`),
+  KEY `ticket_model` (`ticket_model`),
+  KEY `ticket_category` (`ticket_category`),
+  KEY `ticket_tech` (`ticket_tech`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -393,26 +414,6 @@ CREATE TABLE IF NOT EXISTS `support_replies` (
   KEY `reply_ticket` (`reply_ticket`),
   KEY `reply_user` (`reply_user`),
   KEY `reply_tech` (`reply_tech`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `support_tickets` (
-  `ticket_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ticket_code` VARCHAR(12) NOT NULL,
-  `ticket_brand` INT UNSIGNED NOT NULL,
-  `ticket_model` INT UNSIGNED NOT NULL,
-  `ticket_cost` INT UNSIGNED NOT NULL DEFAULT '0',
-  `ticket_category` TINYINT UNSIGNED NOT NULL,
-  `ticket_context` VARCHAR(4096) NOT NULL,
-  `ticket_status` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '1: Unread, 2: Opened, 3: Closed, 4: Solved, 5: Canceled',
-  `ticket_tech` INT UNSIGNED NOT NULL,
-  `ticket_create` DATETIME NOT NULL,
-  PRIMARY KEY (`ticket_id`),
-  KEY `ticket_brand` (`ticket_brand`),
-  KEY `ticket_model` (`ticket_model`),
-  KEY `ticket_category` (`ticket_category`),
-  KEY `ticket_tech` (`ticket_tech`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
