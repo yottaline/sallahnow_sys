@@ -42,12 +42,12 @@ class UserController extends Controller
         ]);
 
         $parma = [
-            'user_name'      => $request->name,
-            'email'          => $request->email,
-            'password'       => $request->password,
-            'user_group'     => $request->role_id,
-            'user_mobile'    => $request->mobile,
-            'user_create'    => now()
+            'user_name'           => $request->name,
+            'user_email'          => $request->email,
+            'user_password'       => $request->password,
+            'user_group'          => $request->role_id,
+            'user_mobile'         => $request->mobile,
+            'user_create'         => now()
         ];
 
         $id = intval($request->user_id);

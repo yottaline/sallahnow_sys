@@ -77,8 +77,8 @@
                                         </td>
                                         <td class="text-center" data-ng-bind="center.tech_name"></td>
                                         <td class="text-center">
-                                            <img src="<% center.center_logo %>" alt="" srcset=""
-                                                width="30px">
+                                            <img src="{{ asset('/Image/Centers/') }}/<% center.center_logo %>"
+                                                alt="" srcset="" width="30px">
                                         </td>
                                         <td class="col-fit">
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -131,7 +131,7 @@
                                     <div class="mb-3">
                                         <label for="Whatsapp">Whatsapp</label>
                                         <input class="form-control" name="center_whatsapp" type="text"
-                                            data-ng-bind="centers[centerUpdate].center_whatsapp" id="Whatsapp">
+                                            data-ng-value="centers[centerUpdate].center_whatsapp" id="Whatsapp">
                                     </div>
                                 </div>
                                 {{-- email --}}

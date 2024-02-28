@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class BrandController extends Controller
 {
@@ -18,8 +19,7 @@ class BrandController extends Controller
     }
 
     public function load() {
-        $brands = Brand::orderBy('created_at', 'desc')
-        ->limit(10)->get();
+        $brands = Brand::limit(10)->offset(0)->get();
         echo json_encode($brands);
     }
 
@@ -30,38 +30,41 @@ class BrandController extends Controller
             'logo'   => 'required'
         ]);
 
+        $logo = $request->file('logo');
+        $logoName = $logo->getClientOriginalName();
+        $location = 'Image/Brands/';
+
         $id = intval($request->brand_id);
         if(!$id){
             if($request->file('logo')){
-                $logo = $request->file('logo');
-                $logoName = $logo->hashName();
-                $location = '/';
+
 
                 $logo->move($location , $logoName);
 
-                $logoPath = url('/', $logoName);
-        $status = Brand::create([
+                $logoPath = url('Image/Brands', $logoName);
+                $status = Brand::create([
                     'brand_name' => $request->name,
-                    'brand_logo' => $logoPath,
+                    'brand_logo' => $logoName,
                 ]);
             };
-        $record = Brand::where('id', $status->id)->get();
+            $id = $status->id;
         }
         else{
+
+            $data = Brand::where('brand_id', $id)->first();
+
             if($request->file('logo')){
-                $logo = $request->file('logo');
-                $logoName = $logo->hashName();
-                $location = 'Image/Brands';
+                if(!empty($data->brand_logo) && File::exists($location)){
+                    File::delete($location . $data->brand_logo);
+                }
 
-                $logo->move($location , $logoName);
-
-                $logoPath = url('Image/Brands/', $logoName);
-        $status = Brand::where('id', $id)->update([
+                $status = Brand::where('brand_id', $id)->update([
                     'brand_name' => $request->name,
-                    'brand_logo' => $logoPath,
+                    'brand_logo' => $logoName,
                 ]);
+            }
         }
-        }
+        $record = Brand::where('brand_id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,

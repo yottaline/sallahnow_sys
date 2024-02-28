@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->integer('id')->autoIncrement();
             $table->string('user_name',120);
-            $table->string('email',120)->unique();
+            $table->string('user_email',120)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('user_mobile',24);
-            $table->string('password', 255);
+            $table->string('user_password', 255);
             $table->integer('user_group');
             $table->boolean('user_active')->default(1);
             // $table->date('user_login');

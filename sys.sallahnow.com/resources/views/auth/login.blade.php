@@ -15,11 +15,12 @@
                         @csrf
                         <div class="mb-3 position-relative">
                             <label for="login-email">Email<b class="text-danger">&ast;</b></label>
-                            <input id="login-email" name="email" type="email" class="form-control" required>
+                            <input id="login-email" name="user_email" type="email" class="form-control" required>
                         </div>
                         <div class="mb-3 position-relative">
                             <label for="login-email">Password<b class="text-danger">&ast;</b></label>
-                            <input id="login-password" name="password" type="password" class="form-control" required>
+                            <input id="login-password" name="user_password" type="password" class="form-control"
+                                required>
                         </div>
 
                         @if (Route::has('password.request'))

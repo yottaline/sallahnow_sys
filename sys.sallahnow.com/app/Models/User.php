@@ -29,6 +29,11 @@ class User extends Authenticatable
         'user_create'
     ];
 
+    public function getAuthPassword()
+    {
+        return $this->user_password;
+    }
+
     public $timestamps = false;
 
     /**

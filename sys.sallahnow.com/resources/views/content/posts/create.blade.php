@@ -358,22 +358,33 @@
 
                             spinner.show();
                             loadingBtn.prop('disabled', true);
-                            $.post('/posts/get-comment/', request, function(response) {
+                            $.post('/posts/get-comment/', request, function(data) {
                                 spinner.hide();
-                                if (response.status) {
-                                    var length = response.data.length;
-                                    scope.$apply(() => {
-                                        scope.comments.count = response.count;
-                                        scope.comments.data = reload ? response.data : [].concat(scope.comments.data,
-                                            response.data);
-                                        scope.comments.lastId = length ? response.data[length - 1].comment_id : scope
-                                            .comments.lastId;
-                                    });
-                                    loadingBtn.prop('disabled', scope.comments.data.length == scope.comments.count);
-                                } else {
-                                    toastr.error(glob_errorMsg);
-                                    loadingBtn.prop('disabled', false);
-                                }
+                                var length = data.length;
+                                scope.$apply(() => {
+                                    scope.comments.count = length;
+
+                                    scope.comments.data = reload ? data : [].concat(scope.comments.data,
+                                        data);
+                                    // scope.comments.lastId = length ? response.data[length - 1].comment_id : scope
+                                    //     .comments.lastId;
+                                });
+                                // loadingBtn.prop('disabled', scope.comments.data.length == scope.comments.count);
+                                // if (response.status) {
+                                //     var length = response.data.length;
+                                //     console.log(data);
+                                //     scope.$apply(() => {
+                                //         scope.comments.count = response.count;
+                                //         scope.comments.data = reload ? response.data : [].concat(scope.comments.data,
+                                //             response.data);
+                                //         scope.comments.lastId = length ? response.data[length - 1].comment_id : scope
+                                //             .comments.lastId;
+                                //     });
+                                //     loadingBtn.prop('disabled', scope.comments.data.length == scope.comments.count);
+                                // } else {
+                                //     toastr.error(glob_errorMsg);
+                                //     loadingBtn.prop('disabled', false);
+                                // }
                             }, 'json');
                         };
                     </script>

@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionsSeeder::class);
         \App\Models\User::create([
             'user_name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => Hash::make('1234567'),
+            'user_email' => 'test@example.com',
+            'user_password' => Hash::make('1234567'),
             'user_mobile' => '0122356718',
             'user_group' => 1,
             'user_create' => now()
