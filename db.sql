@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `tech_transactions` (
 CREATE TABLE IF NOT EXISTS `tech_points` (
   `points_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `points_count` INT UNSIGNED NOT NULL,
-  `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:credit, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads',
+  `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:credit, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads, 9:articles',
   `points_target` INT UNSIGNED DEFAULT NULL,
   `points_process` TINYINT UNSIGNED NOT NULL COMMENT '1:spend, 2:earn',
   `points_register` DATETIME NOT NULL,
