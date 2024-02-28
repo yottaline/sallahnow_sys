@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `tech_transactions` (
 CREATE TABLE IF NOT EXISTS `tech_points` (
   `points_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `points_count` INT UNSIGNED NOT NULL,
-  `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:credit, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads',
+  `points_src` TINYINT UNSIGNED NOT NULL COMMENT '1:pkg, 2:credit, 3:cobon, 4:academy, 5:ticket, 6:transfer, 7:sugg, 8:ads, 9:articles',
   `points_target` INT UNSIGNED DEFAULT NULL,
   `points_process` TINYINT UNSIGNED NOT NULL COMMENT '1:spend, 2:earn',
   `points_register` DATETIME NOT NULL,
@@ -256,125 +256,6 @@ CREATE TABLE IF NOT EXISTS `compats_sugg_models` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `customers` (
-  `customer_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `customer_code` VARCHAR(24) NOT NULL,
-  `customer_name` VARCHAR(100) NOT NULL,
-  `customer_email` VARCHAR(100) NOT NULL,
-  `customer_mobile` VARCHAR(24) NOT NULL,
-  `customer_password` VARCHAR(255) NOT NULL,
-  `customer_country` INT UNSIGNED NOT NULL,
-  `customer_state` INT UNSIGNED NOT NULL,
-  `customer_city` INT UNSIGNED NOT NULL,
-  `customer_area` INT UNSIGNED NOT NULL,
-  `customer_address` VARCHAR(1024) NOT NULL,
-  `customer_geo` VARCHAR(64) NOT NULL,
-  `customer_notes` VARCHAR(1024),
-  `customer_rate` tinyint(4) DEFAULT NULL,
-  `customer_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  `customer_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
-  `customer_login` DATETIME DEFAULT NULL,
-  `customer_register` DATETIME NOT NULL,
-  PRIMARY KEY (`customer_id`),
-  KEY `customer_country` (`customer_country`),
-  KEY `customer_state` (`customer_state`),
-  KEY `customer_city` (`customer_city`),
-  KEY `customer_area` (`customer_area`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `issue_categories` (
-  `issuecat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `issuecat_name` VARCHAR(1024) NOT NULL,
-  `issuecat_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`issuecat_id`);
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `issue_subcategories` (
-  `issuesubcat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `issuesubcat_category` INT UNSIGNED NOT NULL,
-  `issuesubcat_name` VARCHAR(1024) NOT NULL,
-  `issuesubcat_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`issuesubcat_id`),
-  KEY `issuesubcat_category` (`issuesubcat_category`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `languages` (
-  `language_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `language_name` VARCHAR(24) NOT NULL,
-  `language_code` VARCHAR(2) NOT NULL,
-  `language_dir` VARCHAR(3) NOT NULL,
-  PRIMARY KEY (`language_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `merchants` (
-  `merchant_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `merchant_code` VARCHAR(24) NOT NULL,
-  `merchant_store` VARCHAR(100) NOT NULL,
-  `merchant_person` VARCHAR(100) NOT NULL,
-  `merchant_email` VARCHAR(100) NOT NULL,
-  `merchant_mobile` VARCHAR(24) NOT NULL,
-  `merchant_tel` VARCHAR(24) NOT NULL,
-  `merchant_password` VARCHAR(255) NOT NULL,
-  `merchant_country` INT UNSIGNED NOT NULL,
-  `merchant_state` INT UNSIGNED NOT NULL,
-  `merchant_city` INT UNSIGNED NOT NULL,
-  `merchant_area` INT UNSIGNED NOT NULL,
-  `merchant_address` VARCHAR(1024) NOT NULL,
-  `merchant_geo` VARCHAR(64) NOT NULL,
-  `merchant_desc` VARCHAR(1024),
-  `merchant_notes` VARCHAR(1024),
-  `merchant_rate` TINYINT UNSIGNED DEFAULT NULL,
-  `merchant_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  `merchant_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
-  `merchant_login` DATETIME DEFAULT NULL,
-  `merchant_register` DATETIME NOT NULL,
-  `merchant_user` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`merchant_id`),
-  KEY `merchant_country` (`merchant_country`),
-  KEY `merchant_state` (`merchant_state`),
-  KEY `merchant_city` (`merchant_city`),
-  KEY `merchant_area` (`merchant_area`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `parts` (
-  `part_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `part_merchant` INT UNSIGNED NOT NULL,
-  `part_brand` INT UNSIGNED NOT NULL,
-  `part_name` VARCHAR(24) NOT NULL,
-  `part_desc` VARCHAR(1024) NOT NULL,
-  `part_photo` VARCHAR(24) NOT NULL,
-  `part_stock` INT UNSIGNED NOT NULL DEFAULT '0',
-  `part_cost` decimal(7,2) NOT NULL,
-  `part_warrenty` INT UNSIGNED NOT NULL DEFAULT '0',
-  `part_add` INT UNSIGNED NOT NULL,
-  `part_update` INT UNSIGNED NOT NULL,
-  `part_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`part_id`),
-  KEY `part_merchant` (`part_merchant`),
-  KEY `part_brand` (`part_brand`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `parts_brands` (
-  `prtbrnd_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `prtbrnd_name` VARCHAR(24) NOT NULL,
-  `prtbrnd_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`prtbrnd_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `posts` (
   `post_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `post_code` VARCHAR(12) NOT NULL,
@@ -451,6 +332,220 @@ CREATE TABLE IF NOT EXISTS `posts_views` (
   PRIMARY KEY (`view_id`),
   KEY `view_tech` (`view_tech`),
   KEY `view_post` (`view_post`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `chat_rooms` (
+  `room_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `room_code` VARCHAR(12) NOT NULL,
+  `room_type` TINYINT UNSIGNED NOT NULL COMMENT '1:couple, 2:group',
+  `room_name` VARCHAR(64) DEFAULT NULL,
+  PRIMARY KEY (`room_id`),
+  KEY `room_code` (`room_code`),
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `chat_rooms_members` (
+  `member_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `member_room` INT UNSIGNED NOT NULL,
+  `member_tech` INT UNSIGNED NOT NULL,
+  `member_admin` BOOLEAN NOT NULL DEFAULT '0',
+  `member_add` DATETIME NOT NULL,
+  PRIMARY KEY (`member_room`),
+  KEY `member_room` (`member_room`),
+  KEY `member_tech` (`member_tech`),
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `chat_msgs` (
+  `msg_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `msg_room` INT UNSIGNED NOT NULL,
+  `msg_from` INT UNSIGNED NOT NULL,
+  `msg_context` VARCHAR(1024) NOT NULL,
+  `msg_create` DATETIME NOT NULL,
+  PRIMARY KEY (`msg_room`),
+  KEY `member_room` (`member_room`),
+  KEY `msg_from` (`msg_from`),
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `support_categories` (
+  `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category_name` VARCHAR(2048) NOT NULL COMMENT "JSON en/ar",
+  `category_cost` INT UNSIGNED NOT NULL DEFAULT '1',
+  `category_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `support_tickets` (
+  `ticket_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ticket_code` VARCHAR(12) NOT NULL,
+  `ticket_brand` INT UNSIGNED NOT NULL,
+  `ticket_model` INT UNSIGNED NOT NULL,
+  `ticket_category` TINYINT UNSIGNED NOT NULL,
+  `ticket_cost` INT UNSIGNED NOT NULL DEFAULT '0',
+  `ticket_context` VARCHAR(4096) NOT NULL,
+  `ticket_status` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '1: Unread, 2: Opened, 3: Closed, 4: Solved, 5: Canceled',
+  `ticket_tech` INT UNSIGNED NOT NULL,
+  `ticket_create` DATETIME NOT NULL,
+  PRIMARY KEY (`ticket_id`),
+  KEY `ticket_brand` (`ticket_brand`),
+  KEY `ticket_model` (`ticket_model`),
+  KEY `ticket_category` (`ticket_category`),
+  KEY `ticket_tech` (`ticket_tech`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `support_replies` (
+  `reply_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `reply_ticket` INT UNSIGNED NOT NULL,
+  `reply_context` VARCHAR(1024) NOT NULL,
+  `reply_user` INT UNSIGNED DEFAULT NULL,
+  `reply_tech` INT UNSIGNED DEFAULT NULL,
+  `reply_create` DATETIME NOT NULL,
+  PRIMARY KEY (`reply_id`),
+  KEY `reply_ticket` (`reply_ticket`),
+  KEY `reply_user` (`reply_user`),
+  KEY `reply_tech` (`reply_tech`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `support_attachments` (
+  `attach_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `attach_file` VARCHAR(24) NOT NULL,
+  `attach_ticket` INT UNSIGNED DEFAULT NULL,
+  `attach_reply` INT UNSIGNED DEFAULT NULL,
+  `attach_time` DATETIME NOT NULL,
+  PRIMARY KEY (`attach_id`),
+  KEY `attach_ticket` (`attach_ticket`),
+  KEY `attach_reply` (`attach_reply`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `customers` (
+  `customer_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `customer_code` VARCHAR(24) NOT NULL,
+  `customer_name` VARCHAR(100) NOT NULL,
+  `customer_email` VARCHAR(100) NOT NULL,
+  `customer_mobile` VARCHAR(24) NOT NULL,
+  `customer_password` VARCHAR(255) NOT NULL,
+  `customer_country` INT UNSIGNED NOT NULL,
+  `customer_state` INT UNSIGNED NOT NULL,
+  `customer_city` INT UNSIGNED NOT NULL,
+  `customer_area` INT UNSIGNED NOT NULL,
+  `customer_address` VARCHAR(1024) NOT NULL,
+  `customer_geo` VARCHAR(64) NOT NULL,
+  `customer_notes` VARCHAR(1024),
+  `customer_rate` tinyint(4) DEFAULT NULL,
+  `customer_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  `customer_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
+  `customer_login` DATETIME DEFAULT NULL,
+  `customer_register` DATETIME NOT NULL,
+  PRIMARY KEY (`customer_id`),
+  KEY `customer_country` (`customer_country`),
+  KEY `customer_state` (`customer_state`),
+  KEY `customer_city` (`customer_city`),
+  KEY `customer_area` (`customer_area`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `languages` (
+  `language_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `language_name` VARCHAR(24) NOT NULL,
+  `language_code` VARCHAR(2) NOT NULL,
+  `language_dir` VARCHAR(3) NOT NULL,
+  PRIMARY KEY (`language_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `merchants` (
+  `merchant_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `merchant_code` VARCHAR(24) NOT NULL,
+  `merchant_store` VARCHAR(100) NOT NULL,
+  `merchant_person` VARCHAR(100) NOT NULL,
+  `merchant_email` VARCHAR(100) NOT NULL,
+  `merchant_mobile` VARCHAR(24) NOT NULL,
+  `merchant_tel` VARCHAR(24) NOT NULL,
+  `merchant_password` VARCHAR(255) NOT NULL,
+  `merchant_country` INT UNSIGNED NOT NULL,
+  `merchant_state` INT UNSIGNED NOT NULL,
+  `merchant_city` INT UNSIGNED NOT NULL,
+  `merchant_area` INT UNSIGNED NOT NULL,
+  `merchant_address` VARCHAR(1024) NOT NULL,
+  `merchant_geo` VARCHAR(64) NOT NULL,
+  `merchant_desc` VARCHAR(1024),
+  `merchant_notes` VARCHAR(1024),
+  `merchant_rate` TINYINT UNSIGNED DEFAULT NULL,
+  `merchant_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  `merchant_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
+  `merchant_login` DATETIME DEFAULT NULL,
+  `merchant_register` DATETIME NOT NULL,
+  `merchant_user` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`merchant_id`),
+  KEY `merchant_country` (`merchant_country`),
+  KEY `merchant_state` (`merchant_state`),
+  KEY `merchant_city` (`merchant_city`),
+  KEY `merchant_area` (`merchant_area`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `parts` (
+  `part_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `part_merchant` INT UNSIGNED NOT NULL,
+  `part_brand` INT UNSIGNED NOT NULL,
+  `part_name` VARCHAR(24) NOT NULL,
+  `part_desc` VARCHAR(1024) NOT NULL,
+  `part_photo` VARCHAR(24) NOT NULL,
+  `part_stock` INT UNSIGNED NOT NULL DEFAULT '0',
+  `part_cost` decimal(7,2) NOT NULL,
+  `part_warrenty` INT UNSIGNED NOT NULL DEFAULT '0',
+  `part_add` INT UNSIGNED NOT NULL,
+  `part_update` INT UNSIGNED NOT NULL,
+  `part_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`part_id`),
+  KEY `part_merchant` (`part_merchant`),
+  KEY `part_brand` (`part_brand`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `parts_brands` (
+  `prtbrnd_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `prtbrnd_name` VARCHAR(24) NOT NULL,
+  `prtbrnd_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`prtbrnd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `issue_categories` (
+  `issuecat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `issuecat_name` VARCHAR(1024) NOT NULL,
+  `issuecat_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`issuecat_id`);
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `issue_subcategories` (
+  `issuesubcat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `issuesubcat_category` INT UNSIGNED NOT NULL,
+  `issuesubcat_name` VARCHAR(1024) NOT NULL,
+  `issuesubcat_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  PRIMARY KEY (`issuesubcat_id`),
+  KEY `issuesubcat_category` (`issuesubcat_category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -549,65 +644,6 @@ CREATE TABLE IF NOT EXISTS `req_repairs_reviews` (
   KEY `reprvw_request` (`reprvw_request`),
   KEY `reprvw_tech` (`reprvw_tech`),
   KEY `reprvw_customer` (`reprvw_customer`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `support_attachments` (
-  `attach_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `attach_file` VARCHAR(24) NOT NULL,
-  `attach_ticket` INT UNSIGNED DEFAULT NULL,
-  `attach_reply` INT UNSIGNED DEFAULT NULL,
-  `attach_target` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '0: ticket, 1: reply',
-  `attach_time` DATETIME NOT NULL,
-  PRIMARY KEY (`attach_id`),
-  KEY `attach_ticket` (`attach_ticket`),
-  KEY `attach_reply` (`attach_reply`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `support_categories` (
-  `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `category_name` VARCHAR(120) NOT NULL,
-  `category_cost` INT UNSIGNED NOT NULL DEFAULT '1',
-  `category_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `support_replies` (
-  `reply_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `reply_ticket` INT UNSIGNED NOT NULL,
-  `reply_context` VARCHAR(1024) NOT NULL,
-  `reply_type` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '0:admin, 1:tech',
-  `reply_target` INT UNSIGNED NOT NULL,
-  `reply_time` DATETIME NOT NULL,
-  PRIMARY KEY (`reply_id`),
-  KEY `reply_ticket` (`reply_ticket`),
-  KEY `reply_type` (`reply_type`),
-  KEY `reply_target` (`reply_target`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `support_tickets` (
-  `ticket_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ticket_code` VARCHAR(12) NOT NULL,
-  `ticket_brand` INT UNSIGNED NOT NULL,
-  `ticket_model` INT UNSIGNED NOT NULL,
-  `ticket_cost` INT UNSIGNED NOT NULL DEFAULT '0',
-  `ticket_category` TINYINT UNSIGNED NOT NULL,
-  `ticket_context` VARCHAR(1024) NOT NULL,
-  `ticket_status` TINYINT UNSIGNED NOT NULL DEFAULT '1' COMMENT '1: Unread, 2: Opened, 3: Closed, 4: Solved, 5: Canceled',
-  `ticket_tech` INT UNSIGNED NOT NULL,
-  `ticket_time` DATETIME NOT NULL,
-  PRIMARY KEY (`ticket_id`),
-  KEY `ticket_brand` (`ticket_brand`),
-  KEY `ticket_model` (`ticket_model`),
-  KEY `ticket_category` (`ticket_category`),
-  KEY `ticket_tech` (`ticket_tech`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
