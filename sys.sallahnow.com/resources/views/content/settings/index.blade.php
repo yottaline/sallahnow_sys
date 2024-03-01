@@ -736,10 +736,11 @@
                 // 'https://sallahnow.yottaline.com/api/settings/locations_load'
                 $.get('/settings/load/', {
                     type: parent ? (+parent.location_type + 1) : 1,
-                    parent: parent ? parent.location_id : 0,
+                    parent: parent ? parent.id : 0,
                 }, function(data) {
                     $(`#${target}Box .loading-spinner`).hide();
                     $scope.$apply(() => $scope[target] = data)
+                    console.log(data);
                 }, 'json');
             };
 
@@ -893,10 +894,10 @@
                             toastr.success('Data processed successfully');
                             $('#locationModal').modal('hide');
                             scope.$apply(() => {
-                                if (updateTechnician === false) {
-                                    scope.technicians.unshift(response.data);
+                                if (activeCountry === false) {
+                                    scope.countries.unshift(response.data);
                                 } else {
-                                    scope.technicians[updateTechnician] = response
+                                    scope.countries[activeCountry] = response
                                         .data;
                                 }
                             });

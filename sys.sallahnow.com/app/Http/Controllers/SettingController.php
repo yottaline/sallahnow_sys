@@ -23,6 +23,7 @@ class SettingController extends Controller
     }
 
     public function storeLocation(Request $request) {
+        return $request;
         $location_names = ['en' => $request->location_name_en, 'ar' => $request->location_name_ar];
         $json_encode_location = json_encode($location_names);
        $status = Location::create([

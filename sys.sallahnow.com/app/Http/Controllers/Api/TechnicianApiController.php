@@ -8,6 +8,7 @@ use App\Models\Compatibility;
 use App\Models\Compatibility_categorie;
 use App\Models\Models;
 use App\Models\Package;
+use App\Models\PointTranaction;
 use App\Models\Post;
 use App\Models\Post_Comment;
 use App\Models\Post_Like;
@@ -33,39 +34,57 @@ class TechnicianApiController extends Controller
         $request->validate([
             'tech_name'         => 'required',
             'tech_mobile'       => 'required|numeric',
-            'tech_password'     => 'required',
-            'country_id'   => 'required',
-            'state_id'     => 'required',
-            'city_id'      => 'required',
-            'area_id'      => 'required'
+            // 'password'          => 'required',
+            'country_id'        => 'required',
+            'state_id'          => 'required',
+            'city_id'           => 'required',
+            'area_id'           => 'required'
         ]);
 
 
         $code = strtoupper($this->uniqidReal());
-        // $password_hash = ;
-     $status  = Technician::create([
-            'tech_name'            => $request->tech_name,
-            'tech_email'           => $request->tech_email,
-            'tech_mobile'          => $request->tech_mobile,
-            'tech_tel'             => $request->tel,
-            'tech_password'        => Hash::make($request->password),
-            'tech_identification'  => $request->identification,
-            'tech_birth'           => $request->birth,
+        $devise_token = strtoupper($this->uniqidReal());
+        Technician::create([
+            'tech_name'              => $request->tech_name,
+            'tech_email'             => $request->tech_email,
+            'tech_mobile'            => $request->tech_mobile,
+            'tech_tel'               => $request->tel,
+            'password'               => Hash::make($request->password),
+            'tech_identification'    => $request->identification,
+            'tech_birth'             => $request->birth,
             'tech_country'           => $request->country_id,
             'tech_state'             => $request->state_id,
             'tech_city'              => $request->city_id,
             'tech_area'              => $request->area_id,
             'tech_address'           => $request->address,
             'tech_bio'               => $request->bio,
-            'devise_token'           => '09"uid"10900845d40b91',
+            'devise_token'           => $devise_token,
             'tech_register_by'       => 1,
             'tech_code'              => $code,
             'tech_register'             => now()
         ]);
 
-        $credentials = request(['tech_mobile', 'tech_password']);
+        // $technician = Technician::where('tech_mobile', $request->tech_mobile)->first();
+        // if(!$technician) {
+        //     return response()->json(['error' => 'Unauthorized'], 104);
+        // }else {
+        //     $passwords = Hash::check(request('password'), $technician->tech_password);
+        //     if(!$passwords) {
+        //         return response()->json(['error' => 'Unauthorized'], 104);
+        //     }else {
+        //         $token = auth()->guard('technician-api')->login($technician);
+        //         return $this->respondWithToken($token);
+        //     }
+        // }
 
-        if (! $token = auth('technician-api')->attempt($credentials)) {
+
+
+
+
+
+        $credentials = request(['tech_mobile', 'password']);
+
+        if (! $token = auth()->guard('technician-api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -266,6 +285,37 @@ class TechnicianApiController extends Controller
         }
         $data = Post::where('post_id', $id)->first();
         return $this->returnData('post', $data, 'post has created successfully');
+    }
+
+    public function postCost(Request $request) {
+
+        $tech_id = $request->technician_id;
+        $post_id = $request->post_id;
+
+        $technician_point = Technician::where('tech_id', $$tech_id)->first();
+        if($technician_point->tech_points > 0){
+
+            $post  = Post::where('post_id', $post_id)->first();
+            $point = $technician_point->tech_points - $post;
+            Technician::where('tech_id', $$tech_id)->update([
+                'tech_points' => $pont
+            ]);
+
+            PointTranaction::create([
+                'points_count'    => $point,
+                'points_src'      => 'post',
+                'points_target'   => $post_id,
+                'points_process'  => 'spend',
+                'points_tech'     =>  $tech_id,
+                'points_register' => now()
+            ]);
+
+            return $this->returnSuccess('Points have been withdrawn successfully');
+
+        }else {
+            return $this->returnError("You don't have enough points", 104);
+        }
+
     }
 
     public function addLike(Request $request) {

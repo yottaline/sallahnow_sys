@@ -112,6 +112,24 @@ class PostController extends Controller
         ]);
     }
 
+    public function addCost(Request $request) {
+        $request->validate([
+            'cost' => 'required|numeric'
+        ]);
+        $post_id = $request->post_id;
+        $status = Post::where('post_id', $post_id)->update([
+            'post_cost'  => $request->cost
+        ]);
+
+        $record = Post::where('post_id', $post_id)->first();
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $record,
+        ]);
+    }
+
+
+
     public function updateData(Request $request){
         // return $request->val;
         $post_id  = $request->id;

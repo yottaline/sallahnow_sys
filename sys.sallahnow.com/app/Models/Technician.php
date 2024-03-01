@@ -23,7 +23,7 @@ class Technician extends Authenticatable implements JWTSubject
         'tech_mobile',
         'tech_mobile_verefied',
         'tech_tel',
-        'tech_password',
+        'password',
         'tech_identification',
         'tech_birth',
         'tech_country',
@@ -44,6 +44,10 @@ class Technician extends Authenticatable implements JWTSubject
         'tech_register_by',
         'tech_modify_by',
         'tech_register'
+    ];
+
+    protected $casts = [
+        'password' => 'hashed',
     ];
 
     public function user() {
@@ -78,6 +82,13 @@ class Technician extends Authenticatable implements JWTSubject
         return $this->hasMany(Post_View::class);
     }
 
+    public function members() {
+        return $this->hasMany(Chat_Room_Members::class);
+    }
+
+    public function messages() {
+        return $this->hasMany(Chat_Room_Message::class);
+    }
 
     public function getJWTIdentifier()
     {
@@ -96,6 +107,6 @@ class Technician extends Authenticatable implements JWTSubject
 
     public function getAuthPassword()
     {
-    return $this->tech_password;
+        return $this->password;
     }
 }

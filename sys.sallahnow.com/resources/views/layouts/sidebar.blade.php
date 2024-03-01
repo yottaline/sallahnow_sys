@@ -55,6 +55,12 @@
                  </a>
              </li>
 
+             <li class="list-group-item nav-news">
+                 <a class="link-dark d-block" href="/chats/">
+                     <i class="bi bi-file-post-fill text-secondary me-2"></i><b>Chat</b>
+                 </a>
+             </li>
+
              <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#paymentsCollapse" role="button"
                      aria-expanded="false" aria-controls="paymentsCollapse">
