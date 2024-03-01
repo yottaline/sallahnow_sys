@@ -44,6 +44,7 @@
                                         <th class="text-center">#</th>
                                         <th>Post Title</th>
                                         <th class="text-center">Post Body</th>
+                                        <th class="text-center">Post Cost</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -54,10 +55,13 @@
                                         <td>
                                             <span data-ng-bind="post.post_title" class="fw-bold"></span>
                                         </td>
-                                        <td class="text-center" data-ng-bind="post.post_body">-</td>
+                                        <td class="text-center" data-ng-bind="post.post_body"></td>
+                                        <td class="text-center" data-ng-bind="post.post_cost"></td>
                                         <td class="col-fit">
                                             <a href="/posts/edit/<% post.post_code %>"
                                                 class="btn btn-outline-primary btn-circle bi bi-pencil-square"></a>
+                                            <button type="button" class="btn btn-outline-success btn-circle bi bi-coin"
+                                                data-ng-click="addCost($index)"></button>
                                             <button type="button"
                                                 class="btn btn-outline-danger btn-circle bi bi-trash3-fill"
                                                 data-ng-click="deletePost($index)"></button>
@@ -76,92 +80,6 @@
             </div>
         </div>
 
-        {{-- <div class="modal fade" id="techModal" tabindex="-1" role="dialog" aria-labelledby="techModalLabel">
-            <div class="modal-dialog  modal-xl">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form id="techForm" method="post" action="/posts/store/">
-                            @csrf
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="title">Title<b class="text-danger">&ast;</b></label>
-                                        <input type="text" class="form-control" name="title" maxlength="24" required
-                                            id="title" />
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="body">Body</label>
-                                        <textarea name="body" id="body" class="form-control" cols="30" rows="5"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="Attached">Attached<b class="text-danger">&ast;</b></label>
-                                        <input type="file" class="form-control" name="attached"
-                                            id="input-file-now-custom-2" id="Attached" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-secondary me-auto btn-sm"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
-                            </div>
-                        </form>
-                        <script>
-                            $('#techForm').on('submit', e => e.preventDefault()).validate({
-                                submitHandler: function(form) {
-                                    var formData = new FormData(form),
-                                        action = $(form).attr('action'),
-                                        method = $(form).attr('method');
-
-                                    $(form).find('button').prop('disabled', true);
-                                    $.ajax({
-                                        url: action,
-                                        type: method,
-                                        data: formData,
-                                        processData: false,
-                                        contentType: false,
-                                    }).done(function(data, textStatus, jqXHR) {
-                                        var response = JSON.parse(data);
-                                        if (response.status) {
-                                            toastr.success('Data processed successfully');
-                                            $('#techModal').modal('hide');
-                                            scope.$apply(() => {
-                                                if (scope.updateTechnician === false) {
-                                                    scope.technicians.unshift(response.data);
-                                                    scope.dataLoader();
-                                                } else {
-                                                    scope.technicians[scope.updateTechnician] = response.data;
-                                                    scope.dataLoader();
-                                                }
-                                            });
-                                        } else toastr.error(response.message);
-                                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                                        toastr.error("error");
-                                        $('#techModal').modal('hide');
-                                    }).always(function() {
-                                        $(form).find('button').prop('disabled', false);
-                                    });
-                                }
-                            });
-
-                            $(function() {
-                                $("#inputBirthdate").datetimepicker($.extend({}, dtp_opt, {
-                                    showTodayButton: false,
-                                    format: "YYYY-MM-DD",
-                                }));
-                            });
-                        </script>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
         <div class="modal fade" id="delete_post" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -175,6 +93,30 @@
                                 <button type="button" class="btn btn-outline-secondary me-auto"
                                     data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-outline-primary">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="add_cost" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form method="POST" action="/posts/add-cost/" enctype="multipart/form-data">
+                            @csrf
+                            <input data-ng-if="updateBrand !== false" type="hidden" name="_method" value="put">
+                            <input type="hidden" name="post_id" data-ng-value="psot !== false ? psots[psot].post_id : 0">
+                            <div class="mb-3">
+                                <label for="title">Cost <b class="text-danger">&ast;</b></label>
+                                <input type="text" class="form-control" name="cost" maxlength="24" required
+                                    id="title" />
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-outline-secondary me-auto"
+                                    data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-outline-primary">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -213,13 +155,15 @@
                     });
                 }, 'json');
             }
-            // $scope.setUser = (indx) => {
-            //     $scope.updateTechnician = indx;
-            //     $('#techModal').modal('show');
-            // };
+
             $scope.deletePost = (indx) => {
                 $scope.psot = indx;
                 $('#delete_post').modal('show');
+            };
+
+            $scope.addCost = (indx) => {
+                $scope.psot = indx;
+                $('#add_cost').modal('show');
             };
             $scope.dataLoader();
             scope = $scope;
@@ -257,6 +201,50 @@
                     if (response.status) {
                         toastr.success('post deleted successfully');
                         $('#delete_post').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.psot === false) {
+                                $scope.dataLoader(true);
+                            } else {
+                                scope.psots[scope.psot] = response
+                                    .data;
+                                $scope.dataLoader();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        });
+
+        // add cost
+        $(function() {
+            $('#add_cost form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    var response = JSON.parse(data);
+                    if (response.status) {
+                        toastr.success('post deleted successfully');
+                        $('#add_cost').modal('hide');
                         scope.$apply(() => {
                             if (scope.psot === false) {
                                 $scope.dataLoader(true);

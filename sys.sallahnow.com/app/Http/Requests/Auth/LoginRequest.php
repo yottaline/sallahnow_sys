@@ -53,7 +53,7 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),]);
         }else {
-            $password = Hash::check(  request('user_password'), $user->user_password);
+            $password = Hash::check(request('user_password'), $user->user_password);
             if(!$password) {
                 RateLimiter::hit($this->throttleKey());
 

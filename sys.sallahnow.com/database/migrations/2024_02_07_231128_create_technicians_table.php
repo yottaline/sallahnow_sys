@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('tech_mobile', 24);
             $table->string('tech_mobile_verefied')->nullable();
             $table->string('tech_tel', 24)->nullable();
-            $table->string('tech_password', 255);
+            $table->string('password', 255);
             $table->string('tech_identification', 24)->nullable();
             $table->date('tech_birth')->nullable();
             $table->integer('tech_country');

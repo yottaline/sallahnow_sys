@@ -35,10 +35,22 @@ Route::middleware('api')->group(function() {
         // posts
         Route::get('ge-posts', 'TechnicianApiController@getPost');
         Route::post('store-post', 'TechnicianApiController@storePost');
+        Route::post('post-cost', 'TechnicianApiController@postCost');
         Route::post('add-like', 'TechnicianApiController@addLike');
         Route::get('show-comment/{post_id}', 'TechnicianApiController@showComment');
         Route::post('add-comment', 'TechnicianApiController@addComment');
         Route::get('post-views/{id}', 'TechnicianApiController@postView');
         Route::post('add-post-view', 'TechnicianApiController@addView');
+    });
+
+    // Route::prefix('posts')->group( function() {
+
+    // });
+
+    Route::prefix('chats')->group( function() {
+        Route::get('get-chats/{tech_id}', 'ChatApiController@chat');
+        Route::post('create-room', 'ChatApiController@createRoom');
+        Route::post('add-member', 'ChatApiController@addMember');
+        Route::post('create-message', 'ChatApiController@createMessage');
     });
 });

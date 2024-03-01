@@ -135,6 +135,7 @@ Route::prefix('posts')->middleware('auth')->group( function() {
     Route::get('create', 'PostController@create');
     Route::get('edit/{code}', 'PostController@edit');
     Route::post('submit','PostController@submit');
+    Route::put('add-cost', 'PostController@addCost');
     Route::post('update-data','PostController@updateData');
     Route::post('add-attach', 'PostController@addAttach');
     Route::delete('delete', 'PostController@delete');
@@ -142,6 +143,16 @@ Route::prefix('posts')->middleware('auth')->group( function() {
     Route::post('get-comment', 'PostController@getComment');
     Route::post('add-comment', 'PostController@addComment');
 });
+
+Route::prefix('chats')->middleware('auth')->group( function() {
+    Route::get('/', 'ChatRoomController@index');
+    // Route::post('load/{tech}', 'ChatRoomController@load');
+    Route::match(['post', 'put'], 'submit', 'ChatRoomController@submit');
+    Route::get('get-technician/{tech_code}', 'ChatRoomController@getTechnician');
+    Route::get('get-chat-room/{tech_id}', 'ChatRoomController@getChatRoom');
+    Route::post('get-chat-msg/{room_id}', 'ChatRoomController@getMessage');
+});
+
 
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');
