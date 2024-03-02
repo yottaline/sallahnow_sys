@@ -90,6 +90,14 @@ class Technician extends Authenticatable implements JWTSubject
         return $this->hasMany(Chat_Room_Message::class);
     }
 
+    public function supportTickets() {
+        return $this->hasMany(Support_ticket::class);
+    }
+
+    public function supportReplie() {
+        return $this->hasMany(Support_replie::class);
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

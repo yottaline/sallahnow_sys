@@ -35,4 +35,8 @@ class Models extends Model
     public function suggestions() {
         return $this->belongsToMany(Compatibilities_suggestions::class);
     }
+
+    public function supportTickets() {
+        return $this->hasMany(Support_ticket::class);
+    }
 }

@@ -191,14 +191,6 @@
                     });
                 }, 'json');
 
-                // $.post("/models/load/", {
-                //     _token: '{{ csrf_token() }}'
-                // }, function(data) {
-                //     $('.loading-spinner').hide();
-                //     $scope.$apply(() => {
-                //         $scope.models = data;
-                //     });
-                // }, 'json');
             }
 
 

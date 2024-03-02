@@ -106,12 +106,12 @@
                     <div class="modal-body">
                         <form method="POST" action="/posts/add-cost/" enctype="multipart/form-data">
                             @csrf
-                            <input data-ng-if="updateBrand !== false" type="hidden" name="_method" value="put">
+                            <input data-ng-if="post !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="post_id" data-ng-value="psot !== false ? psots[psot].post_id : 0">
                             <div class="mb-3">
-                                <label for="title">Cost <b class="text-danger">&ast;</b></label>
+                                <label for="CostPost">Cost <b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="cost" maxlength="24" required
-                                    id="title" />
+                                    id="category_id" />
                             </div>
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -243,7 +243,7 @@
                     console.log(data);
                     var response = JSON.parse(data);
                     if (response.status) {
-                        toastr.success('post deleted successfully');
+                        toastr.success('post update cost successfully');
                         $('#add_cost').modal('hide');
                         scope.$apply(() => {
                             if (scope.psot === false) {

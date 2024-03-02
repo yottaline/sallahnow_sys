@@ -153,6 +153,24 @@ Route::prefix('chats')->middleware('auth')->group( function() {
     Route::post('get-chat-msg/{room_id}', 'ChatRoomController@getMessage');
 });
 
+Route::prefix('supports')->middleware('auth')->group( function() {
+    Route::get('/', 'SupportCategoryController@index');
+    Route::post('load', 'SupportCategoryController@load');
+    Route::match(['post', 'put'], 'submit', 'SupportCategoryController@submit');
+    Route::put('update-cost', 'SupportCategoryController@updateCost');
+    // support tickets
+});
+
+Route::prefix('tickets')->middleware('auth')->group( function() {
+    Route::get('/', 'SupportTicketController@index');
+    Route::post('load', 'SupportTicketController@load');
+    Route::put('change-status', 'SupportTicketController@changeStatus');
+    Route::put('add-replie', 'SupportTicketController@replie');
+    Route::get('get-replie/{tcket_id}', 'SupportTicketController@getReplie');
+});
+
+
+
 
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');

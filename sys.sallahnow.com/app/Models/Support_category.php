@@ -5,25 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Brand extends Model
+class Support_category extends Model
 {
     use HasFactory;
     public $timestamps = false;
 
     protected $fillable = [
-        'brand_name',
-        'brand_logo',
-        'brand_visible',
-        'user_id'
+        'category_id',
+        'category_name',
+        'category_cost',
+        'category_visible'
     ];
-
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
-
-    public function models() {
-        return $this->hasMany(Models::class);
-    }
 
     public function supportTickets() {
         return $this->hasMany(Support_ticket::class);

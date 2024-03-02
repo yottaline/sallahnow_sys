@@ -53,4 +53,11 @@ Route::middleware('api')->group(function() {
         Route::post('add-member', 'ChatApiController@addMember');
         Route::post('create-message', 'ChatApiController@createMessage');
     });
+
+    Route::prefix('tickets')->group( function() {
+        Route::get('/', 'SupportTicketApiController@getTickets');
+        Route::post('add-ticket', 'SupportTicketApiController@addTicket');
+        Route::get('replies/{ticket_id}', 'SupportTicketApiController@gtReplies');
+        Route::post('add-replie', 'SupportTicketApiController@addReplie');
+    });
 });

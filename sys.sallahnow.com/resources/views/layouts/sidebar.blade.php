@@ -57,7 +57,7 @@
 
              <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="/chats/">
-                     <i class="bi bi-file-post-fill text-secondary me-2"></i><b>Chat</b>
+                     <i class="bi bi-chat-left-text text-secondary me-2"></i><b>Chat</b>
                  </a>
              </li>
 
@@ -120,6 +120,35 @@
                      <i class="bi bi-question-circle text-secondary me-2"></i><b>Help Disk</b>
                  </a>
              </li> --}}
+
+             <li class="list-group-item">
+                 <a class="link-dark d-block" data-bs-toggle="collapse" href="#suuportCollapse" role="button"
+                     aria-expanded="false" aria-controls="suuportCollapse">
+                     <i class="bi bi-robot text-secondary me-2"></i><b>Supports</b>
+                 </a>
+                 <div class="collapse" id="suuportCollapse">
+                     <ul class="list-group list-group-flush">
+                         <li class="list-group-item nav-subsc">
+                             <a class="link-dark d-block" href="/supports/">
+                                 <i class="bi bi-clipboard-plus text-secondary me-2"></i><b>Categories</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/tickets/">
+                                 <i class="bi bi-ticket-perforated text-secondary me-2"></i><b>Tickets</b>
+                             </a>
+                         </li>
+                     </ul>
+                 </div>
+                 <script>
+                     const suuportCollapse = new bootstrap.Collapse('#suuportCollapse', {
+                         toggle: false
+                     });
+                     if (['subsc', 'trans', 'refunds', 'promos'].includes(navTarget))
+                         suuportCollapse.show();
+                 </script>
+             </li>
 
              {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#reportsCollapse" role="button"
