@@ -34,7 +34,6 @@ class PostController extends Controller
 
     function editor($code = null)
     {
-
         $data = $code ? DB::table('posts')
             ->join('users', 'posts.post_create_user', '=', 'users.id')
             // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')

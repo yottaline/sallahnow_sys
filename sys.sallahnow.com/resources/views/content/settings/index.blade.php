@@ -221,8 +221,8 @@
                                                     ng-src="{{ asset('/Image/Brands/') }}/<% brand.brand_logo %>"
                                                     width="30px">
                                             </td>
-                                            <td>
-                                                <div class="col-fit">
+                                            <td class="col-fit">
+                                                <div>
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                         data-ng-click="setBrand($index)"></button>
                                                 </div>
@@ -335,8 +335,8 @@
                                             </td>
                                             <td data-ng-bind="model.brand_name">
                                             </td>
-                                            <td>
-                                                <div class="col-fit">
+                                            <td class="col-fit">
+                                                <div>
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                         data-ng-click="setModel($index)"></button>
                                                 </div>
@@ -461,8 +461,8 @@
                                         <tr data-ng-repeat="cate in compatibility_categories">
                                             <td data-ng-bind="cate.category_id"></td>
                                             <td data-ng-bind="cate.category_name"></td>
-                                            <td>
-                                                <div class="col-fit">
+                                            <td class="col-fit">
+                                                <div>
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                         data-ng-click="setCompatibilityCategories($index)"></button>
                                                 </div>
@@ -515,7 +515,7 @@
         <div class="models mt-5">
             <div class="row">
                 <div class="col-12 col-sm-4 col-lg-3">
-                    <div class="card card-box">
+                    {{-- <div class="card card-box">
                         <div class="card-body">
                             <div class="mb-3">
                                 <label for="roleFilter">brands Name</label>
@@ -530,7 +530,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="col-12 col-sm-8 col-lg-9">
                     <div class="card card-box">
@@ -563,7 +563,7 @@
                                     </thead>
                                     <tbody>
                                         <tr data-ng-repeat="package in packages">
-                                            <td data-ng-bind="package.id"></td>
+                                            <td data-ng-bind="package.pkg_id"></td>
                                             <td>
                                                 <span
                                                     class="badge bg-dark rounded-pill font-monospace p-2"><%typeObject.name[package.pkg_type]%></span>
@@ -572,8 +572,8 @@
                                             <td data-ng-bind="package.pkg_cost"></td>
                                             <td data-ng-bind="package.pkg_points"></td>
                                             <td></td>
-                                            <td>
-                                                <div class="col-fit">
+                                            <td class="col-fit">
+                                                <div>
                                                     <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                         data-ng-click="setPackage($index)"></button>
                                                 </div>

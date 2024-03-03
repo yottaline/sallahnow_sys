@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('tech_mobile', 24);
             $table->string('tech_mobile_verefied')->nullable();
             $table->string('tech_tel', 24)->nullable();
-            $table->string('password', 255);
+            $table->string('tech_password', 255);
             $table->string('tech_identification', 24)->nullable();
             $table->date('tech_birth')->nullable();
             $table->integer('tech_country');
@@ -41,12 +41,12 @@ return new class extends Migration
             $table->string('devise_token')->unique();
             $table->boolean('tech_blocked')->default(0);
             $table->dateTime('tech_login')->nullable();
-            $table->integer('tech_register_by');
-            $table->date('tech_register');
+            $table->integer('tech_register_by')->nullable();
+            $table->dateTime('tech_register');
             // $table->timestamps();
 
 
-            $table->foreign('tech_register_by')->references('id')->on('users');
+            // $table->foreign('tech_register_by')->references('id')->on('users');
         });
 
     }

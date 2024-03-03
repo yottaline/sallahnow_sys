@@ -15,6 +15,7 @@ class PointTranaction extends Model
         'points_src',
         'points_target',
         'points_process',
+        'points_tech',
         'points_register'
     ];
 

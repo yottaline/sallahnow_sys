@@ -43,7 +43,7 @@
                         </h5>
 
                         <div data-ng-if="technicians.length" class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="example">
                                 <thead>
                                     <tr>
                                         <th class="text-center">#</th>

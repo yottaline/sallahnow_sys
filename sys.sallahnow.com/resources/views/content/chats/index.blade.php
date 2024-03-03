@@ -50,11 +50,24 @@
             <div class="col-12 col-sm-8 col-lg-9">
                 <div class="card card-box perm">
                     <div class="card-body">
-                        <div class="d-flex" data-ng-if="messages.length">
-                            <h5 class="card-title fw-semibold pt-1 me-auto mb-3">The Messages :</h5>
-                        </div>
-                        <div>
-                            <p data-ng-repeat="msg in messages" data-ng-bind="msg.msg_context"></p>
+                        <div data-ng-if="messages.length" class="table-responsive">
+                            <div data-ng-if="messages.length" data-ng-repeat="c in messages"
+                                class="bg-muted-2 p-3 border rounded-2 mb-3"
+                                data-ng-class="!+c.msg_id ? 'border-danger' : 'border-success'">
+                                <h6> <i class="bi bi-person-circle text-secondary me-1"></i><span data-ng-bind="c.tech_name"
+                                        class="font-monospace dir-ltr d-inline-block"></span></h6>
+                                <p class="fw-bold small" data-ng-bind="c.msg_context"></p>
+                                <div class="small">
+                                    <i class="bi bi-clock text-secondary me-1"></i><span data-ng-bind="c.msg_create"
+                                        class="font-monospace dir-ltr d-inline-block"></span>
+                                </div>
+                            </div>
+                            <h6 data-ng-if="comments.count && comments.data.length == comments.count"
+                                class="text-center my-3 small text-secondary">All comments have been uploaded</h6>
+                            <div data-ng-if="!messages.length" class="text-center my-5">
+                                <h1 style="font-size: 90px"><i class="bi bi-chat-dots text-secondary"></i></h1>
+                                <h5 class="text-secondary"> No Replies...</h5>
+                            </div>
                         </div>
                     </div>
                 </div>

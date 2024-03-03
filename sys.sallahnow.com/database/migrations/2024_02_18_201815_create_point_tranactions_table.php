@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('points_tech');
             // $table->foreignId('technician_id')->constrained('technicians')->cascadeOnDelete();
             // $table->timestamps();
-            $table->date('points_register');
+            $table->dateTime('points_register');
 
             $table->foreign('points_tech')->references('tech_id')->on('technicians');
         });

@@ -64,6 +64,7 @@ class ChatRoomController extends Controller
     public function getMessage($room_id) {
         $chats = DB::table('chat_room_messages')
         ->join('chat_rooms', 'chat_room_messages.msg_room', '=', 'chat_rooms.room_id')
+        ->join('technicians', 'chat_room_messages.msg_from', 'technicians.tech_id')
         ->where('chat_room_messages.msg_room', $room_id)->get();
         echo json_encode($chats);
     }
