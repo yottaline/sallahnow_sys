@@ -38,15 +38,15 @@ Route::middleware('api')->group(function() {
     Route::prefix('posts')->group( function() {
         // posts
         Route::get('/', 'PostsApiController@getPost');
-        Route::post('store-post', 'PostsApiController@store');
-        Route::post('post-cost', 'PostsApiController@cost');
+        Route::post('store_post', 'PostsApiController@store');
+        Route::post('post_cost', 'PostsApiController@cost');
         Route::post('like', 'PostsApiController@addLike');
         // comments
         Route::get('comments/{post_id}', 'PostsApiController@comments');
-        Route::post('add-comment', 'PostsApiController@addComment');
+        Route::post('add_comment', 'PostsApiController@addComment');
         // post view
-        Route::get('post-views/{post_id}', 'PostsApiController@postView');
-        Route::post('add-post-view', 'PostsApiController@addView');
+        Route::get('post_views/{post_id}', 'PostsApiController@postView');
+        Route::post('add_post-view', 'PostsApiController@addView');
 
     });
 
