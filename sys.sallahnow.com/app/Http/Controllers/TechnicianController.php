@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Location;
 use App\Models\Technician;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -21,7 +22,8 @@ class TechnicianController extends Controller
 
     public function index()
     {
-        return view('content.technicians.index');
+        $locations = Location::all();
+        return view('content.technicians.index', compact('locations'));
     }
 
 
@@ -64,13 +66,12 @@ class TechnicianController extends Controller
             $param['tech_register_by'] = Auth::user()->id;
             $status = Technician::create($param);
 
-           $id = $status->tech_id;
-
+            $id = $status->tech_id;
         } else {
             $status = Technician::where('tech_id', $id)->update($param);
         }
 
-         $record = Technician::where('tech_id', $id)->first();
+        $record = Technician::where('tech_id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
@@ -87,7 +88,8 @@ class TechnicianController extends Controller
     // }
 
 
-    public function profile($code) {
+    public function profile($code)
+    {
         $technician = Technician::where('tech_code', $code)->first();
         return view('content.technicians.profile', compact('technician'));
     }

@@ -35,7 +35,8 @@
                                     data-bs-target="#locationModal" data-ng-click="locationModal(1, 0)"></a>
                             </div>
                             <ul data-ng-if="countries.length" class="list-group list-group-flush">
-                                <li data-ng-repeat="c in countries" class="list-group-item list-group-item-action d-flex"
+                                <li data-ng-repeat="c in countries"
+                                    class="list-group-item list-group-item-action d-flex bg-muted-8"
                                     data-ng-class="activeCountry == $index ? 'active' : ''">
                                     <span data-ng-bind="jsonParse(c.location_name).en" class="me-auto"></span>
                                     <a href="" class="link-primary bi bi-eye me-2"
@@ -45,7 +46,7 @@
                                 </li>
                             </ul>
                             <div data-ng-if="!countries.length" class="py-5 text-center">
-                                <h1 style="font-size: 90px"><i class="bi bi-info-circle text-secondary"></i></h1>
+                                <h1 style="font-size: 60px"><i class="bi bi-exclamation-circle text-secondary"></i></h1>
                                 <h6 class="text-secondary">No records</h6>
                             </div>
                         </div>
@@ -64,7 +65,8 @@
                                     data-ng-click="locationModal(2, countries[activeCountry].location_id)"></a>
                             </div>
                             <ul data-ng-if="states.length" class="list-group list-group-flush">
-                                <li data-ng-repeat="c in states" class="list-group-item list-group-item-action d-flex"
+                                <li data-ng-repeat="c in states"
+                                    class="list-group-item list-group-item-action d-flex bg-muted-8"
                                     data-ng-class="activeState == $index ? 'active' : ''">
                                     <span data-ng-bind="jsonParse(c.location_name).en" class="me-auto"></span>
                                     <a href="" class="link-primary bi bi-eye me-2"
@@ -74,7 +76,7 @@
                                 </li>
                             </ul>
                             <div data-ng-if="!states.length" class="py-5 text-center">
-                                <h1 style="font-size: 90px"><i class="bi bi-info-circle text-secondary"></i></h1>
+                                <h1 style="font-size: 60px"><i class="bi bi-exclamation-circle text-secondary"></i></h1>
                                 <h6 class="text-secondary">No records</h6>
                             </div>
                         </div>
@@ -93,7 +95,8 @@
                                     data-ng-click="locationModal(3, states[activeState].location_id)"></a>
                             </div>
                             <ul data-ng-if="cities.length" class="list-group list-group-flush">
-                                <li data-ng-repeat="c in cities" class="list-group-item list-group-item-action d-flex"
+                                <li data-ng-repeat="c in cities"
+                                    class="list-group-item list-group-item-action d-flex bg-muted-8"
                                     data-ng-class="activeCity == $index ? 'active' : ''">
                                     <span data-ng-bind="jsonParse(c.location_name).en" class="me-auto"></span>
                                     <a href="" class="link-primary bi bi-eye me-2"
@@ -103,7 +106,7 @@
                                 </li>
                             </ul>
                             <div data-ng-if="!cities.length" class="py-5 text-center">
-                                <h1 style="font-size: 90px"><i class="bi bi-info-circle text-secondary"></i></h1>
+                                <h1 style="font-size: 60px"><i class="bi bi-exclamation-circle text-secondary"></i></h1>
                                 <h6 class="text-secondary">No records</h6>
                             </div>
                         </div>
@@ -122,46 +125,47 @@
                                     data-ng-click="locationModal(4, cities[activeCity].location_id)"></a>
                             </div>
                             <ul data-ng-if="areas.length" class="list-group list-group-flush">
-                                <li data-ng-repeat="c in areas" class="list-group-item list-group-item-action d-flex">
+                                <li data-ng-repeat="c in areas"
+                                    class="list-group-item list-group-item-action d-flex bg-muted-8">
                                     <span data-ng-bind="jsonParse(c.location_name).en" class="me-auto"></span>
                                     <a href="" class="link-primary bi bi-eye me-2"
                                         data-ng-click="toggleVisibility($index)"></a>
                                 </li>
                             </ul>
                             <div data-ng-if="!areas.length" class="py-5 text-center">
-                                <h1 style="font-size: 90px"><i class="bi bi-info-circle text-secondary"></i></h1>
+                                <h1 style="font-size: 60px"><i class="bi bi-exclamation-circle text-secondary"></i></h1>
                                 <h6 class="text-secondary">No records</h6>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form action="{{ route('location_store') }}" method="post">
-                            @csrf
-                            <input type="hidden" name="location_type" value="">
-                            <input type="hidden" name="location_parent" value="">
-                            <div class="mb-3">
-                                <label for="locationNameEn">Name EN<b class="text-danger">&ast;</b></label>
-                                <input type="text" name="location_name_en" id="locationNameEn" class="form-control"
-                                    required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="locationNameAr">Name AR<b class="text-danger">&ast;</b></label>
-                                <input type="text" name="location_name_ar" id="locationNameAr" class="form-control"
-                                    required>
-                            </div>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-secondary btn-sm me-auto"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
-                            </div>
-                        </form>
+            <!-- Modal -->
+            <div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form action="/settings/location/submit" method="post">
+                                @csrf
+                                <input type="hidden" name="type" value="">
+                                <input type="hidden" name="parent" value="">
+                                <div class="mb-3">
+                                    <label for="locationNameEn">Name EN<b class="text-danger">&ast;</b></label>
+                                    <input type="text" name="name_en" id="locationNameEn" class="form-control"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="locationNameAr">Name AR<b class="text-danger">&ast;</b></label>
+                                    <input type="text" name="name_ar" id="locationNameAr"
+                                        class="form-control dir-rtl" required>
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm me-auto"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Submit</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -711,13 +715,12 @@
                     type: +type,
                     parent: +parent,
                 };
-                $('[name="location_type"]').val(type);
-                $('[name="location_parent"]').val(parent);
+                $('[name=type]').val(type);
+                $('[name=parent]').val(parent);
                 $('#locationModal').modal('show');
             };
 
             $scope.setActive = function(obj, indx, target, list) {
-                $scope[obj] = indx;
                 switch (obj) {
                     case 'activeCountry':
                         $scope.states = [];
@@ -728,19 +731,19 @@
                     case 'activeCity':
                         $scope.areas = [];
                 }
+                $scope[obj] = indx;
                 $scope.loadData($scope[list][indx], target);
             };
 
             $scope.loadData = function(parent, target) {
                 $(`#${target}Box .loading-spinner`).show();
-                // 'https://sallahnow.yottaline.com/api/settings/locations_load'
-                $.get('/settings/load/', {
+                $.post('/settings/location/load/', {
                     type: parent ? (+parent.location_type + 1) : 1,
-                    parent: parent ? parent.id : 0,
+                    parent: parent ? parent.location_id : 0,
+                    _token: "{{ csrf_token() }}"
                 }, function(data) {
                     $(`#${target}Box .loading-spinner`).hide();
                     $scope.$apply(() => $scope[target] = data)
-                    console.log(data);
                 }, 'json');
             };
 
@@ -868,227 +871,233 @@
             $scope.lodaCompatibilityCategoriessData()
             $scope.loadPackageData();
             scope = $scope;
+        });
 
-            // create new location
-            $(function() {
-                $('#locationModal form').on('submit', function(e) {
-                    e.preventDefault();
-                    var form = $(this),
-                        formData = new FormData(this),
-                        action = form.attr('action'),
-                        method = form.attr('method'),
-                        controls = form.find('button, input'),
-                        spinner = $('#locationModal .loading-spinner');
+        // create new location
+        $(function() {
+            $('#locationModal form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
 
-                    spinner.show();
-                    controls.prop('disabled', true);
-                    $.ajax({
-                        url: action,
-                        type: method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    }).done(function(data, textStatus, jqXHR) {
-                        var response = JSON.parse(data);
-                        if (response.status) {
-                            toastr.success('Data processed successfully');
-                            $('#locationModal').modal('hide');
-                            scope.$apply(() => {
-                                if (activeCountry === false) {
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#locationModal').modal('hide');
+                        scope.$apply(function() {
+                            switch (scope.modalObject.type) {
+                                case 1:
                                     scope.countries.unshift(response.data);
-                                } else {
-                                    scope.countries[activeCountry] = response
-                                        .data;
-                                }
-                            });
-                        } else toastr.error("Error");
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // error msg
-                    }).always(function() {
-                        spinner.hide();
-                        controls.prop('disabled', false);
-                    });
-
-                })
-            });
-
-            // create and update brand
-            $(function() {
-                $('#brandForm form').on('submit', function(e) {
-                    e.preventDefault();
-                    var form = $(this),
-                        formData = new FormData(this),
-                        action = form.attr('action'),
-                        method = form.attr('method'),
-                        controls = form.find('button, input'),
-                        spinner = $('#locationModal .loading-spinner');
-                    spinner.show();
-                    controls.prop('disabled', true);
-                    $.ajax({
-                        url: action,
-                        type: method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    }).done(function(data, textStatus, jqXHR) {
-                        var response = JSON.parse(data);
-                        console.log(data)
-                        if (response.status) {
-                            toastr.success('Data processed successfully');
-                            $('#brandForm').modal('hide');
-                            scope.$apply(() => {
-                                if (scope.updateBrand === false) {
-                                    scope.brands.unshift(response.data);
-                                    $scope.loadBrandsData();
-                                } else {
-                                    scope.brands[scope.updateBrand] = response.data;
-                                    $scope.loadBrandsData();
-                                }
-                            });
-                        } else toastr.error("Error");
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // error msg
-                    }).always(function() {
-                        spinner.hide();
-                        controls.prop('disabled', false);
-                    });
-                })
-            });
-
-            // create and update model
-            $(function() {
-                $('#modelForm form').on('submit', function(e) {
-                    e.preventDefault();
-                    var form = $(this),
-                        formData = new FormData(this),
-                        action = form.attr('action'),
-                        method = form.attr('method'),
-                        controls = form.find('button, input'),
-                        spinner = $('#locationModal .loading-spinner');
-                    spinner.show();
-                    controls.prop('disabled', true);
-                    $.ajax({
-                        url: action,
-                        type: method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    }).done(function(data, textStatus, jqXHR) {
-                        var response = JSON.parse(data);
-                        console.log(data)
-                        if (response.status) {
-                            toastr.success('Data processed successfully');
-                            $('#modelForm').modal('hide');
-                            scope.$apply(() => {
-                                if (scope.updateModel === false) {
-                                    scope.models.unshift(response.data);
-                                    $scope.lodaModelsData();
-                                } else {
-                                    scope.models[scope.updateModel] = response.data;
-                                    $scope.lodaModelsData();
-                                }
-                            });
-                        } else toastr.error("Error");
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // error msg
-                    }).always(function() {
-                        spinner.hide();
-                        controls.prop('disabled', false);
-                    });
-
-                })
-            })
-
-            // create and update Compatibility Categories
-            $(function() {
-                $('#CompatibilityCategoriesForm form').on('submit', function(e) {
-                    e.preventDefault();
-                    var form = $(this),
-                        formData = new FormData(this),
-                        action = form.attr('action'),
-                        method = form.attr('method'),
-                        controls = form.find('button, input'),
-                        spinner = $('#locationModal .loading-spinner');
-                    spinner.show();
-                    controls.prop('disabled', true);
-                    $.ajax({
-                        url: action,
-                        type: method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    }).done(function(data, textStatus, jqXHR) {
-                        var response = JSON.parse(data);
-                        console.log(data)
-                        if (response.status) {
-                            toastr.success('Data processed successfully');
-                            $('#CompatibilityCategoriesForm').modal('hide');
-                            scope.$apply(() => {
-                                if (scope.updateCompCate === false) {
-                                    scope.compatibility_categories.unshift(response
-                                        .data);
-                                    $scope.lodaCompatibilityCategoriessData();
-                                } else {
-                                    scope.compatibility_categories[scope
-                                        .updateCompCate] = response.data;
-                                    $scope.lodaCompatibilityCategoriessData();
-                                }
-                            });
-                        } else toastr.error("Error");
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // error msg
-                    }).always(function() {
-                        spinner.hide();
-                        controls.prop('disabled', false);
-                    });
-
-                })
-            })
-
-            // create and update packages Categories
-            $(function() {
-                $('#PackageForm form').on('submit', function(e) {
-                    e.preventDefault();
-                    var form = $(this),
-                        formData = new FormData(this),
-                        action = form.attr('action'),
-                        method = form.attr('method'),
-                        controls = form.find('button, input'),
-                        spinner = $('#locationModal .loading-spinner');
-                    spinner.show();
-                    controls.prop('disabled', true);
-                    $.ajax({
-                        url: action,
-                        type: method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    }).done(function(data, textStatus, jqXHR) {
-                        var response = JSON.parse(data);
-                        console.log(data)
-                        if (response.status) {
-                            toastr.success('Data processed successfully');
-                            $('#PackageForm').modal('hide');
-                            scope.$apply(() => {
-                                if (scope.updatePackage === false) {
-                                    scope.packages.unshift(response.data);
-                                    $scope.loadPackageData();
-                                } else {
-                                    scope.packages[scope.updatePackage] = response
-                                        .data;
-                                    $scope.loadPackageData();
-                                }
-                            });
-                        } else toastr.error("Error");
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // error msg
-                    }).always(function() {
-                        spinner.hide();
-                        controls.prop('disabled', false);
-                    });
-
-                })
+                                    break;
+                                case 2:
+                                    scope.states.unshift(response.data);
+                                    break;
+                                case 3:
+                                    scope.cities.unshift(response.data);
+                                    break;
+                                case 4:
+                                    scope.areas.unshift(response.data);
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
             })
         });
+
+        // create and update brand
+        $(function() {
+            $('#brandForm form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    console.log(data)
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#brandForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updateBrand === false) {
+                                scope.brands.unshift(response.data);
+                                $scope.loadBrandsData();
+                            } else {
+                                scope.brands[scope.updateBrand] = response.data;
+                                $scope.loadBrandsData();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+            })
+        });
+
+        // create and update model
+        $(function() {
+            $('#modelForm form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    console.log(data)
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#modelForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updateModel === false) {
+                                scope.models.unshift(response.data);
+                                $scope.lodaModelsData();
+                            } else {
+                                scope.models[scope.updateModel] = response.data;
+                                $scope.lodaModelsData();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        })
+
+        // create and update Compatibility Categories
+        $(function() {
+            $('#CompatibilityCategoriesForm form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    console.log(data)
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#CompatibilityCategoriesForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updateCompCate === false) {
+                                scope.compatibility_categories.unshift(response
+                                    .data);
+                                $scope.lodaCompatibilityCategoriessData();
+                            } else {
+                                scope.compatibility_categories[scope
+                                    .updateCompCate] = response.data;
+                                $scope.lodaCompatibilityCategoriessData();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        })
+
+        // create and update packages Categories
+        $(function() {
+            $('#PackageForm form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    console.log(data)
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#PackageForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updatePackage === false) {
+                                scope.packages.unshift(response.data);
+                                $scope.loadPackageData();
+                            } else {
+                                scope.packages[scope.updatePackage] = response
+                                    .data;
+                                $scope.loadPackageData();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        })
     </script>
 @endsection

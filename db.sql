@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `ugroups` (
 
 CREATE TABLE IF NOT EXISTS `locations` (
   `location_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `location_name` VARCHAR(100) NOT NULL,
+  `location_name` VARCHAR(4096) NOT NULL,
   `location_type` TINYINT UNSIGNED NOT NULL COMMENT '1:country,2:state,3:city,4:area',
   `location_parent` INT UNSIGNED NOT NULL,
   `location_visible` TINYINT UNSIGNED NOT NULL DEFAULT '1',
@@ -431,6 +431,53 @@ CREATE TABLE IF NOT EXISTS `support_attachments` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `courses` (
+  `course_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `course_code` VARCHAR(12) NOT NULL,
+  `course_title` VARCHAR(255) NOT NULL,
+  `course_body` VARCHAR(2048) NOT NULL,
+  `course_file` VARCHAR(24) DEFAULT NULL,
+  `course_photo` VARCHAR(24) DEFAULT NULL,
+  `course_type` TINYINT UNSIGNED NOT NULL DEFAULT '1',
+  `course_cost` DECIMAL(12, 2) NOT NULL DEFAULT '0',
+  `course_archived` BOOLEAN NOT NULL DEFAULT '0',
+  `course_archive_user` INT UNSIGNED DEFAULT NULL,
+  `course_archive_time` DATETIME DEFAULT NULL,
+  `course_deleted` BOOLEAN NOT NULL DEFAULT '0',
+  `course_delete_user` INT UNSIGNED NOT NULL,
+  `course_delete_time` DATETIME DEFAULT NULL,
+  `course_views` INT UNSIGNED NOT NULL DEFAULT '0',
+  `course_requests` INT UNSIGNED NOT NULL DEFAULT '0',
+  `course_create_user` INT UNSIGNED DEFAULT NULL,
+  `course_create_time` DATETIME NOT NULL,
+  `course_modify_user` INT UNSIGNED DEFAULT NULL,
+  `course_modify_time` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`course_id`),
+  KEY `course_code` (`course_code`),
+  KEY `course_archive_user` (`course_archive_user`),
+  KEY `course_delete_user` (`course_delete_user`),
+  KEY `course_create_user` (`course_create_user`),
+  KEY `course_modify_user` (`course_modify_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tech_ads` (
+  `ads_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ads_title` VARCHAR(255) NOT NULL,
+  `ads_photo` VARCHAR(64) NOT NULL,
+  `ads_body` VARCHAR(4096) NOT NULL,
+  `ads_url` VARCHAR(255) NOT NULL,
+  `ads_start` DATETIME NOT NULL,
+  `ads_end` DATETIME NOT NULL,
+  `ads_create_user` INT NOT NULL,
+  `ads_create_time` DATETIME NOT NULL,
+  PRIMARY KEY (`ads_id`),
+  KEY `ads_create_user` (`ads_create_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `customers` (
   `customer_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `customer_code` VARCHAR(24) NOT NULL,
@@ -443,11 +490,9 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `customer_city` INT UNSIGNED NOT NULL,
   `customer_area` INT UNSIGNED NOT NULL,
   `customer_address` VARCHAR(1024) NOT NULL,
-  `customer_geo` VARCHAR(64) NOT NULL,
   `customer_notes` VARCHAR(1024),
   `customer_rate` tinyint(4) DEFAULT NULL,
   `customer_active` TINYINT UNSIGNED NOT NULL DEFAULT '1',
-  `customer_blocked` TINYINT UNSIGNED NOT NULL DEFAULT '0',
   `customer_login` DATETIME DEFAULT NULL,
   `customer_register` DATETIME NOT NULL,
   PRIMARY KEY (`customer_id`),
