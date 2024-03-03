@@ -47,10 +47,10 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::get('/', 'TechnicianController@index');
     Route::post('load', 'TechnicianController@load');
     Route::match(['post', 'put'], 'submit', 'TechnicianController@submit');
-    Route::get( 'profile/{technician}', 'TechnicianController@profile');
+    Route::get('profile/{technician}', 'TechnicianController@profile');
 });
 
-Route::prefix('centers')->middleware('auth')->group( function() {
+Route::prefix('centers')->middleware('auth')->group(function () {
     Route::get('/', 'CenterController@index');
     Route::post('load', 'CenterController@load');
     Route::match(['post', 'put'], 'submit', 'CenterController@submit');
@@ -71,13 +71,11 @@ Route::prefix('models')->middleware('auth')->group(function () {
     Route::match(['post', 'put'], 'submit', 'ModelController@submit');
     Route::post('getBrandsName', 'ModelController@getBrandsName');
     Route::post('getUserName', 'ModelController@getUsersName');
-
 });
 
 Route::prefix('CompatibilityCategories')->middleware('auth')->group(function () {
     Route::post('load', 'CompatibilityCategorieController@load');
     Route::match(['post', 'put'], 'submit', 'CompatibilityCategorieController@submit');
-
 });
 
 Route::prefix('compatibilities')->middleware('auth')->group(function () {
@@ -85,7 +83,6 @@ Route::prefix('compatibilities')->middleware('auth')->group(function () {
     Route::post('load', 'CompatibilityController@load');
     Route::match(['post', 'put'], 'submit', 'CompatibilityController@submit');
     Route::post('getCateName', 'CompatibilityController@getCateName');
-
 });
 
 Route::prefix('suggestions')->middleware('auth')->group(function () {
@@ -93,26 +90,25 @@ Route::prefix('suggestions')->middleware('auth')->group(function () {
     Route::post('load', 'CompatibilitiesSuggestionsController@load');
     Route::post('store', 'CompatibilitiesSuggestionsController@store')->name('i.suggestions');
     Route::match(['post', 'put'], 'submit', 'CompatibilitiesSuggestionsController@submit');
-
 });
 
-Route::prefix('packages')->middleware('auth')->group( function() {
+Route::prefix('packages')->middleware('auth')->group(function () {
     Route::post('load', 'PackageController@load');
     Route::match(['post', 'put'], 'submit', 'PackageController@submit');
 });
 
-Route::prefix('subscriptions')->middleware('auth')->group( function() {
-   Route::get('/', 'SubscriptionsController@index');
-   Route::post('load', 'SubscriptionsController@load');
-   Route::get('search/{item}', 'SubscriptionsController@search');
-   Route::match(['post', 'put'], 'submit', 'SubscriptionsController@submit');
-   Route::post('subGetTechnician', 'SubscriptionsController@technicianName');
-   Route::post('subGetUser', 'SubscriptionsController@userName');
-   Route::put('change', 'SubscriptionsController@changeStatus');
+Route::prefix('subscriptions')->middleware('auth')->group(function () {
+    Route::get('/', 'SubscriptionsController@index');
+    Route::post('load', 'SubscriptionsController@load');
+    Route::get('search/{item}', 'SubscriptionsController@search');
+    Route::match(['post', 'put'], 'submit', 'SubscriptionsController@submit');
+    Route::post('subGetTechnician', 'SubscriptionsController@technicianName');
+    Route::post('subGetUser', 'SubscriptionsController@userName');
+    Route::put('change', 'SubscriptionsController@changeStatus');
 });
 
-Route::prefix('transactions')->middleware('auth')->group( function() {
-    Route::get('/' , 'TransactionController@index');
+Route::prefix('transactions')->middleware('auth')->group(function () {
+    Route::get('/', 'TransactionController@index');
     Route::post('load', 'TransactionController@load');
     Route::match(['post', 'put'], 'submit', 'TransactionController@submit');
     // Route::post('subTranTechnician', 'TransactionController@technicianName');
@@ -120,23 +116,23 @@ Route::prefix('transactions')->middleware('auth')->group( function() {
     Route::get('profile/{reference}', 'TransactionController@profile');
 });
 
-Route::prefix('points')->middleware('auth')->group( function() {
+Route::prefix('points')->middleware('auth')->group(function () {
     Route::get('/', 'PointTranactionController@index');
     Route::post('load', 'PointTranactionController@load');
     Route::match(['post', 'put'], 'submit', 'PointTranactionController@submit');
-    Route::get('get-technician/{tech_mobile}', 'PointTranactionController@technicianName');
+    Route::post('subPointTechnician', 'PointTranactionController@technicianName');
     Route::get('profile/{id}', 'TransactionController@profile');
 });
 
-Route::prefix('posts')->middleware('auth')->group( function() {
+Route::prefix('posts')->middleware('auth')->group(function () {
     Route::get('/', 'PostController@index');
     Route::post('load', 'PostController@load');
     Route::get('create', 'PostController@create');
     Route::get('create', 'PostController@create');
     Route::get('edit/{code}', 'PostController@edit');
-    Route::post('submit','PostController@submit');
+    Route::post('submit', 'PostController@submit');
     Route::put('add-cost', 'PostController@addCost');
-    Route::post('update-data','PostController@updateData');
+    Route::post('update-data', 'PostController@updateData');
     Route::post('add-attach', 'PostController@addAttach');
     Route::delete('delete', 'PostController@delete');
     // comments
@@ -144,7 +140,7 @@ Route::prefix('posts')->middleware('auth')->group( function() {
     Route::post('add-comment', 'PostController@addComment');
 });
 
-Route::prefix('chats')->middleware('auth')->group( function() {
+Route::prefix('chats')->middleware('auth')->group(function () {
     Route::get('/', 'ChatRoomController@index');
     // Route::post('load/{tech}', 'ChatRoomController@load');
     Route::match(['post', 'put'], 'submit', 'ChatRoomController@submit');
@@ -152,24 +148,6 @@ Route::prefix('chats')->middleware('auth')->group( function() {
     Route::get('get-chat-room/{tech_id}', 'ChatRoomController@getChatRoom');
     Route::post('get-chat-msg/{room_id}', 'ChatRoomController@getMessage');
 });
-
-Route::prefix('supports')->middleware('auth')->group( function() {
-    Route::get('/', 'SupportCategoryController@index');
-    Route::post('load', 'SupportCategoryController@load');
-    Route::match(['post', 'put'], 'submit', 'SupportCategoryController@submit');
-    Route::put('update-cost', 'SupportCategoryController@updateCost');
-    // support tickets
-});
-
-Route::prefix('tickets')->middleware('auth')->group( function() {
-    Route::get('/', 'SupportTicketController@index');
-    Route::post('load', 'SupportTicketController@load');
-    Route::put('change-status', 'SupportTicketController@changeStatus');
-    Route::put('add-replie', 'SupportTicketController@replie');
-    Route::get('get-replie/{tcket_id}', 'SupportTicketController@getReplie');
-});
-
-
 
 
 Route::prefix('settings')->middleware('auth')->group(function () {
