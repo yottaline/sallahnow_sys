@@ -22,18 +22,14 @@
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
-                        {{-- <div class="mb-3">
-                            <label for="roleFilter">Role</label>
-                            <select name="" id="" class="form-select">
-                                <option value=""></option>
-                            </select>
+                        <div class="input-group mt-3 mb-3">
+                            {{-- <label for="MobileFilter"></label> --}}
+                            <input type="search" name="tech_mobile" placeholder="Search Technician Mobile"
+                                id="MobileFilter" class="form-control">
+                            <div class="input-group-text" style="cursor: pointer"><i class="bi bi-search"
+                                    data-ng-click="getPermissions(role)"></i>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="roleFilter">Status</label>
-                            <select name="" id="" class="form-select">
-                                <option value=""></option>
-                            </select>
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -46,8 +42,6 @@
                                     role="status"></span><span>POINTS</span>
                             </h5>
                             <div>
-                                {{-- <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setPoint(false)"></button> --}}
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
@@ -68,30 +62,31 @@
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr data-ng-repeat="point in points track by $index">
-                                        <td data-ng-bind="point.id"></td>
-                                        <td data-ng-bind="technicianName[$index].name"></td>
-                                        <td data-ng-bind="point.count"></td>
+                                <tbody id="test">
+
+                                    <tr data-ng-repeat="point in points track by $index" id="tBoody">
+                                        <td data-ng-bind="point.points_id"></td>
+                                        <td data-ng-bind="point.tech_name"></td>
+                                        <td data-ng-bind="point.points_count"></td>
                                         <td>
                                             <span
-                                                class="badge bg-<%procesObj.color[point.src]%> rounded-pill font-monospace"><%procesObj.name[point.src]%></span>
+                                                class="badge bg-<%procesObj.color[point.points_process]%> rounded-pill font-monospace"><%procesObj.name[point.points_process]%></span>
 
                                         </td>
                                         <td>
                                             <span
-                                                class="badge bg-dark rounded-pill font-monospace"><%scrObj.name[point.process]%></span>
+                                                class="badge bg-dark rounded-pill font-monospace"><%scrObj.name[point.points_src]%></span>
 
                                         </td>
-                                        <td data-ng-bind="point.created_at"></td>
+                                        <td data-ng-bind="point.points_register"></td>
                                         <td>
                                             <div class="col-fit">
-                                                <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
+                                                {{-- <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
                                                     href="/points/profile/<% point.technician_id %>" target="_blank"></a>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                     data-ng-click="setPoint($index)"></button>
                                                 <button class="btn btn-outline-danger btn-circle bi bi-stopwatch"
-                                                    data-ng-click="changePero($index)"></button>
+                                                    data-ng-click="changePero($index)"></button> --}}
                                             </div>
                                         </td>
                                     </tr>
@@ -222,7 +217,9 @@
                 color: ['', 'danger', 'success']
             };
             $scope.scrObj = {
-                name: ['', 'Pkg', 'Credit', 'Cobon', 'Academy', 'Ticket', 'Transfer', 'Sugg', 'Ads'],
+                name: ['', 'Pkg', 'Credit', 'Cobon', 'Academy', 'Ticket', 'Transfer', 'Sugg', 'Ads',
+                    'Articles'
+                ],
             }
             $scope.updatePoint = false;
             $scope.points = [];
@@ -259,19 +256,33 @@
             scope = $scope;
         });
 
-        $('#search').on('change', function() {
+        $('#MobileFilter').on('change', function() {
             var idState = this.value;
-            console.log(idState);
-            $('#TechnicianName').html('');
+            $('#techName').html('');
             $.ajax({
-                url: '/centers/getTechnician/' + idState,
+                url: 'get-technician/' + idState,
                 type: 'GET',
                 dataType: 'json',
                 success: function(res) {
-                    $.each(res, function(key, value) {
-                        $('#TechnicianName').append('<option id="class" value="' + value.id +
-                            '">' + value.name + '</option>');
-                    });
+                    // console.log(res)
+                    if (res.length > 0) {
+                        document.getElementById('tBoody').style.display = "none"
+                        $.each(res, function(key, value) {
+                            $('#test').append('<tr><td>' + value.points_id + '</td> <td>' +
+                                value
+                                .tech_name + '</td><td>' + value
+                                .points_count + '</td><td>' + ' ' + '</td><td>' + ' ' +
+                                '</td><td>' +
+                                value
+                                .points_register + '</td> </tr>');
+                        });
+                    } else {
+                        document.getElementById('tBoody').style.display = "none"
+                        $('#test').append(
+                            '<tr><td></td><td></td> <td class="text-center">No Ponit to that Technician </td><td></td><td></td></tr>'
+                        )
+                    }
+
                 }
             });
         });

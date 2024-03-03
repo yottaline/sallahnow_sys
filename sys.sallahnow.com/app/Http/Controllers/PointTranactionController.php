@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PointTranaction;
+use App\Models\Technician;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class PointTranactionController extends Controller
     public function load() {
         $points = DB::table('point_tranactions')
         ->join('technicians', 'point_tranactions.points_tech', '=', 'technicians.tech_id')
-        ->orderBy('points_register', 'desc')->limit(15)->offset(0)->get();
+        ->orderByDesc('points_register')->limit(15)->offset(0)->get();
         echo json_encode($points);
     }
 
@@ -50,13 +51,13 @@ class PointTranactionController extends Controller
         ]);
     }
 
-    // public function technicianName() {
-    //     $technician_name = DB::table('technicians')
-    //     ->join('point_tranactions', 'technicians.id', '=', 'point_tranactions.technician_id')
-    //     ->orderBy('point_tranactions.created_at', 'desc')
-    //     ->get();
-    //     echo json_encode($technician_name);
-    // }
+    public function technicianName($tech_mobile) {
+        $technician = Technician::where('tech_mobile', $tech_mobile)->first();
+        $points = DB::table('point_tranactions')
+        ->join('technicians', 'point_tranactions.points_tech', '=', 'technicians.tech_id')
+        ->where('point_tranactions.points_tech', $technician->tech_id)->get();
+        echo json_encode($points);
+    }
 
     public function profile($id) {
         return view('content.points.profile');

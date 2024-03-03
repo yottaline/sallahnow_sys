@@ -23,7 +23,7 @@ class Technician extends Authenticatable implements JWTSubject
         'tech_mobile',
         'tech_mobile_verefied',
         'tech_tel',
-        'password',
+        'tech_password',
         'tech_identification',
         'tech_birth',
         'tech_country',

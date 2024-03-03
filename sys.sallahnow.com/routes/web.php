@@ -124,7 +124,7 @@ Route::prefix('points')->middleware('auth')->group( function() {
     Route::get('/', 'PointTranactionController@index');
     Route::post('load', 'PointTranactionController@load');
     Route::match(['post', 'put'], 'submit', 'PointTranactionController@submit');
-    Route::post('subPointTechnician', 'PointTranactionController@technicianName');
+    Route::get('get-technician/{tech_mobile}', 'PointTranactionController@technicianName');
     Route::get('profile/{id}', 'TransactionController@profile');
 });
 

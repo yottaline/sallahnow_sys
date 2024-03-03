@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Post_Comment;
+use App\Models\Post_Like;
+use App\Models\Post_View;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,8 +23,6 @@ class PostController extends Controller
 
     public function load() {
         $posts = DB::table('posts')
-        ->join('users', 'posts.post_create_user', '=', 'users.id')
-        // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
         ->where('post_deleted', '=', '0')
         ->orderBy('post_create_time', 'desc')->limit(15)->offset(0)->get();
 
@@ -34,11 +34,11 @@ class PostController extends Controller
     }
 
     public function edit($code){
-        $data = DB::table('posts')
-        ->join('users', 'posts.post_create_user', '=', 'users.id')
-        // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
-        ->where('post_code', $code)->first();
-        return view('content.posts.create', compact('data'));
+        $data   = Post::where('post_code', $code)->first();
+        $likes  = Post_Like::where('like_post', $data->post_id)->count();
+        $views  = Post_View::where('view_post', $data->post_id)->count();
+
+        return view('content.posts.create', compact('data', 'likes', 'views'));
     }
 
     public function submit(Request $request){

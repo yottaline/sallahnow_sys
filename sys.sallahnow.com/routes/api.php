@@ -32,20 +32,23 @@ Route::middleware('api')->group(function() {
         // Route::put('subscriptions/change/status', 'TechnicianApiController@changeStatus');
         Route::post('subscriptions/new-package', 'TechnicianApiController@subNewPackage');
 
-        // posts
-        Route::get('ge-posts', 'TechnicianApiController@getPost');
-        Route::post('store-post', 'TechnicianApiController@storePost');
-        Route::post('post-cost', 'TechnicianApiController@postCost');
-        Route::post('add-like', 'TechnicianApiController@addLike');
-        Route::get('show-comment/{post_id}', 'TechnicianApiController@showComment');
-        Route::post('add-comment', 'TechnicianApiController@addComment');
-        Route::get('post-views/{id}', 'TechnicianApiController@postView');
-        Route::post('add-post-view', 'TechnicianApiController@addView');
+        // Route::post('post-cost', 'TechnicianApiController@postCost');
     });
 
-    // Route::prefix('posts')->group( function() {
+    Route::prefix('posts')->group( function() {
+        // posts
+        Route::get('/', 'PostsApiController@getPost');
+        Route::post('store-post', 'PostsApiController@store');
+        Route::post('post-cost', 'PostsApiController@cost');
+        Route::post('like', 'PostsApiController@addLike');
+        // comments
+        Route::get('comments/{post_id}', 'PostsApiController@comments');
+        Route::post('add-comment', 'PostsApiController@addComment');
+        // post view
+        Route::get('post-views/{post_id}', 'PostsApiController@postView');
+        Route::post('add-post-view', 'PostsApiController@addView');
 
-    // });
+    });
 
     Route::prefix('chats')->group( function() {
         Route::get('get-chats/{tech_id}', 'ChatApiController@chat');

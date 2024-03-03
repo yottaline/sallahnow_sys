@@ -42,11 +42,9 @@
                                 data-ng-bind="slice(data.post__create_user, 0, 16)"></span></p>
                         <hr>
                         <p class="small m-0"><i class="bi bi-eye text-secondary me-2"></i><span
-                                class="dir-ltr d-inline-block font-monospace"
-                                data-ng-bind="sepNumber(data.post_views)"></span></p>
+                                class="dir-ltr d-inline-block font-monospace" data-ng-bind="views"></span></p>
                         <p class="small m-0"><i class="bi bi-hand-thumbs-up text-secondary me-2"></i><span
-                                class="dir-ltr d-inline-block font-monospace"
-                                data-ng-bind="sepNumber(data.post_likes)"></span></p>
+                                class="dir-ltr d-inline-block font-monospace" data-ng-bind="likes"></span></p>
                         <hr>
                         {{-- <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" id="articleVisible" name="visible"
@@ -84,7 +82,7 @@
                                 <div class="col-12 col-md-4">
                                     <div class="mb-4">
                                         <input id="cover" type="file" name="photo" src="" class="dropify"
-                                            data-default-file="<% data.post_photo%>">
+                                            data-default-file="{{ asset('/Image/Posts') }}/<% data.post_photo%>">
                                     </div>
                                 </div>
 
@@ -463,6 +461,8 @@
         ngApp.controller("ngCtrl", function($scope) {
             $('.loading-spinner').hide();
             $scope.data = <?= !empty($data) ? json_encode($data) : 'null' ?>;
+            $scope.likes = <?= !empty($likes) ? json_encode($likes) : 'null' ?>;
+            $scope.views = <?= !empty($views) ? json_encode($views) : 'null' ?>;
             // $scope.arrayColumn = (array, column) => array.map(item => item[column]);
             // $scope.slice = (str, start, len) => str.slice(start, len);
             // $scope.jsonParse = name => JSON.parse(name);

@@ -34,7 +34,7 @@ class TechnicianApiController extends Controller
         $request->validate([
             'tech_name'         => 'required',
             'tech_mobile'       => 'required|numeric',
-            // 'password'          => 'required',
+            'tech_password'     => 'required',
             'country_id'        => 'required',
             'state_id'          => 'required',
             'city_id'           => 'required',
@@ -43,13 +43,14 @@ class TechnicianApiController extends Controller
 
 
         $code = strtoupper($this->uniqidReal());
+        // $password = ;
         $devise_token = strtoupper($this->uniqidReal());
         Technician::create([
             'tech_name'              => $request->tech_name,
             'tech_email'             => $request->tech_email,
             'tech_mobile'            => $request->tech_mobile,
             'tech_tel'               => $request->tel,
-            'password'               => Hash::make($request->password),
+            'tech_password'          => Hash::make($request->tech_password),
             'tech_identification'    => $request->identification,
             'tech_birth'             => $request->birth,
             'tech_country'           => $request->country_id,
@@ -59,36 +60,37 @@ class TechnicianApiController extends Controller
             'tech_address'           => $request->address,
             'tech_bio'               => $request->bio,
             'devise_token'           => $devise_token,
-            'tech_register_by'       => 1,
+            'tech_register_by'       => null,
             'tech_code'              => $code,
             'tech_register'             => now()
         ]);
 
-        // $technician = Technician::where('tech_mobile', $request->tech_mobile)->first();
-        // if(!$technician) {
-        //     return response()->json(['error' => 'Unauthorized'], 104);
-        // }else {
-        //     $passwords = Hash::check(request('password'), $technician->tech_password);
-        //     if(!$passwords) {
-        //         return response()->json(['error' => 'Unauthorized'], 104);
-        //     }else {
-        //         $token = auth()->guard('technician-api')->login($technician);
-        //         return $this->respondWithToken($token);
-        //     }
-        // }
-
-
-
-
-
-
-        $credentials = request(['tech_mobile', 'password']);
-
-        if (! $token = auth()->guard('technician-api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        // return $password;
+        $technician = Technician::where('tech_mobile', $request->tech_mobile)->first();
+        if(!$technician) {
+            return response()->json(['error' => 'Unauthorized'], 104);
+        }else {
+            $passwords = Hash::check(request('tech_password'), $technician->tech_password);
+            if(!$passwords) {
+                return response()->json(['error' => 'Unauthorized'], 104);
+            }else {
+                $token = auth()->guard('technician-api')->login($technician);
+                return $this->respondWithToken($token);
+            }
         }
 
-        return $this->respondWithToken($token);
+
+
+
+
+
+        // $credentials = request(['tech_mobile', 'password']);
+
+        // if (! $token = auth()->guard('technician-api')->attempt($credentials)) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
+
+        // return $this->respondWithToken($token);
     }
 
 
@@ -239,141 +241,13 @@ class TechnicianApiController extends Controller
         return response()->json('created',$status);
     }
 
-    // posts
-    public function getPost(){
-        $posts = Post::all();
-        return $this->returnData('posts', $posts);
-    }
-
-    public function storePost(Request $request){
-        $request->validate([
-            'title'  => 'required',
-            'body'   => 'required'
-        ]);
-        $code = strtoupper($this->uniqidReal());
-        if($request->file('photo')){ #if has photo add photo
-
-            $photo = $request->file('photo');
-            $photoName = $photo->getClientOriginalName();
-            $photo->move('media/' , $photoName);
-            $photoPath = url('media/', $photoName);
-
-            $status = Post::create([
-                'post_code'        => $code,
-                'post_title'       => $request->title,
-                'post_body'        => $request->body,
-                'post_photo'       => $photoName,
-                'post_create_tech' => auth()->user()->id,
-                'post_archive_time' => now(),
-                'post_delete_user' => 0,
-                'post_create_time' => now()
-            ]);
-            $id =  $status->post_id;
-        }
-        else { # is not have a photo
-
-            $status = Post::create([
-                'post_code'        => $code,
-                'post_title'       => $request->title,
-                'post_body'        => $request->body,
-                'post_create_tech' => auth()->user()->id,
-                'post_archive_time' => now(),
-                'post_delete_user' => 0,
-                'post_create_time' => now()
-            ]);
-            $id =  $status->post_id;
-        }
-        $data = Post::where('post_id', $id)->first();
-        return $this->returnData('post', $data, 'post has created successfully');
-    }
-
-    public function postCost(Request $request) {
-
-        $tech_id = $request->technician_id;
-        $post_id = $request->post_id;
-
-        $technician_point = Technician::where('tech_id', $$tech_id)->first();
-        if($technician_point->tech_points > 0){
-
-            $post  = Post::where('post_id', $post_id)->first();
-            $point = $technician_point->tech_points - $post;
-            Technician::where('tech_id', $$tech_id)->update([
-                'tech_points' => $pont
-            ]);
-
-            PointTranaction::create([
-                'points_count'    => $point,
-                'points_src'      => 'post',
-                'points_target'   => $post_id,
-                'points_process'  => 'spend',
-                'points_tech'     =>  $tech_id,
-                'points_register' => now()
-            ]);
-
-            return $this->returnSuccess('Points have been withdrawn successfully');
-
-        }else {
-            return $this->returnError("You don't have enough points", 104);
-        }
-
-    }
-
-    public function addLike(Request $request) {
-        $request->validate([
-            'like_tech' => 'required|numeric',
-            'like_post' => 'required|numeric'
-        ]);
-
-        Post_Like::create([
-            'like_tech' => $request->like_tech,
-            'like_post' => $request->like_post
-        ]);
-        return $this->returnSuccess('Like post successfully');
-    }
-
-    public function showComment($post_id) {
-        $comments = Post_Comment::where('comment_post', $post_id)->get();
-        return $this->returnData('comments', $comments);
-    }
-
-    public function addComment(Request $request) {
-
-        $request->validate([
-            'comment_post'  => 'required|numeric',
-            'comment_context' => 'required',
-        ]);
-
-      Post_Comment::create([
-            'comment_post'      => $request->comment_post,
-            'comment_context'   => $request->comment_context,
-            'comment_tech'      => $request->comment_tech,
-            'comment_create'    => now()
-        ]);
-        return $this->returnSuccess('Comment created successfully');
-    }
-
-    public function postView($post_id) {
-        $views = Post_View::where('view_post', $post_id)->get();
-        return $this->returnData('post_views', $views);
-    }
-
-    public function addView(Request $request) {
-      $data = Post_View::create([
-            'view_device'  => $request->view_device,
-            'view_tech'    => $request->view_tech,
-            'view_post'    => $request->view_post
-        ]);
-        return $this->returnData('view', $data, 'post has created successfully');
-    }
-
-
 
     protected function respondWithToken($token)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('technician-api')->factory()->getTTL() * 9999
+            'expires_in' => auth('technician-api')->factory()->getTTL() * 9999999
         ]);
     }
 
