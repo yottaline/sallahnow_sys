@@ -19,6 +19,7 @@ use App\Models\Technician;
 use App\ResponseApi;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class TechnicianApiController extends Controller
@@ -62,7 +63,7 @@ class TechnicianApiController extends Controller
             'devise_token'           => $devise_token,
             'tech_register_by'       => null,
             'tech_code'              => $code,
-            'tech_register'             => now()
+            'tech_register'          => Carbon::now()()
         ]);
 
         // return $password;

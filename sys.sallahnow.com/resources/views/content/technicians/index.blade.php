@@ -43,7 +43,7 @@
                         </h5>
 
                         <div data-ng-if="technicians.length" class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="example">
                                 <thead>
                                     <tr>
                                         <th class="text-center">#</th>
@@ -329,6 +329,9 @@
         </div>
     @endsection
     @section('js')
+        <script>
+            new DataTable('#example');
+        </script>
         <script>
             var scope, app = angular.module('myApp', [], function($interpolateProvider) {
                 $interpolateProvider.startSymbol('<%');
