@@ -63,10 +63,9 @@ class TechnicianApiController extends Controller
             'devise_token'           => $devise_token,
             'tech_register_by'       => null,
             'tech_code'              => $code,
-            'tech_register'          => Carbon::now()()
+            'tech_register'          => Carbon::now()
         ]);
 
-        // return $password;
         $technician = Technician::where('tech_mobile', $request->tech_mobile)->first();
         if(!$technician) {
             return response()->json(['error' => 'Unauthorized'], 104);

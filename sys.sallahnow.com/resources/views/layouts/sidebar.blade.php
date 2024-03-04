@@ -61,6 +61,13 @@
                  </a>
              </li>
 
+             <li class="list-group-item nav-support">
+                 <a class="link-dark d-block" href="/customers/">
+                     <i class="bi bi-person-vcard text-secondary me-2"></i><b>Customers</b>
+                 </a>
+             </li>
+
+
              <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#paymentsCollapse" role="button"
                      aria-expanded="false" aria-controls="paymentsCollapse">
@@ -115,11 +122,11 @@
                  </a>
              </li>
 
-             {{-- <li class="list-group-item nav-support">
-                 <a class="link-dark d-block" href="">
-                     <i class="bi bi-question-circle text-secondary me-2"></i><b>Help Disk</b>
+             <li class="list-group-item nav-support">
+                 <a class="link-dark d-block" href="/courses/">
+                     <i class="bi bi-collection-play text-secondary me-2"></i><b>Courses</b>
                  </a>
-             </li> --}}
+             </li>
 
              <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#suuportCollapse" role="button"
@@ -149,6 +156,14 @@
                          suuportCollapse.show();
                  </script>
              </li>
+
+             <li class="list-group-item nav-support">
+                 <a class="link-dark d-block" href="/ads/">
+                     <i class="bi bi-collection-play text-secondary me-2"></i><b>Ads</b>
+                 </a>
+             </li>
+
+
 
              {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#reportsCollapse" role="button"
