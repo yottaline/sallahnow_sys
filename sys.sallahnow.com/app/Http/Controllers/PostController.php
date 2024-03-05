@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Post_Comment;
-use App\Models\Post_Like;
-use App\Models\Post_View;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,27 +19,33 @@ class PostController extends Controller
         return view('content.posts.index');
     }
 
-    public function load() {
+    public function load()
+    {
         $posts = DB::table('posts')
-        ->where('post_deleted', '=', '0')
-        ->orderBy('post_create_time', 'desc')->limit(15)->offset(0)->get();
+            ->join('users', 'posts.post_create_user', '=', 'users.id')
+            // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
+            ->where('post_deleted', '=', '0')
+            ->orderBy('post_create_time', 'desc')->limit(15)->offset(0)->get();
 
         echo json_encode($posts);
     }
 
-    public function create(){
+    public function create()
+    {
         return view('content.posts.create');
     }
 
-    public function edit($code){
-        $data   = Post::where('post_code', $code)->first();
-        $likes  = Post_Like::where('like_post', $data->post_id)->count();
-        $views  = Post_View::where('view_post', $data->post_id)->count();
-
-        return view('content.posts.create', compact('data', 'likes', 'views'));
+    public function edit($code)
+    {
+        $data = DB::table('posts')
+            ->join('users', 'posts.post_create_user', '=', 'users.id')
+            // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
+            ->where('post_code', $code)->first();
+        return view('content.posts.create', compact('data'));
     }
 
-    public function submit(Request $request){
+    public function submit(Request $request)
+    {
         // return $request;
         $request->validate([
             'title'  => 'required',
@@ -51,13 +55,13 @@ class PostController extends Controller
         $photo = $request->file('photo');
         $photoName = $photo->getClientOriginalName();
         $location = 'Image/Posts/';
-        $photo->move($location , $photoName);
+        $photo->move($location, $photoName);
         $photoPath = url($location, $photoName);
 
         $id = $request->id;
-        if(!$id){
+        if (!$id) {
             $code = strtoupper($this->uniqidReal()); #post code
-            if($request->file('photo')){ #if has photo add photo
+            if ($request->file('photo')) { #if has photo add photo
 
                 $status = Post::create([
                     'post_code'        => $code,
@@ -69,8 +73,7 @@ class PostController extends Controller
                     'post_delete_user' => 0,
                     'post_create_time' => now()
                 ]);
-            }
-            else { # is not have a photo
+            } else { # is not have a photo
 
                 $status = Post::create([
                     'post_code'        => $code,
@@ -83,9 +86,9 @@ class PostController extends Controller
                 ]);
             }
             $id =  $status->post_id;
-        }else {
+        } else {
             # update post
-            if($request->file('photo')){
+            if ($request->file('photo')) {
 
                 $status = Post::where('post_id', $id)->update([
                     'post_title'       => $request->title,
@@ -94,8 +97,7 @@ class PostController extends Controller
                     'post_create_user' => auth()->user()->id,
                     'post_delete_user' => 0,
                 ]);
-            }
-            else {
+            } else {
                 $status = Post::where('post_id', $id)->update([
                     'post_title'       => $request->title,
                     'post_body'        => $request->body,
@@ -112,7 +114,8 @@ class PostController extends Controller
         ]);
     }
 
-    public function addCost(Request $request) {
+    public function addCost(Request $request)
+    {
         $request->validate([
             'cost' => 'required|numeric'
         ]);
@@ -130,21 +133,22 @@ class PostController extends Controller
 
 
 
-    public function updateData(Request $request){
+    public function updateData(Request $request)
+    {
         // return $request->val;
         $post_id  = $request->id;
-        if($request->key == 'post_allow_comment'){
+        if ($request->key == 'post_allow_comment') {
             $status = Post::where('post_id', $post_id)->update(['post_allow_comments' => $request->val]);
-        }
-        elseif($request->key == 'post_archived'){
-                $status = Post::where('post_id', $post_id)->update(['post_archived' => $request->val]);
+        } elseif ($request->key == 'post_archived') {
+            $status = Post::where('post_id', $post_id)->update(['post_archived' => $request->val]);
         }
         echo json_encode([
             'status' => boolval($status),
         ]);
     }
 
-    public function addAttach(Request $request) {
+    public function addAttach(Request $request)
+    {
         $post = Post::where('post_id', $request->post_id)->first();
         // $name = $request->file('files')->getClientOriginalName();
         // file_put_contents($post->post_code . '.txt', $request->attach);
@@ -153,15 +157,16 @@ class PostController extends Controller
 
 
         $code  = $post->post_code;
-        $status = Storage::disk('public')->put($code.'.txt', $request);
+        $status = Storage::disk('public')->put($code . '.txt', $request);
         echo json_encode([
             'status' => boolval($status),
         ]);
     }
 
-    public function delete(Request $request){
+    public function delete(Request $request)
+    {
         $status = Post::where('post_id', $request->post_id)
-        ->update(['post_deleted' => 1]);
+            ->update(['post_deleted' => 1]);
         echo json_encode([
             'status' => boolval($status),
         ]);
@@ -169,14 +174,16 @@ class PostController extends Controller
 
     /// comments
 
-    public function getComment(Request $request){
+    public function getComment(Request $request)
+    {
         $post_id = $request->post_id;
         $comments = Post_Comment::where('comment_post', $post_id)
-        ->orderBy('comment_create', 'desc')->limit(15)->offset(0)->get();
+            ->orderBy('comment_create', 'desc')->limit(15)->offset(0)->get();
         echo json_encode($comments);
     }
 
-    public function addComment(Request $request){
+    public function addComment(Request $request)
+    {
         $status = Post_Comment::create([
             'comment_post'     => $request->post_id,
             'comment_context'  => $request->comment,
@@ -202,5 +209,4 @@ class PostController extends Controller
         }
         return substr(bin2hex($bytes), 0, $lenght);
     }
-
 }
