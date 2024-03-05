@@ -463,7 +463,7 @@ CREATE TABLE IF NOT EXISTS `courses` (
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `tech_ads` (
-  `ads_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ads_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `ads_title` VARCHAR(255) NOT NULL,
   `ads_photo` VARCHAR(64) NOT NULL,
   `ads_body` VARCHAR(4096) NOT NULL,
