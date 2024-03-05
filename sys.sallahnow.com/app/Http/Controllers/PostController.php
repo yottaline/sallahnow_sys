@@ -11,15 +11,12 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    function index()
     {
         return view('content.posts.index');
     }
 
-    public function load()
+    function load()
     {
         $posts = DB::table('posts')
             ->join('users', 'posts.post_create_user', '=', 'users.id')
@@ -30,21 +27,21 @@ class PostController extends Controller
         echo json_encode($posts);
     }
 
-    public function create()
+    function create()
     {
         return view('content.posts.create');
     }
 
-    public function edit($code)
+    function editor($code = null)
     {
-        $data = DB::table('posts')
+        $data = $code ? DB::table('posts')
             ->join('users', 'posts.post_create_user', '=', 'users.id')
             // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
-            ->where('post_code', $code)->first();
-        return view('content.posts.create', compact('data'));
+            ->where('post_code', $code)->first() : null;
+        return view('content.posts.editor', compact('data'));
     }
 
-    public function submit(Request $request)
+    function submit(Request $request)
     {
         // return $request;
         $request->validate([
@@ -114,7 +111,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function addCost(Request $request)
+    function addCost(Request $request)
     {
         $request->validate([
             'cost' => 'required|numeric'
@@ -133,7 +130,7 @@ class PostController extends Controller
 
 
 
-    public function updateData(Request $request)
+    function updateData(Request $request)
     {
         // return $request->val;
         $post_id  = $request->id;
@@ -147,7 +144,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function addAttach(Request $request)
+    function addAttach(Request $request)
     {
         $post = Post::where('post_id', $request->post_id)->first();
         // $name = $request->file('files')->getClientOriginalName();
@@ -163,7 +160,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function delete(Request $request)
+    function delete(Request $request)
     {
         $status = Post::where('post_id', $request->post_id)
             ->update(['post_deleted' => 1]);
@@ -174,7 +171,7 @@ class PostController extends Controller
 
     /// comments
 
-    public function getComment(Request $request)
+    function getComment(Request $request)
     {
         $post_id = $request->post_id;
         $comments = Post_Comment::where('comment_post', $post_id)
@@ -182,7 +179,7 @@ class PostController extends Controller
         echo json_encode($comments);
     }
 
-    public function addComment(Request $request)
+    function addComment(Request $request)
     {
         $status = Post_Comment::create([
             'comment_post'     => $request->post_id,

@@ -42,9 +42,11 @@
                                 data-ng-bind="slice(data.post__create_user, 0, 16)"></span></p>
                         <hr>
                         <p class="small m-0"><i class="bi bi-eye text-secondary me-2"></i><span
-                                class="dir-ltr d-inline-block font-monospace" data-ng-bind="views"></span></p>
+                                class="dir-ltr d-inline-block font-monospace"
+                                data-ng-bind="sepNumber(data.post_views)"></span></p>
                         <p class="small m-0"><i class="bi bi-hand-thumbs-up text-secondary me-2"></i><span
-                                class="dir-ltr d-inline-block font-monospace" data-ng-bind="likes"></span></p>
+                                class="dir-ltr d-inline-block font-monospace"
+                                data-ng-bind="sepNumber(data.post_likes)"></span></p>
                         <hr>
                         {{-- <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" id="articleVisible" name="visible"
@@ -68,13 +70,13 @@
             </div>
 
             <div class="col-12 col-sm-8 col-lg-9">
-                <div id="articleCard" class="card card-box mb-3">
+                <div id="postCard" class="card card-box mb-3">
                     <div class="card-body">
-                        <a href="/posts/" class="card-title fw-bold mb-4">
-                            <small class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
-                                role="status"></small>
-                            <span>Posts</span>
-                        </a>
+                        <h5 class="card-title fw-semibold pt-1 me-auto mb-3 text-uppercase">
+                            <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                role="status"></span><span>Post</span>
+                        </h5>
+
                         <form id="editForm" action="/posts/submit/" method="post" autocomplete="off">
                             @csrf
                             <input type="hidden" name="id" ng-value="data.post_id">
@@ -82,7 +84,7 @@
                                 <div class="col-12 col-md-4">
                                     <div class="mb-4">
                                         <input id="cover" type="file" name="photo" src="" class="dropify"
-                                            data-default-file="{{ asset('/Image/Posts') }}/<% data.post_photo%>">
+                                            data-default-file="<% data.post_photo %>">
                                     </div>
                                 </div>
 
@@ -401,12 +403,6 @@
                 minHeight: '300',
                 maxHeight: '800',
                 showRemove: false,
-                messages: {
-                    'default': 'Attach a picture',
-                    'replace': 'يمكنك سحب وإفلات الصورة هنا لاستبدالها',
-                    'remove': 'حذف',
-                    'error': 'هناك خطأ في الملف'
-                }
             });
 
             $('.one-space').on('change', function() {
@@ -414,17 +410,12 @@
             });
 
             $("#editForm").on('submit', e => e.preventDefault()).validate({
-                rules: {
-                    slug: {
-                        slug: true
-                    }
-                },
                 submitHandler: function(form) {
                     var formData = new FormData(form),
                         action = $(form).attr('action'),
                         method = $(form).attr('method'),
                         submitBtn = $(form).find('button[type=submit]'),
-                        spinner = $('#articleCard .loading-spinner');
+                        spinner = $('#postCard .loading-spinner');
 
                     spinner.show();
                     submitBtn.prop('disabled', true);
@@ -460,9 +451,7 @@
         });
         ngApp.controller("ngCtrl", function($scope) {
             $('.loading-spinner').hide();
-            $scope.data = <?= !empty($data) ? json_encode($data) : 'null' ?>;
-            $scope.likes = <?= !empty($likes) ? json_encode($likes) : 'null' ?>;
-            $scope.views = <?= !empty($views) ? json_encode($views) : 'null' ?>;
+            $scope.data = <?= json_encode($data ?? []) ?>;
             // $scope.arrayColumn = (array, column) => array.map(item => item[column]);
             // $scope.slice = (str, start, len) => str.slice(start, len);
             // $scope.jsonParse = name => JSON.parse(name);

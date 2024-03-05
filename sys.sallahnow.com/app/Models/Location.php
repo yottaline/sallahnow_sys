@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Location extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
     protected $fillable = [
         'location_name',
         'location_type',
@@ -16,10 +16,10 @@ class Location extends Model
         'location_visible'
     ];
 
-    public function centers() {
+    public function centers()
+    {
         return $this->hasMany(Center::class);
     }
-
     public function customer() {
         return $this->hasMany(Customer::class);
     }

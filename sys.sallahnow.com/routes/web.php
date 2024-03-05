@@ -130,13 +130,13 @@ Route::prefix('posts')->middleware('auth')->group(function () {
     Route::get('create', 'PostController@create');
     Route::get('edit/{code}', 'PostController@edit');
     Route::post('submit', 'PostController@submit');
-    Route::put('add-cost', 'PostController@addCost');
-    Route::post('update-data', 'PostController@updateData');
-    Route::post('add-attach', 'PostController@addAttach');
-    Route::delete('delete', 'PostController@delete');
+    // Route::put('add-cost', 'PostController@addCost');
+    // Route::post('update-data', 'PostController@updateData');
+    // Route::post('add-attach', 'PostController@addAttach');
+    // Route::delete('delete', 'PostController@delete');
     // comments
-    Route::post('get-comment', 'PostController@getComment');
-    Route::post('add-comment', 'PostController@addComment');
+    // Route::post('get-comment', 'PostController@getComment');
+    // Route::post('add-comment', 'PostController@addComment');
 });
 
 Route::prefix('chats')->middleware('auth')->group(function () {
@@ -147,6 +147,7 @@ Route::prefix('chats')->middleware('auth')->group(function () {
     Route::get('get-chat-room/{tech_id}', 'ChatRoomController@getChatRoom');
     Route::post('get-chat-msg/{room_id}', 'ChatRoomController@getMessage');
 });
+
 
 Route::prefix('supports')->middleware('auth')->group( function() {
     Route::get('/', 'SupportCategoryController@index');
@@ -190,11 +191,13 @@ Route::prefix('customers')->middleware('auth')->group( function() {
     Route::put('update_active', 'CustomerController@updateActive');
 });
 
+
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');
-    Route::get('load', 'SettingController@load');
-    Route::post('store/location', 'SettingController@storeLocation')->name('location_store');
+    Route::post('location/load', 'SettingController@locationLoad');
+    Route::post('location/submit', 'SettingController@locationSubmit');
 });
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

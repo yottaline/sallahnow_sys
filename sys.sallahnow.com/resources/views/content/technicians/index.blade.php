@@ -3,7 +3,7 @@
     Technician
 @endsection
 @section('search')
-    <form id="searchForm" role="search">
+    <form id="nvSearch" role="search">
         <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" placeholder="Search...">
     </form>
 @endsection
@@ -39,7 +39,7 @@
                             </div>
                         </div>
 
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
                         </h5>
 
                         <div data-ng-if="technicians.length" class="table-responsive">
@@ -89,7 +89,7 @@
                         </div>
 
                         <div data-ng-if="!technicians.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-tools display-3"></i>
+                            <i class="bi bi-exclamation-circle display-3"></i>
                             <h5 class="">No records</h5>
                         </div>
                     </div>
@@ -327,73 +327,73 @@
                 </div>
             </div>
         </div>
-    @endsection
-    @section('js')
-        <script>
-            new DataTable('#example');
-        </script>
-        <script>
-            var scope, app = angular.module('myApp', [], function($interpolateProvider) {
-                $interpolateProvider.startSymbol('<%');
-                $interpolateProvider.endSymbol('%>');
-            });
+    </div>
+@endsection
 
-            app.controller('myCtrl', function($scope) {
-                $('.loading-spinner').hide();
-                $scope.q = '';
-                $scope.updateTechnician = false;
-                $scope.technicianId = 0;
-                $scope.technicians = [];
-                $scope.showTechnician = [];
-                $scope.page = 1;
-                $scope.dataLoader = function(reload = false) {
-                    $('.loading-spinner').show();
-                    if (reload) {
-                        $scope.page = 1;
-                    }
-                    $.post("/technicians/load", {
-                        q: $scope.q,
-                        page: $scope.page,
-                        limit: 24,
-                        _token: '{{ csrf_token() }}'
-                    }, function(data) {
-                        $('.loading-spinner').hide();
-                        $scope.$apply(() => {
-                            $scope.technicians = data;
-                            $scope.page++;
-                        });
-                    }, 'json');
-                }
-                $scope.setUser = (indx) => {
-                    $scope.updateTechnician = indx;
-                    $('#techModal').modal('show');
-                };
-                $scope.editActive = (index) => {
-                    $scope.technicianId = index;
-                    $('#edit_active').modal('show');
-                };
-                $scope.showTechnician = (technician) => {
-                    $scope.showTechnician = technician;
-                    $('#show_technician').modal('show');
-                }
-                $scope.addNote = (index) => {
-                    $scope.technicianId = index;
-                    $('#add_note_technician').modal('show');
-                }
-                $scope.deleteTechnician = (index) => {
-                    $scope.userId = index;
-                    $('#delete_technician').modal('show');
-                };
-                $scope.dataLoader();
-                scope = $scope;
-            });
+@section('js')
+    <script>
+        var scope, app = angular.module('myApp', [], function($interpolateProvider) {
+            $interpolateProvider.startSymbol('<%');
+            $interpolateProvider.endSymbol('%>');
+        });
 
-            $(function() {
-                $('#searchForm').on('submit', function(e) {
-                    e.preventDefault();
-                    scope.$apply(() => scope.q = $(this).find('input').val());
-                    scope.dataLoader(true);
-                });
+        app.controller('myCtrl', function($scope) {
+            $('.loading-spinner').hide();
+            $scope.q = '';
+            $scope.updateTechnician = false;
+            $scope.technicianId = 0;
+            $scope.technicians = [];
+            $scope.locations = <?= json_encode($locations) ?>;
+            $scope.showTechnician = [];
+            $scope.page = 1;
+            $scope.dataLoader = function(reload = false) {
+                $('.loading-spinner').show();
+                if (reload) {
+                    $scope.page = 1;
+                }
+                $.post("/technicians/load", {
+                    q: $scope.q,
+                    page: $scope.page,
+                    limit: 24,
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.technicians = data;
+                        $scope.page++;
+                    });
+                }, 'json');
+            }
+            $scope.setUser = (indx) => {
+                $scope.updateTechnician = indx;
+                $('#techModal').modal('show');
+            };
+            $scope.editActive = (index) => {
+                $scope.technicianId = index;
+                $('#edit_active').modal('show');
+            };
+            $scope.showTechnician = (technician) => {
+                $scope.showTechnician = technician;
+                $('#show_technician').modal('show');
+            }
+            $scope.addNote = (index) => {
+                $scope.technicianId = index;
+                $('#add_note_technician').modal('show');
+            }
+            $scope.deleteTechnician = (index) => {
+                $scope.userId = index;
+                $('#delete_technician').modal('show');
+            };
+            $scope.dataLoader();
+            scope = $scope;
+        });
+
+        $(function() {
+            $('#nvSearch').on('submit', function(e) {
+                e.preventDefault();
+                scope.$apply(() => scope.q = $(this).find('input').val());
+                scope.dataLoader(true);
             });
-        </script>
-    @endsection
+        });
+    </script>
+@endsection

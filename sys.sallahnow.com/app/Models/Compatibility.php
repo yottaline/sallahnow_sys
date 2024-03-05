@@ -9,17 +9,19 @@ class Compatibility extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $fillable = [
         'compat_part',
         'compat_category'
     ];
-    public $timestamps = false;
 
-    public function compatibility_categorie() {
+    public function compatibility_categorie()
+    {
         return $this->belongsTo(Compatibility_categorie::class, 'compat_category');
     }
 
-    public function models() {
+    public function models()
+    {
         return $this->belongsToMany(Models::class);
     }
 }
