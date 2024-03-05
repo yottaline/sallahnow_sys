@@ -63,4 +63,23 @@ Route::middleware('api')->group(function() {
         Route::get('replies/{ticket_id}', 'SupportTicketApiController@gtReplies');
         Route::post('add-replie', 'SupportTicketApiController@addReplie');
     });
+
+    Route::prefix('courses')->group( function() {
+        Route::get('/', 'CourseApiController@courses');
+        Route::post('view', 'CourseApiController@views');
+    });
+
+    Route::prefix('ads')->group( function() {
+        Route::get('/', 'AdsApiController@ads');
+    });
+
+    // customer app
+    Route::prefix('customer') ->group( function() {
+        Route::post('register', 'CustomerApiController@register');
+        Route::post('login', 'CustomerApiController@login');
+        Route::get('profile', 'CustomerApiController@profile');
+
+    });
+
+
 });

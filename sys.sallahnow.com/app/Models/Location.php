@@ -20,4 +20,7 @@ class Location extends Model
     {
         return $this->hasMany(Center::class);
     }
+    public function customer() {
+        return $this->hasMany(Customer::class);
+    }
 }

@@ -45,6 +45,11 @@ return [
             'driver' => 'jwt',
             'provider' => 'technicians',
         ],
+
+        'customer-api' => [
+            'driver' => 'jwt',
+            'provider' => 'customers',
+        ],
     ],
 
     /*
@@ -74,6 +79,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Technician::class,
         ],
+
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
+        ]
 
         // 'users' => [
         //     'driver' => 'database',
