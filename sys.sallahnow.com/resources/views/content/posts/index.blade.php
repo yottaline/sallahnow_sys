@@ -27,7 +27,7 @@
                                     role="status"></span><span>POSTS</span>
                             </h5>
                             <div>
-                                <a href="/posts/create/" type="button"
+                                <a href="/posts/editor/" type="button"
                                     class="btn btn-outline-primary btn-circle bi bi-plus-lg"></a>
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>

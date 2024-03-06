@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('post_id')->autoIncrement();
             $table->string('post_code', 12)->unique();
             $table->string('post_title', '255');
-            $table->string('post_body',2048);
+            $table->string('post_body', 2048);
             $table->string('post_file', 24)->nullable();
             $table->string('post_photo', 24)->nullable();
             $table->tinyInteger('post_type')->default('1');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('post_views')->default('0');
             $table->integer('post_likes')->default('0');
             $table->tinyInteger('post_deleted')->default('0');
-            $table->integer('post_delete_user');
+            $table->integer('post_delete_user')->nullable();
             $table->dateTime('post_delete_time')->nullable();
             $table->integer('post_create_user')->nullable();
             $table->integer('post_create_tech')->nullable();
@@ -36,8 +36,8 @@ return new class extends Migration
             $table->dateTime('post_modify_time')->nullable();
 
 
-            
-            
+
+
             // $table->timestamps();
         });
     }

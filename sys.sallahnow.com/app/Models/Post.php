@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Post extends Model
 {
@@ -34,15 +35,26 @@ class Post extends Model
         'post_modify_time'
     ];
 
-    public function likes() {
+    function get($column, $value)
+    {
+        DB::table('posts')
+            ->join('users', 'posts.post_create_user', '=', 'users.id', 'left')
+            ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
+            ->where($column, $value)->first();
+    }
+
+    public function likes()
+    {
         return $this->hasMany(Post_Like::class, 'like_post', 'post_id');
     }
 
-    public function views() {
+    public function views()
+    {
         return $this->hasMany(Post_View::class);
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany(Post_Comment::class);
     }
 }

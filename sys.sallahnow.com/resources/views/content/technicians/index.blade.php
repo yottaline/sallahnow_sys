@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="roleFilter">Package</label>
-                            <select name="" id="" class="form-select">
+                            <select id="filter-package" class="form-select">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -86,6 +86,15 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div data-ng-if="loading" class="text-center">
+                            <span class="loading-spinner spinner-border spinner-border-sm text-secondary me-2"
+                                role="status"></span><span>Loading...</span>
+                        </div>
+
+                        <div data-ng-if="technicians.length && noMore" class="text-center">
+                            No more records
                         </div>
 
                         <div data-ng-if="!technicians.length" class="text-center text-secondary py-5">
@@ -332,35 +341,48 @@
 
 @section('js')
     <script>
-        var scope, app = angular.module('myApp', [], function($interpolateProvider) {
-            $interpolateProvider.startSymbol('<%');
-            $interpolateProvider.endSymbol('%>');
-        });
+        var scope, limit = 24,
+            app = angular.module('myApp', [], function($interpolateProvider) {
+                $interpolateProvider.startSymbol('<%');
+                $interpolateProvider.endSymbol('%>');
+            });
 
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
+            $scope.noMore = false;
+            $scope.loading = false;
             $scope.q = '';
             $scope.updateTechnician = false;
             $scope.technicianId = 0;
             $scope.technicians = [];
             $scope.locations = <?= json_encode($locations) ?>;
             $scope.showTechnician = [];
-            $scope.page = 1;
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
+                if ($scope.noMore) return;
+                $scope.loading = true;
+
                 $('.loading-spinner').show();
                 if (reload) {
                     $scope.page = 1;
                 }
+                var pck = $('#filter-package').val();
                 $.post("/technicians/load", {
                     q: $scope.q,
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.page,
+                    limit: limit,
+                    package: pck,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.technicians = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln < limit) $scope.noMore = true;
+                        if (ln) {
+                            $scope.technicians.push(data);
+                            $scope.last_id = data[ln - 1].tech_id;
+                        }
                     });
                 }, 'json');
             }
@@ -393,6 +415,10 @@
                 e.preventDefault();
                 scope.$apply(() => scope.q = $(this).find('input').val());
                 scope.dataLoader(true);
+            });
+            $(window).scroll(function() {
+                if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 80) && !scope
+                    .loading) scope.dataLoader();
             });
         });
     </script>

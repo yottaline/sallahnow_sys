@@ -8,9 +8,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class PostController extends Controller
 {
+
+    // private $location = 'posts/';
+    // private $photosPath = 'posts/photos';
+    // private $filesPath = 'posts/files';
+
+    private $photosPath = 'posts/photos';
     function index()
     {
         return view('content.posts.index');
@@ -27,87 +34,88 @@ class PostController extends Controller
         echo json_encode($posts);
     }
 
-    function create()
-    {
-        return view('content.posts.create');
-    }
-
     function editor($code = null)
     {
         $data = $code ? DB::table('posts')
-            ->join('users', 'posts.post_create_user', '=', 'users.id')
-            // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
+            ->join('users', 'posts.post_create_user', '=', 'users.id', 'left')
+            ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
             ->where('post_code', $code)->first() : null;
-        return view('content.posts.editor', compact('data'));
+
+        $file = Storage::get('public/' . $code . '.txt');
+
+        return view('content.posts.editor', compact('data', 'file'));
     }
 
     function submit(Request $request)
     {
-        // return $request;
         $request->validate([
             'title'  => 'required',
             'body'   => 'required'
         ]);
 
+        $param = [
+            'post_title'       => $request->title,
+            'post_body'        => $request->body,
+        ];
+
         $photo = $request->file('photo');
-        $photoName = $photo->getClientOriginalName();
-        $location = 'Image/Posts/';
-        $photo->move($location, $photoName);
-        $photoPath = url($location, $photoName);
+        if ($photo) { #if has photo add photo
+            $photoName = $this->uniqidReal(rand(4, 18)); //$photo->getClientOriginalName();
+            $photo->move($this->photosPath, $photoName);
+            $param['post_photo'] = $photoName;
+        }
 
         $id = $request->id;
         if (!$id) {
-            $code = strtoupper($this->uniqidReal()); #post code
-            if ($request->file('photo')) { #if has photo add photo
-
-                $status = Post::create([
-                    'post_code'        => $code,
-                    'post_title'       => $request->title,
-                    'post_body'        => $request->body,
-                    'post_photo'       => $photoName,
-                    'post_create_user' => auth()->user()->id,
-                    'post_archive_time' => now(),
-                    'post_delete_user' => 0,
-                    'post_create_time' => now()
+            $param['post_code'] = strtoupper($this->uniqidReal());
+            $param['post_create_user'] = auth()->user()->id;
+            $param['post_archive_time'] = now();
+            $param['post_delete_user'] = 0;
+            $param['post_create_time'] = now();
+            $status = Post::create($param);
+            if (!$status) {
+                echo json_encode([
+                    'status' => false,
                 ]);
-            } else { # is not have a photo
-
-                $status = Post::create([
-                    'post_code'        => $code,
-                    'post_title'       => $request->title,
-                    'post_body'        => $request->body,
-                    'post_create_user' => auth()->user()->id,
-                    'post_archive_time' => now(),
-                    'post_delete_user' => 0,
-                    'post_create_time' => now()
-                ]);
+                return;
             }
-            $id =  $status->post_id;
+            $id =  $status->id;
         } else {
-            # update post
-            if ($request->file('photo')) {
-
-                $status = Post::where('post_id', $id)->update([
-                    'post_title'       => $request->title,
-                    'post_body'        => $request->body,
-                    'post_photo'       => $photoName,
-                    'post_create_user' => auth()->user()->id,
-                    'post_delete_user' => 0,
-                ]);
-            } else {
-                $status = Post::where('post_id', $id)->update([
-                    'post_title'       => $request->title,
-                    'post_body'        => $request->body,
-                    'post_create_user' => auth()->user()->id,
-                    'post_delete_user' => 0,
-                ]);
+            $param['post_modify_user'] = auth()->user()->id;
+            $param['post_modify_time'] = now();
+            $record = Post::where('post_id', $id)->first();
+            if ($photo && $record->post_photo) {
+                File::delete($this->photosPath . $record->post_photo);
             }
+            $status = Post::where('post_id', $id)->update($param);
         }
 
-        $record = Post::where('post_id', $id)->first();
+        $record = DB::table('posts')
+            ->join('users', 'posts.post_create_user', '=', 'users.id', 'left')
+            ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
+            ->where('post_id', $id)->first();
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
+        ]);
+    }
+
+    function fileSubmit(Request $request)
+    {
+        $post_id = $request->post_id;
+        $context = $request->context;
+
+        $post = Post::where('post_id', $post_id)->first();
+        // $name = $request->file('files')->getClientOriginalName();
+        // file_put_contents($post->post_code . '.txt', $request->attach);
+        // file_put_contents($post->post_code . '.txt', file_get_contents($name));
+        // return response()->download($post->post_code . '.txt',$post->post_code . '.txt');
+
+
+        $code  = $post->post_code;
+        $status = Storage::disk('public')->put($code . '.txt', $context);
+        echo json_encode([
+            'status' => boolval($status),
         ]);
     }
 
@@ -139,22 +147,6 @@ class PostController extends Controller
         } elseif ($request->key == 'post_archived') {
             $status = Post::where('post_id', $post_id)->update(['post_archived' => $request->val]);
         }
-        echo json_encode([
-            'status' => boolval($status),
-        ]);
-    }
-
-    function addAttach(Request $request)
-    {
-        $post = Post::where('post_id', $request->post_id)->first();
-        // $name = $request->file('files')->getClientOriginalName();
-        // file_put_contents($post->post_code . '.txt', $request->attach);
-        // file_put_contents($post->post_code . '.txt', file_get_contents($name));
-        // return response()->download($post->post_code . '.txt',$post->post_code . '.txt');
-
-
-        $code  = $post->post_code;
-        $status = Storage::disk('public')->put($code . '.txt', $request);
         echo json_encode([
             'status' => boolval($status),
         ]);

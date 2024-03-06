@@ -45,20 +45,21 @@
         src='https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js'>
     </script>
     <script>
-        const dtp_opt = {
-            icons: {
-                time: 'bi bi-clock',
-                date: 'bi bi-calendar',
-                up: 'bi bi-chevron-up',
-                down: 'bi bi-chevron-down',
-                previous: 'bi bi-chevron-left',
-                next: 'bi bi-chevron-right',
-                today: 'bi bi-calendar2-event',
-                clear: 'bi bi-eraser',
-                close: 'bi bi-x'
-            },
-            format: "YYYY-MM-DD",
-        };
+        const glob_errorMsg = "Error submitting data",
+            dtp_opt = {
+                icons: {
+                    time: 'bi bi-clock',
+                    date: 'bi bi-calendar',
+                    up: 'bi bi-chevron-up',
+                    down: 'bi bi-chevron-down',
+                    previous: 'bi bi-chevron-left',
+                    next: 'bi bi-chevron-right',
+                    today: 'bi bi-calendar2-event',
+                    clear: 'bi bi-eraser',
+                    close: 'bi bi-x'
+                },
+                format: "YYYY-MM-DD",
+            };
     </script>
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
