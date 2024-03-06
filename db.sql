@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `post_archive_user` INT UNSIGNED DEFAULT NULL,
   `post_archive_time` DATETIME DEFAULT NULL,
   `post_deleted` BOOLEAN NOT NULL DEFAULT '0',
-  `post_delete_user` INT UNSIGNED NOT NULL,
+  `post_delete_user` INT UNSIGNED DEFAULT NULL,
   `post_delete_time` DATETIME DEFAULT NULL,
   `post_views` INT UNSIGNED NOT NULL DEFAULT '0',
   `post_likes` INT UNSIGNED NOT NULL DEFAULT '0',
