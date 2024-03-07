@@ -15,7 +15,7 @@
 
              <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="/technicians/">
-                     <i class="bi bi-tools text-secondary me-2"></i><b>Technicians</b>
+                     <i class="bi bi-exclamation-circle text-secondary me-2"></i><b>Technicians</b>
                  </a>
              </li>
 
@@ -174,7 +174,7 @@
                      <ul class="list-group list-group-flush">
                          <li class="list-group-item nav-rep-students">
                              <a class="link-dark d-block" href="#">
-                                 <i class="bi bi-people text-secondary me-2"></i><b>Customers</b>
+                                 <i class="bi bi-exclamation-circle text-secondary me-2"></i><b>Customers</b>
                              </a>
                          </li>
 

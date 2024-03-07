@@ -55,7 +55,7 @@
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="technician in technicians track by $index">
-                                        <td data-ng-bind="technician.tech_code"
+                                        <td data-ng-bind="technician.tech_id"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
                                             <span data-ng-bind="technician.tech_name" class="fw-bold"></span><br>
@@ -64,12 +64,12 @@
                                                 <i class="bi bi-phone me-1"></i>
                                                 <span data-ng-bind="technician.tech_mobile" class="fw-normal"></span>
                                             </small>
-                                            <small data-ng-if="+technician.tech_tel"
+                                            <small data-ng-if="technician.tech_tel"
                                                 class="me-1 db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-telephone me-1"></i>
                                                 <span data-ng-bind="technician.tech_tel" class="fw-normal"></span>
                                             </small>
-                                            <small data-ng-if="+technician.tech_email"
+                                            <small data-ng-if="technician.tech_email"
                                                 class="db-inline-block dir-ltr font-monospace badge bg-primary">
                                                 <i class="bi bi-envelope-at me-1"></i>
                                                 <span data-ng-bind="technician.tech_email" class="fw-normal"></span>
@@ -380,8 +380,9 @@
                         $scope.loading = false;
                         if (ln < limit) $scope.noMore = true;
                         if (ln) {
-                            $scope.technicians.push(data);
+                            $scope.technicians = data;
                             $scope.last_id = data[ln - 1].tech_id;
+                            console.log(data)
                         }
                     });
                 }, 'json');

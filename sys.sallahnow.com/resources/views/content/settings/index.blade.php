@@ -19,6 +19,7 @@
 @endsection
 @section('content')
     <div class="container-fluid" data-ng-app="ngApp" data-ng-controller="ngCtrl">
+        {{-- start location secton  --}}
         <div id="locationsSection" class="card card-box">
             <div class="card-body">
                 <h5 class="card-title fw-bold text-uppercase">Locations</h5>
@@ -170,25 +171,15 @@
                 </div>
             </div>
         </div>
+        {{-- end location secton  --}}
 
-        {{-- brand secton  --}}
-        <div class="brand mt-5">
-            <div class="row">
-                <div class="col-12 col-sm-4 col-lg-3">
-                    <div class="card card-box">
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="roleFilter">brands Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-8 col-lg-9">
-                    <div class="card card-box">
-                        <div class="card-body">
+        {{-- start brand and model secton  --}}
+        <div class="card card-box mt-5">
+            <div class="card-body">
+                <h5 class="card-title fw-bold text-uppercase">Brands && models</h5>
+                <div class="row">
+                    <div id="brandBox" class="col-12 col-sm-6 col-lg-6">
+                        <div class="list-box border p-3">
                             <div class="d-flex">
                                 <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
                                     <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
@@ -233,73 +224,14 @@
                             </div>
 
                             <div data-ng-if="!brands.length" class="text-center py-5 text-secondary">
-                                <i class="bi bi-people  display-4"></i>
+                                <i class="bi bi-exclamation-circle  display-4"></i>
                                 <h5>No records</h5>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- start add new brand  Modal -->
-            <div class="modal fade" id="brandForm" tabindex="-1" role="dialog" aria-labelledby="brandFormLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form method="POST" action="/brands/submit/" enctype="multipart/form-data">
-                                @csrf
-                                <input data-ng-if="updateBrand !== false" type="hidden" name="_method" value="put">
-                                <input type="hidden" name="brand_id"
-                                    data-ng-value="updateBrand !== false ? brands[updateBrand].brand_id : 0">
-                                <div class="mb-3">
-                                    <label for="brandName">Brand Name<b class="text-danger">&ast;</b></label>
-                                    <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateBrand !== false ? brands[updateBrand].brand_name : ''"
-                                        id="brandName" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="logoBrand">Logo<b class="text-danger">&ast;</b></label>
-                                    <input type="file" class="form-control" name="logo"
-                                        accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" required
-                                        id="logoBrand" />
-                                </div>
-                                <div class="d-flex">
-                                    <button type="button" class="btn btn-outline-secondary me-auto"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end add new brand  Modal -->
-        </div>
-
-        {{-- models section  --}}
-        <div class="models mt-5">
-            <div class="row">
-                <div class="col-12 col-sm-4 col-lg-3">
-                    <div class="card card-box">
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="roleFilter">brands Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="roleFilter">User Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-8 col-lg-9">
-                    <div class="card card-box">
-                        <div class="card-body">
+                    <div id="modelBox" class="col-12 col-sm-6 col-lg-6">
+                        <div class="list-box border p-3">
                             <div class="d-flex">
                                 <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
                                     <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
@@ -347,320 +279,332 @@
                             </div>
 
                             <div data-ng-if="!models.length" class="text-center py-5 text-secondary">
-                                <i class="bi bi-people  display-4"></i>
+                                <i class="bi bi-exclamation-circle  display-4"></i>
                                 <h5>No records</h5>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- start add new brand  Modal -->
-            <div class="modal fade" id="modelForm" tabindex="-1" role="dialog" aria-labelledby="modelFormLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form method="POST" action="/models/submit/" enctype="multipart/form-data">
-                                @csrf
-                                <input data-ng-if="updateModel !== false" type="hidden" name="_method" value="put">
-                                <input type="hidden" name="model_id"
-                                    data-ng-value="updateModel !== false ? models[updateModel].id : 0">
-                                <div class="mb-3">
-                                    <label for="Modelname">Model Name<b class="text-danger">&ast;</b></label>
-                                    <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateModel !== false ? models[updateModel].name : ''"
-                                        id="Modelname" />
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="modelPhoto">Photo<b class="text-danger">&ast;</b></label>
-                                            <input type="file" class="form-control" name="photo"
-                                                accept=".pdf,.jpg, .png, image/jpeg, image/png" required
-                                                id="modelPhoto" />
-                                        </div>
+                <!-- start add new brand  Modal -->
+                <div class="modal fade" id="brandForm" tabindex="-1" role="dialog" aria-labelledby="brandFormLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form method="POST" action="/brands/submit/" enctype="multipart/form-data">
+                                    @csrf
+                                    <input data-ng-if="updateBrand !== false" type="hidden" name="_method"
+                                        value="put">
+                                    <input type="hidden" name="brand_id"
+                                        data-ng-value="updateBrand !== false ? brands[updateBrand].brand_id : 0">
+                                    <div class="mb-3">
+                                        <label for="brandName">Brand Name<b class="text-danger">&ast;</b></label>
+                                        <input type="text" class="form-control" name="name" maxlength="120"
+                                            required
+                                            data-ng-value="updateBrand !== false ? brands[updateBrand].brand_name : ''"
+                                            id="brandName" />
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="ModleUrl">URL</label>
-                                            <input type="text" class="form-control" name="url" id="ModleUrl"
-                                                data-ng-value="updateModel !== false ? models[updateModel].url : ''">
-                                        </div>
+                                    <div class="mb-3">
+                                        <label for="logoBrand">Logo<b class="text-danger">&ast;</b></label>
+                                        <input type="file" class="form-control" name="logo"
+                                            accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" required
+                                            id="logoBrand" />
                                     </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="ModelBrandName">Brand Name<b class="text-danger">&ast;</b></label>
-                                    <select name="brand" class="form-control" id="ModelBrandName">
-                                        <option value="">-- SELECT BRAND NAME --</option>
-                                        <option data-ng-repeat="brand in brands track by $index"
-                                            data-ng-value="brand.brand_id" data-ng-bind="brand.brand_name">
-                                        </option>
-
-                                    </select>
-                                </div>
-                                <div class="d-flex">
-                                    <button type="button" class="btn btn-outline-secondary me-auto"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
-                                </div>
-                            </form>
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-outline-secondary me-auto"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- end add new brand  Modal -->
+                <!-- start add new brand  Modal -->
+                <div class="modal fade" id="modelForm" tabindex="-1" role="dialog" aria-labelledby="modelFormLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form method="POST" action="/models/submit/" enctype="multipart/form-data">
+                                    @csrf
+                                    <input data-ng-if="updateModel !== false" type="hidden" name="_method"
+                                        value="put">
+                                    <input type="hidden" name="model_id"
+                                        data-ng-value="updateModel !== false ? models[updateModel].id : 0">
+                                    <div class="mb-3">
+                                        <label for="Modelname">Model Name<b class="text-danger">&ast;</b></label>
+                                        <input type="text" class="form-control" name="name" maxlength="120"
+                                            required data-ng-value="updateModel !== false ? models[updateModel].name : ''"
+                                            id="Modelname" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="mb-3">
+                                                <label for="modelPhoto">Photo<b class="text-danger">&ast;</b></label>
+                                                <input type="file" class="form-control" name="photo"
+                                                    accept=".pdf,.jpg, .png, image/jpeg, image/png" required
+                                                    id="modelPhoto" />
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="mb-3">
+                                                <label for="ModleUrl">URL</label>
+                                                <input type="text" class="form-control" name="url" id="ModleUrl"
+                                                    data-ng-value="updateModel !== false ? models[updateModel].url : ''">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="ModelBrandName">Brand Name<b class="text-danger">&ast;</b></label>
+                                        <select name="brand" class="form-control" id="ModelBrandName">
+                                            <option value="">-- SELECT BRAND NAME --</option>
+                                            <option data-ng-repeat="brand in brands track by $index"
+                                                data-ng-value="brand.brand_id" data-ng-bind="brand.brand_name">
+                                            </option>
+
+                                        </select>
+                                    </div>
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-outline-secondary me-auto"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end add new brand  Modal -->
             </div>
-            <!-- end add new brand  Modal -->
         </div>
+        {{-- end brand and model secton  --}}
 
-        {{-- compatbiliy_categorie --}}
-        <div class="models mt-5">
-            <div class="row">
-                <div class="col-12 col-sm-4 col-lg-3">
-                    <div class="card card-box">
-                        <div class="card-body">
-                            {{-- <div class="mb-3">
-                                <label for="roleFilter">brands Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="roleFilter">User Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option value=""></option>
-                                </select>
-                            </div> --}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-8 col-lg-9">
-                    <div class="card card-box">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
-                                    <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
-                                        role="status"></span><span>COMOATILIY CATEGORIES</span>
-                                </h5>
-                                <div>
-                                    <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                        data-ng-click="setCompatibilityCategories(false)"></button>
-                                    <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
-                                        data-ng-click="lodaCompatibilityCategoriessData(true)"></button>
-                                </div>
 
-                            </div>
-                            <div data-ng-if="compatibility_categories.length" class="table-responsive">
-                                <table class="table table-hover" id="compatibility_categories_table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr data-ng-repeat="cate in compatibility_categories">
-                                            <td data-ng-bind="cate.category_id"></td>
-                                            <td data-ng-bind="cate.category_name"></td>
-                                            <td class="col-fit">
-                                                <div>
-                                                    <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
-                                                        data-ng-click="setCompatibilityCategories($index)"></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div data-ng-if="!compatibility_categories.length" class="text-center py-5 text-secondary">
-                                <i class="bi bi-people  display-4"></i>
-                                <h5>No records</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- start add new compatibility_categories  Modal -->
-            <div class="modal fade" id="CompatibilityCategoriesForm" tabindex="-1" role="dialog"
-                aria-labelledby="CompatibilityCategoriesFormLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form method="POST" action="/CompatibilityCategories/submit/"> @csrf <input
-                                    data-ng-if="updateCompCate !== false" type="hidden" name="_method" value="put">
-                                <input type="hidden" name="cate_id"
-                                    data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_id : 0">
-                                <div class="mb-3">
-                                    <label for="CompatibilityCategoriesName">Compatibility Categories Name<b
-                                            class="text-danger">&ast;</b></label>
-                                    <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_name : ''"
-                                        id="CompatibilityCategoriesName" />
-                                </div>
+        {{-- start brand and model secton  --}}
+        <div class="card card-box mt-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm-8 col-lg-12">
+                        <div class="card card-box">
+                            <div class="card-body">
                                 <div class="d-flex">
-                                    <button type="button" class="btn btn-outline-secondary me-auto"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                    <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                        <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                            role="status"></span><span>COMPATIBILITIES CATEGORIES</span>
+                                    </h5>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                            data-ng-click="setCompatibilityCategories(false)"></button>
+                                        <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
+                                            data-ng-click="lodaCompatibilityCategoriessData(true)"></button>
+                                    </div>
+
                                 </div>
-                            </form>
+                                <div data-ng-if="compatibility_categories.length" class="table-responsive">
+                                    <table class="table table-hover" id="compatibility_categories_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="cate in compatibility_categories">
+                                                <td data-ng-bind="cate.category_id"></td>
+                                                <td data-ng-bind="cate.category_name"></td>
+                                                <td class="col-fit">
+                                                    <div>
+                                                        <button
+                                                            class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                            data-ng-click="setCompatibilityCategories($index)"></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div data-ng-if="!compatibility_categories.length"
+                                    class="text-center py-5 text-secondary">
+                                    <i class="bi bi-exclamation-circle  display-4"></i>
+                                    <h5>No records</h5>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- start add new compatibility_categories  Modal -->
+                <div class="modal fade" id="CompatibilityCategoriesForm" tabindex="-1" role="dialog"
+                    aria-labelledby="CompatibilityCategoriesFormLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form method="POST" action="/CompatibilityCategories/submit/"> @csrf <input
+                                        data-ng-if="updateCompCate !== false" type="hidden" name="_method"
+                                        value="put">
+                                    <input type="hidden" name="cate_id"
+                                        data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_id : 0">
+                                    <div class="mb-3">
+                                        <label for="CompatibilityCategoriesName">Compatibility Categories Name<b
+                                                class="text-danger">&ast;</b></label>
+                                        <input type="text" class="form-control" name="name" maxlength="120"
+                                            required
+                                            data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_name : ''"
+                                            id="CompatibilityCategoriesName" />
+                                    </div>
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-outline-secondary me-auto"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end add new compatibility_categories  Modal -->
             </div>
-            <!-- end add new compatibility_categories  Modal -->
         </div>
+        {{-- end brand and model secton  --}}
 
-        {{-- packages section  --}}
-        <div class="models mt-5">
-            <div class="row">
-                <div class="col-12 col-sm-4 col-lg-3">
-                    {{-- <div class="card card-box">
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="roleFilter">brands Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="roleFilter">User Name</label>
-                                <select name="" id="" class="form-select">
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
-                    </div> --}}
-                </div>
-                <div class="col-12 col-sm-8 col-lg-9">
-                    <div class="card card-box">
-                        <div class="card-body">
-                            <div class="d-flex">
-                                <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
-                                    <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
-                                        role="status"></span><span>PACKAGES</span>
-                                </h5>
-                                <div>
-                                    <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                        data-ng-click="setPackage(false)"></button>
-                                    <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
-                                        data-ng-click="dataLoader(true)"></button>
-                                </div>
-
-                            </div>
-                            <div data-ng-if="packages.length" class="table-responsive">
-                                <table class="table table-hover" id="brand_table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Type</th>
-                                            <th>Period</th>
-                                            <th>Cost</th>
-                                            <th>Points</th>
-                                            <th>Ptiv</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr data-ng-repeat="package in packages">
-                                            <td data-ng-bind="package.pkg_id"></td>
-                                            <td>
-                                                <span
-                                                    class="badge bg-dark rounded-pill font-monospace p-2"><%typeObject.name[package.pkg_type]%></span>
-                                            </td>
-                                            <td data-ng-bind="package.pkg_period"></td>
-                                            <td data-ng-bind="package.pkg_cost"></td>
-                                            <td data-ng-bind="package.pkg_points"></td>
-                                            <td></td>
-                                            <td class="col-fit">
-                                                <div>
-                                                    <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
-                                                        data-ng-click="setPackage($index)"></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div data-ng-if="!packages.length" class="text-center py-5 text-secondary">
-                                <i class="bi bi-people  display-4"></i>
-                                <h5>No records</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- start add new package  Modal -->
-            <div class="modal fade" id="PackageForm" tabindex="-1" role="dialog" aria-labelledby="PackageFormLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form method="POST" action="/packages/submit/" enctype="multipart/form-data">
-                                @csrf
-                                <input data-ng-if="updatePackage !== false" type="hidden" name="_method"
-                                    value="put">
-                                <input type="hidden" name="package_id"
-                                    data-ng-value="updatePackage !== false ? packages[updatePackage].id : 0">
-                                <div class="mb-3">
-                                    <label for="packageType">Type<b class="text-danger">&ast;</b></label>
-                                    <select name="type" class="form-control" id="packageType" required>
-                                        <option value=""> -- SELECT TYPE NAME --</option>
-                                        <option value="1">Free</option>
-                                        <option value="2">Silver</option>
-                                        <option value="3">Gold</option>
-                                        <option value="4">Diamond</option>
-                                    </select>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="period">Period<b class="text-danger">&ast;</b></label>
-                                            <input type="text" class="form-control" name="period" required
-                                                id="period"
-                                                data-ng-value="updatePackage !== false ? packages[updatePackage].period : ''" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="cost">Cost</label>
-                                            <input type="text" class="form-control" name="cost" id="cost"
-                                                data-ng-value="updatePackage !== false ? packages[updatePackage].cost : ''">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="point">Points<b class="text-danger">&ast;</b></label>
-                                            <input type="text" class="form-control" name="point" id="point"
-                                                data-ng-value="updatePackage !== false ? packages[updatePackage].points : ''">
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-3">
-                                            <label for="priv">Priv<b class="text-danger">&ast;</b></label>
-                                            <input type="text" class="form-control" name="priv" id="priv"
-                                                data-ng-value="updatePackage !== false ? packages[updatePackage].prive : ''">
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                </div>
+        {{-- start packages section  --}}
+        <div class="card card-box mt-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm-8 col-lg-12">
+                        <div class="card card-box">
+                            <div class="card-body">
                                 <div class="d-flex">
-                                    <button type="button" class="btn btn-outline-secondary me-auto"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                    <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                        <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                            role="status"></span><span>PACKAGES</span>
+                                    </h5>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                            data-ng-click="setPackage(false)"></button>
+                                        <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
+                                            data-ng-click="dataLoader(true)"></button>
+                                    </div>
+
                                 </div>
-                            </form>
+                                <div data-ng-if="packages.length" class="table-responsive">
+                                    <table class="table table-hover" id="brand_table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Type</th>
+                                                <th>Period</th>
+                                                <th>Cost</th>
+                                                <th>Points</th>
+                                                <th>Ptiv</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="package in packages">
+                                                <td data-ng-bind="package.pkg_id"></td>
+                                                <td>
+                                                    <span
+                                                        class="badge bg-dark rounded-pill font-monospace p-2"><%typeObject.name[package.pkg_type]%></span>
+                                                </td>
+                                                <td data-ng-bind="package.pkg_period"></td>
+                                                <td data-ng-bind="package.pkg_cost"></td>
+                                                <td data-ng-bind="package.pkg_points"></td>
+                                                <td></td>
+                                                <td class="col-fit">
+                                                    <div>
+                                                        <button
+                                                            class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                            data-ng-click="setPackage($index)"></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div data-ng-if="!packages.length" class="text-center py-5 text-secondary">
+                                    <i class="bi bi-exclamation-circle  display-4"></i>
+                                    <h5>No records</h5>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- start add new package  Modal -->
+                <div class="modal fade" id="PackageForm" tabindex="-1" role="dialog"
+                    aria-labelledby="PackageFormLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <form method="POST" action="/packages/submit/" enctype="multipart/form-data">
+                                    @csrf
+                                    <input data-ng-if="updatePackage !== false" type="hidden" name="_method"
+                                        value="put">
+                                    <input type="hidden" name="package_id"
+                                        data-ng-value="updatePackage !== false ? packages[updatePackage].id : 0">
+                                    <div class="mb-3">
+                                        <label for="packageType">Type<b class="text-danger">&ast;</b></label>
+                                        <select name="type" class="form-control" id="packageType" required>
+                                            <option value=""> -- SELECT TYPE NAME --</option>
+                                            <option value="1">Free</option>
+                                            <option value="2">Silver</option>
+                                            <option value="3">Gold</option>
+                                            <option value="4">Diamond</option>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="mb-3">
+                                                <label for="period">Period<b class="text-danger">&ast;</b></label>
+                                                <input type="text" class="form-control" name="period" required
+                                                    id="period"
+                                                    data-ng-value="updatePackage !== false ? packages[updatePackage].period : ''" />
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="mb-3">
+                                                <label for="cost">Cost</label>
+                                                <input type="text" class="form-control" name="cost" id="cost"
+                                                    data-ng-value="updatePackage !== false ? packages[updatePackage].cost : ''">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <div class="mb-3">
+                                                <label for="point">Points<b class="text-danger">&ast;</b></label>
+                                                <input type="text" class="form-control" name="point" id="point"
+                                                    data-ng-value="updatePackage !== false ? packages[updatePackage].points : ''">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <div class="mb-3">
+                                                <label for="priv">Priv<b class="text-danger">&ast;</b></label>
+                                                <input type="text" class="form-control" name="priv" id="priv"
+                                                    data-ng-value="updatePackage !== false ? packages[updatePackage].prive : ''">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-outline-secondary me-auto"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end add new package  Modal -->
             </div>
-            <!-- end add new package  Modal -->
         </div>
+        {{-- end packages section  --}}
     </div>
 @endsection
 @section('js')
@@ -739,7 +683,7 @@
                 $(`#${target}Box .loading-spinner`).show();
                 $.post('/settings/location/load/', {
                     type: parent ? (+parent.location_type + 1) : 1,
-                    parent: parent ? parent.location_id : 0,
+                    parent: parent ? parent.id : 0,
                     _token: "{{ csrf_token() }}"
                 }, function(data) {
                     $(`#${target}Box .loading-spinner`).hide();
