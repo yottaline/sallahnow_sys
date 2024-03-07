@@ -8,11 +8,19 @@
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
+                        <div class="d-flex">
+                            <h5 class="card-title fw-semibold pt-1 me-auto mb-3 text-uppercase">
+                                <span class="spinner-border-sm text-warning me-2" role="status"></span><span>FILTERS</span>
+                            </h5>
+                            <div>
+                                <button type="button"
+                                    class="btn btn-outline-dark btn-circle bi bi-funnel
+                                "></button>
+                            </div>
+                        </div>
                         <div class="mb-3">
-                            <label for="roleFilter">Package</label>
-                            <select name="" id="" class="form-select">
-                                <option value=""></option>
-                            </select>
+                            <label for="roleFilter">Cost</label>
+                            <input type="text" id="filter_cost" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -29,7 +37,8 @@
                             <div>
                                 <a href="/posts/editor/" type="button"
                                     class="btn btn-outline-primary btn-circle bi bi-plus-lg"></a>
-                                <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
+                                <button type="button" id="load"
+                                    class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
                         </div>
@@ -58,10 +67,13 @@
                                         <td class="text-center" data-ng-bind="post.post_body"></td>
                                         <td class="text-center" data-ng-bind="post.post_cost"></td>
                                         <td class="col-fit">
-                                            <a href="/posts/edit/<% post.post_code %>"
+                                            <a href="/posts/editor/<% post.post_code %>"
                                                 class="btn btn-outline-primary btn-circle bi bi-pencil-square"></a>
                                             <button type="button" class="btn btn-outline-success btn-circle bi bi-coin"
                                                 data-ng-click="addCost($index)"></button>
+                                            <button type="button"
+                                                class="btn btn-outline-dark btn-circle bi bi-chat-left-text"
+                                                data-ng-click="comment(post)" id="Comments"></button>
                                             <button type="button"
                                                 class="btn btn-outline-danger btn-circle bi bi-trash3-fill"
                                                 data-ng-click="deletePost($index)"></button>
@@ -104,10 +116,11 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <form method="POST" action="/posts/add-cost/" enctype="multipart/form-data">
+                        <form method="POST" action="/posts/add_cost/" enctype="multipart/form-data">
                             @csrf
                             <input data-ng-if="post !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="post_id" data-ng-value="psot !== false ? psots[psot].post_id : 0">
+                            <input type="hidden" name="post_id"
+                                data-ng-value="psot !== false ? psots[psot].post_id : 0">
                             <div class="mb-3">
                                 <label for="CostPost">Cost <b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="cost" maxlength="24" required
@@ -124,6 +137,60 @@
             </div>
         </div>
 
+        <div class="modal fade" id="comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+
+                        <div class="d-flex">
+                            <h5 class="card-title fw-semibold pt-1 me-auto mb-3 text-uppercase">
+                                <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                    role="status"></span><span>COMMENTS</span>
+                            </h5>
+                            <div>
+                                <span class="font-monospace ms-2 badge bg-success rounded-pill px-2 btn-circle"
+                                    data-ng-bind="comments.length"
+                                    style="font-size:10px; position:relative; top:-3px"></span>
+                            </div>
+                        </div>
+
+                        <div data-ng-if="comments.length" data-ng-repeat="c in comments"
+                            class="bg-muted-2 p-3 border rounded-2 mb-3"
+                            data-ng-class="!+c.comment_visible ? 'border-danger' : 'border-success'">
+                            <h6 class="fw-bold small" data-ng-bind="!!+c.comment_usertype ? c.student_name : c.user_name">
+                            </h6>
+                            <p class="small" data-ng-bind="c.comment_context"></p>
+                            <div class="small">
+                                <i class="bi bi-clock text-secondary me-1"></i><span
+                                    data-ng-bind="slice(c.comment_create, 0, 16)"
+                                    class="font-monospace dir-ltr d-inline-block"></span>
+                                <span data-ng-if="c.review_name"><i class="bi bi-eye text-secondary me-1"></i><span
+                                        data-ng-bind="c.review_name"></span></span>
+                            </div>
+                        </div>
+                        <div data-ng-if="!comments.length" class="text-center my-5">
+                            <h1 style="font-size: 90px"><i class="bi bi-chat-dots text-secondary"></i></h1>
+                            <h5 class="text-secondary"> No Comments...</h5>
+                        </div>
+                        <form method="POST" action="/posts/add_comment/">
+                            @csrf
+                            <input type="hidden" name="post_id" data-ng-value="psot.post_id">
+                            <div class="mb-3">
+                                <label for="CostPost">Add Comment <b class="text-danger">&ast;</b></label>
+                                <textarea type="text" rows="7" cols="30" class="form-control" name="comment" required></textarea>
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-outline-secondary me-auto"
+                                    data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-outline-primary">Submit</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 @section('js')
@@ -135,7 +202,9 @@
 
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
+            $scope.slice = (str, start, len) => str.slice(start, len);
             $scope.psots = [];
+            $scope.comments = []
             $post = false;
             $scope.page = 1;
             $scope.dataLoader = function(reload = false) {
@@ -143,7 +212,9 @@
                 if (reload) {
                     $scope.page = 1;
                 }
+                var filter_cost = $('#filter_cost').val();
                 $.post("/posts/load/", {
+                    cost: filter_cost,
                     page: $scope.page,
                     limit: 24,
                     _token: '{{ csrf_token() }}'
@@ -165,17 +236,33 @@
                 $scope.psot = indx;
                 $('#add_cost').modal('show');
             };
+
+            $scope.comment = (post) => {
+                $.post("/posts/get_comment/", {
+                    id: post.post_id,
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.comments = data;
+                    });
+                }, 'json');
+                $scope.psot = post;
+                $('#comment').modal('show');
+            };
+
             $scope.dataLoader();
             scope = $scope;
         });
 
-        $(function() {
-            $('#searchForm').on('submit', function(e) {
-                e.preventDefault();
-                scope.$apply(() => scope.q = $(this).find('input').val());
-                scope.dataLoader(true);
-            });
-        });
+
+        // $(function() {
+        //     $('#load').on('clcik', function(e) {
+        //         e.preventDefault();
+        //         scope.$apply(() => scope.filter_cost = $(this).find('[id="filter_cost"]').val());
+        //         scope.dataLoader(true);
+        //     });
+        // });
 
         // delete post
         $(function() {
@@ -245,6 +332,50 @@
                     if (response.status) {
                         toastr.success('post update cost successfully');
                         $('#add_cost').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.psot === false) {
+                                $scope.dataLoader(true);
+                            } else {
+                                scope.psots[scope.psot] = response
+                                    .data;
+                                $scope.dataLoader();
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        });
+
+        // add comments
+        $(function() {
+            $('#comment form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    var response = JSON.parse(data);
+                    if (response.status) {
+                        toastr.success('post update cost successfully');
+                        $('#comment').modal('hide');
                         scope.$apply(() => {
                             if (scope.psot === false) {
                                 $scope.dataLoader(true);

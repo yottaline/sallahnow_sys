@@ -50,7 +50,7 @@
              </li>
 
              <li class="list-group-item nav-news">
-                 <a class="link-dark d-block" href="/posts/">
+                 <a class="link-dark d-block" href="/posts/post">
                      <i class="bi bi-file-post-fill text-secondary me-2"></i><b>Posts</b>
                  </a>
              </li>

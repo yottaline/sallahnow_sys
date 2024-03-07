@@ -126,18 +126,18 @@ Route::prefix('points')->middleware('auth')->group(function () {
 });
 
 Route::prefix('posts')->middleware('auth')->group(function () {
-    Route::get('/', 'PostController@index');
+Route::get('post', 'PostController@index');
     Route::post('load', 'PostController@load');
     Route::get('editor/{code?}', 'PostController@editor');
     Route::post('submit', 'PostController@submit');
     Route::post('file_submit', 'PostController@fileSubmit');
-    // Route::put('add-cost', 'PostController@addCost');
+    Route::put('add_cost', 'PostController@addCost');
     // Route::post('update-data', 'PostController@updateData');
     // Route::post('add-attach', 'PostController@addAttach');
-    // Route::delete('delete', 'PostController@delete');
+    Route::delete('delete', 'PostController@delete');
     // comments
-    // Route::post('get-comment', 'PostController@getComment');
-    // Route::post('add-comment', 'PostController@addComment');
+    Route::post('get_comment', 'PostController@getComment');
+    Route::post('add_comment', 'PostController@addComment');
 });
 
 Route::prefix('chats')->middleware('auth')->group(function () {
