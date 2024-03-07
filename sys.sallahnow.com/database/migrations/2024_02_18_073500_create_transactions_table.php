@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->integer('trans_id')->autoIncrement();
-            $table->tinyInteger('trans_method');
+            $table->integer('trans_id', true, true);
+            $table->tinyInteger('trans_method')->unsigned();
             $table->decimal('trans_amount', 9,2);
-            $table->tinyInteger('trans_process');
+            $table->tinyInteger('trans_process')->unsigned();
             $table->string('trans_ref', 32)->unique();
-            $table->integer('trans_create_by');
-            $table->integer('trans_tech');
+            $table->integer('trans_create_by')->unsigned();
+            $table->integer('trans_tech')->unsigned();
 
             $table->foreign('trans_tech')->references('tech_id')->on('technicians');
             // $table->timestamps();

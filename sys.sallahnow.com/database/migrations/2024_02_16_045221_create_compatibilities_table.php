@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibilities', function (Blueprint $table) {
-            $table->integer('compat_id')->autoIncrement();
+            $table->integer('compat_id', true ,true);
             $table->string('compat_part',120);
-            $table->integer('compat_category');
+            $table->integer('compat_category')->unsigned();
             // $table->timestamps();
 
 

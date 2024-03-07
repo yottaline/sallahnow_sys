@@ -23,15 +23,26 @@ class PostController extends Controller
         return view('content.posts.index');
     }
 
-    function load()
+    function load(Request $request)
     {
-        $posts = DB::table('posts')
+        $cost = $request->cost;
+        if($cost){
+
+            $posts = DB::table('posts')
+            ->where('post_cost', '=', $cost)->orderBy('post_create_time', 'desc')->get();
+            echo json_encode($posts);
+
+        }else{
+            $posts = DB::table('posts')
             ->join('users', 'posts.post_create_user', '=', 'users.id')
             // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
             ->where('post_deleted', '=', '0')
             ->orderBy('post_create_time', 'desc')->limit(15)->offset(0)->get();
 
         echo json_encode($posts);
+
+        }
+
     }
 
     function editor($code = null)
@@ -106,12 +117,6 @@ class PostController extends Controller
         $context = $request->context;
 
         $post = Post::where('post_id', $post_id)->first();
-        // $name = $request->file('files')->getClientOriginalName();
-        // file_put_contents($post->post_code . '.txt', $request->attach);
-        // file_put_contents($post->post_code . '.txt', file_get_contents($name));
-        // return response()->download($post->post_code . '.txt',$post->post_code . '.txt');
-
-
         $code  = $post->post_code;
         $status = Storage::disk('public')->put($code . '.txt', $context);
         echo json_encode([
@@ -140,7 +145,6 @@ class PostController extends Controller
 
     function updateData(Request $request)
     {
-        // return $request->val;
         $post_id  = $request->id;
         if ($request->key == 'post_allow_comment') {
             $status = Post::where('post_id', $post_id)->update(['post_allow_comments' => $request->val]);
@@ -165,9 +169,9 @@ class PostController extends Controller
 
     function getComment(Request $request)
     {
-        $post_id = $request->post_id;
+        $post_id = $request->id;
         $comments = Post_Comment::where('comment_post', $post_id)
-            ->orderBy('comment_create', 'desc')->limit(15)->offset(0)->get();
+            ->orderBy('comment_create', 'desc')->get();
         echo json_encode($comments);
     }
 

@@ -13,8 +13,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('technicians', function (Blueprint $table) {
-            $table->integer('tech_id')->autoIncrement();
-            $table->integer('tech_center')->nullable();
+            $table->integer('tech_id', true, true);
+            $table->integer('tech_center')->nullable()->unsigned();
             $table->string('tech_code', 12)->unique();
             $table->string('tech_name', 100);
             $table->string('tech_email', 120)->nullable();
@@ -25,23 +25,23 @@ return new class extends Migration
             $table->string('tech_password', 255);
             $table->string('tech_identification', 24)->nullable();
             $table->date('tech_birth')->nullable();
-            $table->integer('tech_country');
-            $table->integer('tech_state');
-            $table->integer('tech_city');
-            $table->integer('tech_area');
+            $table->integer('tech_country')->unsigned();
+            $table->integer('tech_state')->unsigned();
+            $table->integer('tech_city')->unsigned();
+            $table->integer('tech_area')->unsigned();
             $table->string('tech_address')->nullable();
-            $table->longText('tech_bio')->nullable();
-            $table->decimal('tech_rate', 9 ,2)->default('0');
-            $table->tinyInteger('tech_pkg')->nullable();
+            $table->string('tech_bio', 1024)->nullable();
+            $table->decimal('tech_rate', 9 ,2)->unsigned()->default('0');
+            $table->tinyInteger('tech_pkg')->nullable()->unsigned();
             $table->string('tech_notes', 1024)->nullable();
-            $table->integer('tech_points')->default(0);
+            $table->integer('tech_points')->unsigned()->default(0);
             $table->decimal('tech_credit', 9 ,2)->default('0');
             $table->date('tech_modify')->nullable();
             $table->boolean('tech_modify_by')->nullable();
             $table->string('devise_token')->unique();
             $table->boolean('tech_blocked')->default(0);
             $table->dateTime('tech_login')->nullable();
-            $table->integer('tech_register_by')->nullable();
+            $table->integer('tech_register_by')->nullable()->unsigned();
             $table->dateTime('tech_register');
             // $table->timestamps();
 

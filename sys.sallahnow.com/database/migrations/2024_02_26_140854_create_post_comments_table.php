@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_comments', function (Blueprint $table) {
-            $table->integer('comment_id')->autoIncrement();
-            $table->integer('comment_post');
+            $table->integer('comment_id', true, true);
+            $table->integer('comment_post')->unsigned();
             $table->string('comment_context', 2048);
             $table->boolean('comment_visible')->nullable();
-            $table->integer('comment_review')->nullable();
-            $table->integer('comment_parent')->nullable();
-            $table->integer('comment_user')->nullable();
-            $table->integer('comment_tech')->nullable();
+            $table->integer('comment_review')->nullable()->unsigned();
+            $table->integer('comment_parent')->nullable()->unsigned();
+            $table->integer('comment_user')->nullable()->unsigned();
+            $table->integer('comment_tech')->nullable()->unsigned();
             $table->dateTime('comment_create');
             // $table->timestamps();
 

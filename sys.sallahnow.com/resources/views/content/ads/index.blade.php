@@ -72,7 +72,7 @@
                         </div>
 
                         <div data-ng-if="!ads.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-people  display-4"></i>
+                            <i class="bi bi-exclamation-circle  display-4"></i>
                             <h5>No records</h5>
                         </div>
                     </div>

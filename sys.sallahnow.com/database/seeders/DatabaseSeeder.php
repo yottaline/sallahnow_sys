@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Database\Seeders\PermissionsSeeder;
+use Illuminate\Support\Str;
 
 use function Pest\Laravel\call;
 
@@ -17,6 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();
+
 
         $this->call(PermissionsSeeder::class);
         \App\Models\User::create([

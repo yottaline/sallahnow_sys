@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('support_attachments', function (Blueprint $table) {
-            $table->integer('attach_id')->autoIncrement();
+            $table->integer('attach_id', true, true);
             $table->string('attach_file', 24);
-            $table->integer('attach_ticket')->nullable();
-            $table->integer('attach_reply')->nullable();
+            $table->integer('attach_ticket')->nullable()->unsigned();
+            $table->integer('attach_reply')->nullable()->unsigned();
             $table->dateTime('attach_time');
 
             $table->foreign('attach_ticket')->references('ticket_id')->on('support_tickets')->cascadeOnDelete();

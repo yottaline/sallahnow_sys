@@ -48,6 +48,11 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::post('load', 'TechnicianController@load');
     Route::match(['post', 'put'], 'submit', 'TechnicianController@submit');
     Route::get('profile/{technician}', 'TechnicianController@profile');
+    Route::post('countries/load', 'TechnicianController@loadCountries');
+    Route::get('state/{country_id}', 'TechnicianController@loadState');
+    Route::get('cites/{state_id}', 'TechnicianController@loadCites');
+    Route::get('areas/{city_id}', 'TechnicianController@loadArea');
+
 });
 
 Route::prefix('centers')->middleware('auth')->group(function () {
@@ -125,18 +130,18 @@ Route::prefix('points')->middleware('auth')->group(function () {
 });
 
 Route::prefix('posts')->middleware('auth')->group(function () {
-    Route::get('/', 'PostController@index');
+    Route::get('post', 'PostController@index');
     Route::post('load', 'PostController@load');
     Route::get('editor/{code?}', 'PostController@editor');
     Route::post('submit', 'PostController@submit');
     Route::post('file_submit', 'PostController@fileSubmit');
-    // Route::put('add-cost', 'PostController@addCost');
+    Route::put('add_cost', 'PostController@addCost');
     // Route::post('update-data', 'PostController@updateData');
     // Route::post('add-attach', 'PostController@addAttach');
-    // Route::delete('delete', 'PostController@delete');
+    Route::delete('delete', 'PostController@delete');
     // comments
-    // Route::post('get-comment', 'PostController@getComment');
-    // Route::post('add-comment', 'PostController@addComment');
+    Route::post('get_comment', 'PostController@getComment');
+    Route::post('add_comment', 'PostController@addComment');
 });
 
 Route::prefix('chats')->middleware('auth')->group(function () {
@@ -168,8 +173,8 @@ Route::prefix('tickets')->middleware('auth')->group(function () {
 Route::prefix('courses')->middleware('auth')->group(function () {
     Route::get('/', 'CourseController@index');
     Route::post('load', 'CourseController@load');
-    Route::get('create', 'CourseController@create');
-    Route::get('edit/{course_code}', 'CourseController@edit');
+    // Route::get('create', 'CourseController@create');
+    Route::get('editor/{code?}', 'CourseController@editor');
     Route::match(['post', 'put'], 'submit', 'CourseController@submit');
     Route::put('cost', 'CourseController@cost');
     Route::put('add_file', 'CourseController@addFile');

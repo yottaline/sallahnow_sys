@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->integer('sub_id')->autoIncrement();
+            $table->integer('sub_id',true, true);
             $table->date('sub_start');
             $table->date('sub_end');
             $table->boolean('sub_status')->default('1');
-            $table->integer('sub_tech');
-            $table->integer('sub_pkg');
+            $table->integer('sub_tech')->unsigned();
+            $table->integer('sub_pkg')->unsigned();
             $table->integer('sub_points');
             $table->decimal('sub_cost', 9, 2);
             $table->integer('sub_period');
             $table->string('sub_priv',4096)->nullable();
-            $table->integer('sub_register_by')->nullable();
-            $table->date('sub_register');
+            $table->integer('sub_register_by')->nullable()->unsigned();
+            $table->dateTime('sub_register');
             // $table->timestamps();
 
             $table->foreign('sub_tech')->references('tech_id')->on('technicians');

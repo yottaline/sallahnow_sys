@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chat_room_members', function (Blueprint $table) {
-            $table->integer('member_id')->autoIncrement();
-            $table->integer('member_room');
-            $table->integer('member_tech');
+            $table->integer('member_id', true, true);
+            $table->integer('member_room')->unsigned();
+            $table->integer('member_tech')->unsigned();
             $table->boolean('member_admin')->default('0');
             $table->dateTime('member_add');
             // $table->timestamps();

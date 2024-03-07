@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('chat_room_messages', function (Blueprint $table) {
             $table->bigIncrements('msg_id');
-            $table->integer('msg_room');
-            $table->integer('msg_from');
+            $table->integer('msg_room')->unsigned();
+            $table->integer('msg_from')->unsigned();
             $table->string('msg_context', 1024);
             $table->dateTime('msg_create');
             // $table->timestamps();

@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_views', function (Blueprint $table) {
-            $table->integer('view_id')->autoIncrement();
+            $table->integer('view_id', true, true);
             $table->string('view_device', 200)->nullable();
-            $table->integer('view_tech');
-            $table->integer('view_post');
+            $table->integer('view_tech')->unsigned();
+            $table->integer('view_post')->unsigned();
             // $table->timestamps();
 
             $table->foreign('view_tech')->references('tech_id')->on('technicians');

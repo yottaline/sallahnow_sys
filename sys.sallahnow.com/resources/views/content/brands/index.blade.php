@@ -84,7 +84,7 @@
                         </div>
 
                         <div data-ng-if="!brands.length" class="text-center py-5">
-                            <i class="bi bi-people text-danger display-4"></i>
+                            <i class="bi bi-exclamation-circle text-danger display-4"></i>
                             <h5 class="text-danger">No records</h5>
                         </div>
                     </div>

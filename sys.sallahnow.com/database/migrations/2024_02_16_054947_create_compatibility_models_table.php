@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibility_models', function (Blueprint $table) {
-            $table->integer('compatible_id')->autoIncrement();
-            $table->integer('compatible_src');
-            $table->integer('compatible_model');
+            $table->integer('compatible_id', true ,true);
+            $table->integer('compatible_src')->unsigned();
+            $table->integer('compatible_model')->unsigned();
 
             $table->foreign('compatible_src')->references('compat_id')->on('compatibilities');
             $table->foreign('compatible_model')->references('model_id')->on('models');

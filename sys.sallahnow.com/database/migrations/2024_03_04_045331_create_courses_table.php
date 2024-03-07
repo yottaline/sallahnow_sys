@@ -12,25 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('courses', function (Blueprint $table) {
-            $table->integer('course_id')->autoIncrement();
+            $table->integer('course_id', true ,true);
             $table->string('course_code', 12);
             $table->string('course_title', 255);
             $table->string('course_body', 2048);
             $table->string('course_file', 24)->nullable();
             $table->string('course_photo', 24)->nullable();
-            $table->tinyInteger('course_type')->default('1');
+            $table->tinyInteger('course_type')->default('1')->unsigned();
             $table->decimal('course_cost', 12,2)->default('0');
             $table->boolean('course_archived')->default('0');
-            $table->integer('course_archive_user')->nullable();
+            $table->integer('course_archive_user')->nullable()->unsigned();
             $table->dateTime('course_archive_time')->nullable();
             $table->boolean('course_deleted')->default('0');
-            $table->integer('course_delete_user')->nullable();
+            $table->integer('course_delete_user')->nullable()->unsigned();
             $table->dateTime('course_delete_time')->nullable();
             $table->integer('course_views')->default('0');
-            $table->integer('course_requests')->default('0');
-            $table->integer('course_create_user');
+            $table->integer('course_requests')->default('0')->unsigned();
+            $table->integer('course_create_user')->unsigned();
             $table->dateTime('course_create_time');
-            $table->integer('course_modify_user')->nullable();
+            $table->integer('course_modify_user')->nullable()->unsigned();
             $table->dateTime('course_modify_time')->nullable();
 
             // $table->timestamps();

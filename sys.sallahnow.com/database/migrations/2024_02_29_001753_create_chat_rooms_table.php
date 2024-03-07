@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chat_rooms', function (Blueprint $table) {
-            $table->integer('room_id')->autoIncrement();
+            $table->integer('room_id', true, true);
             $table->string('room_code', 12);
-            $table->tinyInteger('room_type');
+            $table->tinyInteger('room_type')->unsigned();
             $table->string('room_name', 64)->nullable();
             // $table->timestamps();
         });
