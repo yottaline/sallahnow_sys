@@ -52,7 +52,10 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::get('state/{country_id}', 'TechnicianController@loadState');
     Route::get('cites/{state_id}', 'TechnicianController@loadCites');
     Route::get('areas/{city_id}', 'TechnicianController@loadArea');
+});
 
+Route::prefix('locations')->middleware(['auth'])->group(function () {
+    Route::post('load', 'LocationController@load');
 });
 
 Route::prefix('centers')->middleware('auth')->group(function () {

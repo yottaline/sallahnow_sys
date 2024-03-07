@@ -12,17 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('technician_ads', function (Blueprint $table) {
-            $table->integer('ads_id',true,true);
+            $table->integer('ads_id', true, true);
             $table->string('ads_title', 255);
             $table->string('ads_photo', 64);
             $table->string('ads_body', 4096);
             $table->string('ads_url', 255);
             $table->dateTime('ads_start');
             $table->dateTime('ads_end');
-            $table->integer('ads_create_user');
+            $table->integer('ads_create_user', false, true);
             $table->dateTime('ads_create_time');
-
-            $table->foreign('ads_create_user')->references('id')->on('users');
+            // $table->foreign('ads_create_user')->references('id')->on('users');
             // $table->timestamps();
         });
     }
