@@ -65,7 +65,7 @@
                                     <tr data-ng-repeat="u in users track by $index">
                                         <td data-ng-bind="u.id"></td>
                                         <td data-ng-bind="u.user_name"></td>
-                                        <td data-ng-bind="u.email"></td>
+                                        <td data-ng-bind="u.user_email"></td>
                                         <td data-ng-bind="u.user_mobile"></td>
                                         <td data-ng-bind="u.ugroup_name"></td>
                                         <td>
@@ -73,8 +73,8 @@
                                                 class="badge bg-<%statusObject.color[u.user_active]%> rounded-pill font-monospace"><%statusObject.name[u.user_active]%></span>
 
                                         </td>
-                                        <td>
-                                            <div class="col-fit">
+                                        <td class="col-fit">
+                                            <div>
                                                 <button class="btn btn-outline-success btn-circle bi bi-person-lock"
                                                     data-ng-click="editActive($index)"></button>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -126,7 +126,7 @@
                                         <label for="exampleInputEmail1">Email</label>
                                         <input type="email" class="form-control" name="email"
                                             id="exampleInputEmail1"
-                                            data-ng-value="updateUser !== false ? users[updateUser].email : ''">
+                                            data-ng-value="updateUser !== false ? users[updateUser].user_email : ''">
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +150,10 @@
                                     <div class="mb-3">
                                         <label for="role">Roles</label>
                                         <select name="role_id" class="form-control" id="role">
-                                            <option value="">-- SELECT ROLE NAME</option>
+                                            <option
+                                                value=""data-ng-value="updateUser !== false ? users[updateUser].ugroup_name : ''"
+                                                data-ng-bind="updateUser !== false ? users[updateUser].ugroup_name : ''">
+                                            </option>
                                             <option data-ng-repeat="role in roles" data-ng-value="role.ugroup_id"
                                                 data-ng-bind="role.ugroup_name"></option>
                                         </select>
@@ -170,30 +173,27 @@
         <!-- end add new user  Modal -->
 
         <!-- start edit user active  Modal -->
-        <div class="modal fade" id="edit_active" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade modal-sm" id="edit_active" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
                         <form method="POST" action="/users/update/active/">
                             @csrf @method('PUT')
                             <input hidden data-ng-value="users[userId].id" name="user_id">
-                            <label for="form-control">Active</label>
-                            <select name="active" class="form-control">
-                                <option value="">-- select status --</option>
-                                <option value="1">Active</option>
-                                <option value="0">Blocked</option>
-                            </select>
+                            <input hidden data-ng-value="users[userId].user_active" name="user_active">
+                            <p class="mb-2">Are you sure you want to change status the user?</p>
                             <div class="d-flex mt-3">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
                                     data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-success">Update Active</button>
+                                <button type="submit" class="btn btn-outline-success">Change</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- end edit user active Modal -->
 
 

@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('packages', function (Blueprint $table) {
-            $table->integer('pkg_id')->autoIncrement();
-            $table->tinyInteger('pkg_type');
-            $table->integer('pkg_period');
+            $table->integer('pkg_id', true ,true);
+            $table->tinyInteger('pkg_type')->unsigned();
+            $table->integer('pkg_period')->unsigned();
             $table->decimal('pkg_cost',9,2);
-            $table->integer('pkg_points');
+            $table->integer('pkg_points')->unsigned();
             $table->string('pkg_priv');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

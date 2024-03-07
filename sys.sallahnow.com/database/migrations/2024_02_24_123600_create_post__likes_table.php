@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post__likes', function (Blueprint $table) {
-            $table->integer('like_id')->autoIncrement();
-            $table->integer('like_tech');
-            $table->integer('like_post');
+            $table->integer('like_id', true, true);
+            $table->integer('like_tech')->unsigned();
+            $table->integer('like_post')->unsigned();
             // $table->timestamps();
 
             $table->foreign('like_tech')->references('tech_id')->on('technicians')->cascadeOnDelete();

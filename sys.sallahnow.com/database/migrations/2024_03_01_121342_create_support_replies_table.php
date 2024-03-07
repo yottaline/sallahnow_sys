@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('support_replies', function (Blueprint $table) {
-            $table->integer('reply_id')->autoIncrement();
-            $table->integer('reply_ticket');
+            $table->integer('reply_id', true, true);
+            $table->integer('reply_ticket')->unsigned();
             $table->string('reply_context', 1024);
-            $table->integer('reply_user')->nullable();
-            $table->integer('reply_tech')->nullable();
+            $table->integer('reply_user')->nullable()->unsigned();
+            $table->integer('reply_tech')->nullable()->unsigned();
             $table->dateTime('reply_create');
 
             $table->foreign('reply_ticket')->references('ticket_id')->on('support_tickets')->cascadeOnDelete();

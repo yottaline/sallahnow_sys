@@ -418,7 +418,8 @@
                 scope.dataLoader(true);
             });
             $(window).scroll(function() {
-                if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 80) && !scope
+                if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 80) &&
+                    !scope
                     .loading) scope.dataLoader();
             });
         });

@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('support_tickets', function (Blueprint $table) {
-            $table->integer('ticket_id')->autoIncrement();
+            $table->integer('ticket_id', true ,true);
             $table->string('ticket_code', 12);
-            $table->integer('ticket_brand');
-            $table->integer('ticket_model');
-            $table->integer('ticket_category');
-            $table->integer('ticket_cost')->default('0');
+            $table->integer('ticket_brand')->unsigned();
+            $table->integer('ticket_model')->unsigned();
+            $table->integer('ticket_category')->unsigned();
+            $table->integer('ticket_cost')->default('0')->unsigned();
             $table->string('ticket_context', 4096);
-            $table->tinyInteger('ticket_status')->default('1');
-            $table->integer('ticket_tech');
+            $table->tinyInteger('ticket_status')->default('1')->unsigned();
+            $table->integer('ticket_tech')->unsigned();
             $table->dateTime('ticket_create');
             // $table->timestamps();
 

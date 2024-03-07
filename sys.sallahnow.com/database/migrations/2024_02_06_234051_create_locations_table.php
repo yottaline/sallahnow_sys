@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->integer('location_id')->autoIncrement();
             $table->string('location_name', 100);
-            $table->tinyInteger('location_type');
-            $table->integer('location_parent');
-            $table->tinyInteger('location_visible')->default('1');
             // $table->timestamps();
+            $table->tinyInteger('location_type')->unsigned();
+            $table->integer('location_parent')->unsigned();
+            $table->tinyInteger('location_visible')->unsigned()->default('1');
+
         });
     }
 

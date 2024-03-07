@@ -159,7 +159,7 @@
 
              <li class="list-group-item nav-support">
                  <a class="link-dark d-block" href="/ads/">
-                     <i class="bi bi-collection-play text-secondary me-2"></i><b>Ads</b>
+                     <i class="bi bi-display text-secondary me-2"></i><b>Ads</b>
                  </a>
              </li>
 

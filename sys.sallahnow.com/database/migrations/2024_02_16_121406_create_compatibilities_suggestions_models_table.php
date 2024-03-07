@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibilities_suggestions_models', function (Blueprint $table) {
-            $table->integer('csugg_id')->autoIncrement();
-            $table->integer('sugg_src');
-            $table->integer('sugg_model');
-            $table->timestamps();
+            $table->integer('csugg_id', true, true);
+            $table->integer('sugg_src')->unsigned();
+            $table->integer('sugg_model')->unsigned();
+            // $table->timestamps();
 
             $table->foreign('sugg_src')->references('sugg_id')->on('compatibilities_suggestions');
             $table->foreign('sugg_model')->references('model_id')->on('models');

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('compatibility_categories', function (Blueprint $table) {
-            $table->integer('category_id')->autoIncrement();
+            $table->integer('category_id', true, true);
             $table->string('category_name', 1024);
-            $table->tinyInteger('category_visible')->default('1');
+            $table->tinyInteger('category_visible')->unsigned()->default('1');
             // $table->timestamps();
         });
     }

@@ -71,7 +71,11 @@ class UserController extends Controller
     public function updateActive(Request $request)
     {
         $id = $request->user_id;
-       $status = User::where('id', $id)->update(['user_active' => $request->active]);
+        if($request->user_active == 1) {
+            $status = User::where('id', $id)->update(['user_active' => 0]);
+        }else {
+            $status = User::where('id', $id)->update(['user_active' => 1]);
+        }
        $record = User::where('id', $id)->first();
         echo json_encode([
             'status' => boolval($status),

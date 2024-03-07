@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('support_categories', function (Blueprint $table) {
-            $table->integer('category_id')->autoIncrement();
+            $table->integer('category_id', true, true);
             $table->string('category_name', 2048);
-            $table->integer('category_cost')->default('1');
-            $table->tinyInteger('category_visible')->default('1');
+            $table->integer('category_cost')->default('1')->unsigned();
+            $table->tinyInteger('category_visible')->default('1')->unsigned();
             // $table->timestamps();
         });
     }

@@ -92,7 +92,7 @@
                         </div>
 
                         <div data-ng-if="!centers.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-globe-central-south-asia display-3"></i>
+                            <i class="bi bi-exclamation-circle display-3"></i>
                             <h5 class="">No records</h5>
                         </div>
                     </div>

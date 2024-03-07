@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('brands', function (Blueprint $table) {
-            $table->integer('brand_id')->autoIncrement();
+            $table->integer('brand_id', true, true);
             $table->string('brand_name', 24);
             $table->string('brand_logo', 24);
-            $table->boolean('brand_visible')->default(1);
+            $table->boolean('brand_visible')->unsigned()->default(1);
             // $table->timestamps();
         });
     }

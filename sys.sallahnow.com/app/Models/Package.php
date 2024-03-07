@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Package extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
         'pkg_type',
@@ -16,6 +17,4 @@ class Package extends Model
         'pkg_points',
         'pkg_priv'
     ];
-
-    public $timestamps = false;
 }

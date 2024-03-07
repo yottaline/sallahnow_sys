@@ -48,6 +48,7 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::post('load', 'TechnicianController@load');
     Route::match(['post', 'put'], 'submit', 'TechnicianController@submit');
     Route::get('profile/{technician}', 'TechnicianController@profile');
+    Route::post('test', 'TechnicianController@test');
 });
 
 Route::prefix('centers')->middleware('auth')->group(function () {

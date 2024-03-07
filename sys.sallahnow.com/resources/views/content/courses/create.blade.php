@@ -66,7 +66,7 @@
 
                                 <div class="col-12 col-md-8">
                                     <div class="row">
-                                        <div class="col-6 col-md-6">
+                                        <div class="col-6 col-md-12">
                                             <div class="mb-3">
                                                 <label for="titleAr-input">Title<b
                                                         class="text-danger form-conter">&ast;</b></label>
@@ -75,7 +75,7 @@
                                                     data-ng-value="data.course_title" required>
                                             </div>
                                         </div>
-                                        <div class="col-6 col-md-6">
+                                        <div class="col-6 col-md-12">
                                             <div class="mb-3">
                                                 <label for="titleAr-input">Cost <b
                                                         class="text-danger form-conter">&ast;</b></label>
