@@ -27,10 +27,19 @@ class TechnicianController extends Controller
     }
 
 
-    public function load()
+    public function load(Request $request)
     {
-        $technicians = Technician::orderBy('tech_register', 'desc')->limit(15)->offset(0)->get();
-        echo json_encode($technicians);
+        // return $request;
+        if(!$request->package)
+        {
+            $technicians = Technician::orderBy('tech_register', 'desc')->limit(6)->offset(0)->get();
+            echo json_encode($technicians);
+        }else
+        {
+            $technicians = Technician::where('tech_pkg', $request->package)->get();
+            echo json_encode($technicians);
+        }
+
     }
 
     public function submit(Request $request)
@@ -103,28 +112,53 @@ class TechnicianController extends Controller
 
     }
 
-    public function test(Request $request) {
-        $package = $request->package;
-        $country = $request->country;
-        $city    = $request->city;
+    // public function test(Request $request)
+    // {
+    //     $package = $request->package;
+    //     $country = $request->country;
+    //     $city    = $request->city;
 
-        if($package && $country && $city){
-            $technician = Technician::where('tech_pkg', $package)
-                          ->orWhere('tech_country', $country)
-                          ->orWhere('tech_city', $city)->get();
-            echo json_encode($technician);
-        }elseif($package){
-            $technician = Technician::where('tech_pkg', $package)->get();
-            echo json_encode($technician);
-        }elseif($country){
-            $technician = Technician::where('tech_country', $country)->get();
-            echo json_encode($technician);
-        }elseif($city){
-            $technician = Technician::where('tech_city', $city)->get();
-            echo json_encode($technician);
-        }
+    //     if($package && $country && $city){
+    //         $technician = Technician::where('tech_pkg', $package)
+    //                       ->orWhere('tech_country', $country)
+    //                       ->orWhere('tech_city', $city)->get();
+    //         echo json_encode($technician);
+    //     }elseif($package){
+    //         $technician = Technician::where('tech_pkg', $package)->get();
+    //         echo json_encode($technician);
+    //     }elseif($country){
+    //         $technician = Technician::where('tech_country', $country)->get();
+    //         echo json_encode($technician);
+    //     }elseif($city){
+    //         $technician = Technician::where('tech_city', $city)->get();
+    //         echo json_encode($technician);
+    //     }
+    // }
+
+
+    public function loadCountries()
+    {
+        $countries = Location::where('location_parent', 0)->get();
+        echo json_encode($countries);
     }
 
+    public function loadState($country_id)
+    {
+        $states = Location::where('location_parent', $country_id)->get();
+        echo json_encode($states);
+    }
+
+    public function loadCites($state_id)
+    {
+        $cites = Location::where('location_parent', $state_id)->get();
+        echo json_encode($cites);
+    }
+
+    public function loadArea($city_id)
+    {
+        $areas = Location::where('location_parent', $city_id)->get();
+        echo json_encode($areas);
+    }
 
     private function uniqidReal($lenght = 12)
     {

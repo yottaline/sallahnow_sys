@@ -14,7 +14,6 @@ class LocationController extends Controller
 
     public function index() {
         $locations = Location::all();
-
         return view('content.settings.locations.index', compact('locations'));
     }
 }

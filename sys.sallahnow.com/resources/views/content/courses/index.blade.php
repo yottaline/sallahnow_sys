@@ -27,7 +27,7 @@
                                     role="status"></span><span>COURSES</span>
                             </h5>
                             <div>
-                                <a href="/courses/create/" type="button"
+                                <a href="/courses/editor/" type="button"
                                     class="btn btn-outline-primary btn-circle bi bi-plus-lg"></a>
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
@@ -58,7 +58,7 @@
                                         <td class="text-center" data-ng-bind="course.course_body"></td>
                                         <td class="text-center" data-ng-bind="course.course_cost"></td>
                                         <td class="col-fit">
-                                            <a href="/courses/edit/<% course.course_code %>"
+                                            <a href="/courses/editor/<% course.course_code %>"
                                                 class="btn btn-outline-primary btn-circle bi bi-pencil-square"></a>
                                             <button type="button" class="btn btn-outline-success btn-circle bi bi-coin"
                                                 data-ng-click="updCost($index)"></button>

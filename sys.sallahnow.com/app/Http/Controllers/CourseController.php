@@ -6,9 +6,15 @@ use App\Models\Course;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
+        // private $location = 'posts/';
+    // private $photosPath = 'posts/photos';
+    // private $filesPath = 'posts/files';
+
+    private $photosPath = 'courses/photos';
     public function index() {
         return view('content.courses.index');
     }
@@ -22,37 +28,51 @@ class CourseController extends Controller
         echo json_encode($courses);
     }
 
-    public function create() {
-        return view('content.courses.create');
-    }
-
-    public function edit($course_code) {
-       $data = DB::table('courses')
+    public function editor($code = null)
+    {
+        $data = $code ?DB::table('courses')
         ->join('users', 'courses.course_create_user', '=', 'users.id')
-        ->where('course_code', $course_code)->first();
-        return view('content.courses.create', compact('data'));
+        ->where('course_code', $code)->first() : null;
+        $file = Storage::get('public/' . $code . '.txt');
+
+        return view('content.courses.create', compact('data', 'file'));
     }
 
-    public function submit(Request $request) {
-        $photo = $request->file('photo');
-        $photoName = $photo->getClientOriginalName();
-        $location = 'Image/Courses/Photo';
 
-        $parm = [
+    public function submit(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'body'  => 'required',
+            'cost'  => 'required | numeric'
+        ]);
+
+        $photo = $request->file('photo');
+        if ($photo) {
+            $photoName = $this->uniqidReal(rand(4, 18));
+            $photo->move($this->photosPath, $photoName);
+            $param['post_photo'] = $photoName;
+        }
+
+        $parma = [
             'course_title'          => $request->title,
             'course_body'           => $request->body,
-            'course_photo'          => $photoName,
             'course_cost'           => $request->cost,
-            'course_create_user'    => auth()->user()->id,
-            'course_code'           =>  strtoupper($this->uniqidReal()),
-            'course_create_time'    =>  Carbon::now()
         ];
+
         $course_id = $request->id;
         if(!$course_id){
-            $status = Course::create($parm);
+            $parma['course_create_user'] = auth()->user()->id;
+            $parma['course_code']        = strtoupper($this->uniqidReal());
+            $parma['course_create_time'] = Carbon::now();
+            $parma['course_delete_user'] = 1;
+
+            $status = Course::create($parma);
             $course_id =  $status->id;
         }else {
-            $status = Course::where('course_id', $course_id)->update($parm);
+            $parma['course_modify_user'] = auth()->user()->id;
+            $parma['course_modify_time'] = Carbon::now();
+            $status = Course::where('course_id', $course_id)->update($parma);
         }
 
         $record = Course::where('course_id', $course_id)->first();
@@ -91,7 +111,8 @@ class CourseController extends Controller
         ]);
     }
 
-    public function updateArchived(Request $request) {
+    public function updateArchived(Request $request)
+    {
         $course_id = $request->id;
         $status     = Course::where('course_id', $course_id)->update([
             'course_archived'       => $request->val,

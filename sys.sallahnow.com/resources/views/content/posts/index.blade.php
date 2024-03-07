@@ -20,7 +20,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="roleFilter">Cost</label>
-                            <input type="text" id="filter_cost" class="form-control">
+                            <input type="search" id="filter_cost" class="form-control">
                         </div>
                     </div>
                 </div>

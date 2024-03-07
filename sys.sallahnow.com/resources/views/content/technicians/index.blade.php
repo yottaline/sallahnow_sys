@@ -15,8 +15,15 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="roleFilter">Package</label>
-                            <select id="filter-package" class="form-select">
+                            <select id="filter-package" class="form-select js-example-basic-single">
                                 <option value=""></option>
+                                <option value="1">Free</option>
+                                <option value="2">Silver | 1 Month</option>
+                                <option value="3">Silver | 6 Month</option>
+                                <option value="4">Silver | 1 Year</option>
+                                <option value="5">Gold | 6 Month</option>
+                                <option value="6">Gold | 1 Year</option>
+                                <option value="7">Diamond | 1 Year</option>
                             </select>
                         </div>
                     </div>
@@ -176,10 +183,13 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Country<b class="text-danger">&ast;</b></label>
-                                        <select name="country_id" class="form-control" required>
+                                        <select name="country_id" id="country" class="form-control" required>
                                             <option value="">-- select country --</option>
-                                            <option value="1">sudan</option>
-                                            <option value="2">Egypt</option>
+                                            <option data-ng-repeat="country in countries track by $index"
+                                                data-ng-value="country.id"
+                                                data-ng-bind="jsonParse(country.location_name)['en']">
+                                                sudan
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -187,10 +197,8 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>State<b class="text-danger">&ast;</b></label>
-                                        <select name="state_id" class="form-control" required>
+                                        <select name="state_id" id="states" class="form-control" required>
                                             <option value="">-- select state --</option>
-                                            <option value="1">Khartoum</option>
-                                            <option value="2">Cairo</option>
                                         </select>
                                     </div>
                                 </div>
@@ -199,10 +207,8 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>City<b class="text-danger">&ast;</b></label>
-                                        <select name="city_id" class="form-control" required>
+                                        <select name="city_id" id="citys" class="form-control" required>
                                             <option value="">-- select city --</option>
-                                            <option value="1">Khartoum</option>
-                                            <option value="2">Cairo</option>
                                         </select>
                                     </div>
                                 </div>
@@ -210,7 +216,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Arae<b class="text-danger">&ast;</b></label>
-                                        <select name="area_id" class="form-control" required>
+                                        <select name="area_id" id="area" class="form-control" required>
                                             <option value="">-- select area --</option>
                                             <option value="1">Khartoum, Omdurman</option>
                                             <option value="2">Cairo, Maadi</option>
@@ -341,7 +347,7 @@
 
 @section('js')
     <script>
-        var scope, limit = 24,
+        var scope, limit = 1,
             app = angular.module('myApp', [], function($interpolateProvider) {
                 $interpolateProvider.startSymbol('<%');
                 $interpolateProvider.endSymbol('%>');
@@ -358,6 +364,8 @@
             $scope.locations = <?= json_encode($locations) ?>;
             $scope.showTechnician = [];
             $scope.last_id = 0;
+            $scope.countries = [];
+            $scope.jsonParse = (str) => JSON.parse(str);
             $scope.dataLoader = function(reload = false) {
                 if ($scope.noMore) return;
                 $scope.loading = true;
@@ -381,11 +389,27 @@
                         if (ln < limit) $scope.noMore = true;
                         if (ln) {
                             $scope.technicians = data;
-                            $scope.last_id = data[ln - 1].tech_id;
                             console.log(data)
+                            $scope.last_id = data[ln - 1].tech_id;
                         }
                     });
                 }, 'json');
+
+                $scope.loadCountries = function(reload = false) {
+                    $('.loading-spinner').show();
+                    if (reload) {
+                        $scope.page = 1;
+                    }
+                    $.post("/technicians/countries/load/", {
+                        _token: '{{ csrf_token() }}'
+                    }, function(data) {
+                        $('.loading-spinner').hide();
+                        $scope.$apply(() => {
+                            $scope.countries = data;
+                            console.log(data)
+                        });
+                    }, 'json');
+                }
             }
             $scope.setUser = (indx) => {
                 $scope.updateTechnician = indx;
@@ -395,19 +419,8 @@
                 $scope.technicianId = index;
                 $('#edit_active').modal('show');
             };
-            $scope.showTechnician = (technician) => {
-                $scope.showTechnician = technician;
-                $('#show_technician').modal('show');
-            }
-            $scope.addNote = (index) => {
-                $scope.technicianId = index;
-                $('#add_note_technician').modal('show');
-            }
-            $scope.deleteTechnician = (index) => {
-                $scope.userId = index;
-                $('#delete_technician').modal('show');
-            };
             $scope.dataLoader();
+            $scope.loadCountries()
             scope = $scope;
         });
 
@@ -417,10 +430,76 @@
                 scope.$apply(() => scope.q = $(this).find('input').val());
                 scope.dataLoader(true);
             });
+
             $(window).scroll(function() {
                 if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 80) &&
                     !scope
                     .loading) scope.dataLoader();
+            });
+
+            $('#country').on('change', function() {
+                var idState = this.value;
+                console.log(idState);
+                $('#states').html('');
+                $.ajax({
+                    url: 'state/' + idState,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        $.each(res, function(key, value) {
+                            $('#states').append('<option id="class" value="' +
+                                value
+                                .id +
+                                '">' + scope.jsonParse(value.location_name)['en'] +
+                                '</option>');
+                        });
+                    }
+                });
+            });
+
+            $('#states').on('click', function() {
+                var idState = this.value;
+                $('#citys').html('');
+                $.ajax({
+                    url: 'cites/' + idState,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        $.each(res, function(key, value) {
+                            console.log(value)
+                            $('#citys').append('<option id="class" value="' +
+                                value
+                                .id +
+                                '">' + scope.jsonParse(value.location_name)['en'] +
+                                '</option>');
+                        });
+                    }
+                });
+
+            });
+
+            $('#citys').on('click', function() {
+                var idState = this.value;
+                $('#area').html('');
+                $.ajax({
+                    url: 'areas/' + idState,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        $.each(res, function(key, value) {
+                            $('#area').append('<option id="class" value="' +
+                                value
+                                .id +
+                                '">' + scope.jsonParse(value.location_name)['en'] +
+                                '</option>');
+                        });
+                    }
+                });
+
+            });
+
+            $(document).ready(function() {
+                $('.js-example-basic-single').select2();
             });
         });
     </script>
