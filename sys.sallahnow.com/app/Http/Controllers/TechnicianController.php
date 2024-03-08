@@ -22,24 +22,21 @@ class TechnicianController extends Controller
 
     public function index()
     {
-        $locations = Location::all();
-        return view('content.technicians.index', compact('locations'));
+        $countries = Location::where('location_type', '1')->orderBy('location_id', 'ASC')->get();
+        return view('content.technicians.index', compact('countries'));
     }
 
 
     public function load(Request $request)
     {
         // return $request;
-        if(!$request->package)
-        {
+        if (!$request->package) {
             $technicians = Technician::orderBy('tech_register', 'desc')->limit(6)->offset(0)->get();
             echo json_encode($technicians);
-        }else
-        {
+        } else {
             $technicians = Technician::where('tech_pkg', $request->package)->get();
             echo json_encode($technicians);
         }
-
     }
 
     public function submit(Request $request)
@@ -47,8 +44,14 @@ class TechnicianController extends Controller
         // return $request;
         $request->validate([
             'name'            => 'required|string',
-            'mobile'          => 'required|numeric',
+            'mobile'          => 'required|numeric|unique',
         ]);
+
+        $id = intval($request->technician_id);
+        $mobile = $request->mobile;
+        $email = $request->email;
+        $identification = $request->identification;
+        // if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '!=', $id)->first())
 
         $param = [
             'tech_name'              => $request->name,
@@ -65,8 +68,6 @@ class TechnicianController extends Controller
             'tech_notes'             => $request->notes,
             'tech_register'          => Carbon::now()
         ];
-
-        $id = intval($request->technician_id);
 
         if (!$id) {
             $param['tech_code'] = strtoupper($this->uniqidReal());
@@ -97,19 +98,10 @@ class TechnicianController extends Controller
     // }
 
 
-    public function profile($code) {
-        // Technician::where('tech_code', $code)->first();
-        $technician = DB::table('technicians')
-        ->join('centers', 'technicians.tech_id', '=', 'centers.center_owner')
-        ->first();
-        if($technician){
-            return view('content.technicians.profile', compact('technician'));
-        }
-        else{
-            $technician = Technician::where('tech_code', $code)->first();
-            return view('content.technicians.profile', compact('technician'));
-        }
-
+    public function profile($code)
+    {
+        $technician = Technician::where('tech_code', $code)->first();
+        return view('content.technicians.profile', compact('technician'));
     }
 
     // public function test(Request $request)
@@ -134,31 +126,6 @@ class TechnicianController extends Controller
     //         echo json_encode($technician);
     //     }
     // }
-
-
-    public function loadCountries()
-    {
-        $countries = Location::where('location_parent', 0)->get();
-        echo json_encode($countries);
-    }
-
-    public function loadState($country_id)
-    {
-        $states = Location::where('location_parent', $country_id)->get();
-        echo json_encode($states);
-    }
-
-    public function loadCites($state_id)
-    {
-        $cites = Location::where('location_parent', $state_id)->get();
-        echo json_encode($cites);
-    }
-
-    public function loadArea($city_id)
-    {
-        $areas = Location::where('location_parent', $city_id)->get();
-        echo json_encode($areas);
-    }
 
     private function uniqidReal($lenght = 12)
     {

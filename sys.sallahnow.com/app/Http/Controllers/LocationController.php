@@ -12,8 +12,17 @@ class LocationController extends Controller
         $this->middleware('auth');
     }
 
-    public function index() {
+    public function index()
+    {
         $locations = Location::all();
         return view('content.settings.locations.index', compact('locations'));
+    }
+
+    function load(Request $req)
+    {
+        $locations = Location::where('location_type', $req->type)
+            ->where('location_parent', $req->parent)
+            ->orderBy('location_id', 'ASC')->get();
+        echo json_encode($locations);
     }
 }

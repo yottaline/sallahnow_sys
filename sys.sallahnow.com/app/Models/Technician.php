@@ -50,51 +50,63 @@ class Technician extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class, 'tech_register_by');
     }
 
-    public function suggestions() {
+    public function suggestions()
+    {
         return $this->hasMany(Compatibilities_suggestions::class);
     }
 
-    public function subscription() {
+    public function subscription()
+    {
         return $this->hasOne(Subscriptions::class);
     }
 
-    public function points() {
+    public function points()
+    {
         return $this->hasMany(PointTranaction::class);
     }
 
-    public function transactions() {
+    public function transactions()
+    {
         return $this->hasMany(Transaction::class);
     }
 
-    public function likes() {
+    public function likes()
+    {
         return $this->hasMany(Post_Like::class, 'like_tech', 'tech_id');
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany(Post_Comment::class);
     }
 
-    public function post_views() {
+    public function post_views()
+    {
         return $this->hasMany(Post_View::class);
     }
 
-    public function members() {
+    public function members()
+    {
         return $this->hasMany(Chat_Room_Members::class);
     }
 
-    public function messages() {
+    public function messages()
+    {
         return $this->hasMany(Chat_Room_Message::class);
     }
 
-    public function supportTickets() {
+    public function supportTickets()
+    {
         return $this->hasMany(Support_ticket::class);
     }
 
-    public function supportReplie() {
+    public function supportReplie()
+    {
         return $this->hasMany(Support_replie::class);
     }
 

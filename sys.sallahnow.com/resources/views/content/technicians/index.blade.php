@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="roleFilter">Package</label>
-                            <select id="filter-package" class="form-select js-example-basic-single">
+                            <select id="filter-package" class="form-select">
                                 <option value=""></option>
                                 <option value="1">Free</option>
                                 <option value="2">Silver | 1 Month</option>
@@ -24,6 +24,46 @@
                                 <option value="5">Gold | 6 Month</option>
                                 <option value="6">Gold | 1 Year</option>
                                 <option value="7">Diamond | 1 Year</option>
+                            </select>
+                        </div>
+
+
+                        {{-- country --}}
+                        <div class="mb-3">
+                            <label>Country<b class="text-danger">&ast;</b></label>
+                            <select id="filter-country" class="form-select">
+                                <option value="default">-- select country --</option>
+                                <option data-ng-repeat="country in countries" data-ng-value="country.location_id"
+                                    data-ng-bind="jsonParse(country.location_name)['en']"></option>
+                            </select>
+                        </div>
+                        {{-- state --}}
+                        <div class="mb-3">
+                            <label>State<b class="text-danger">&ast;</b></label>
+                            <select id="filter-state" class="form-select">
+                                <option value="default">-- select state --</option>
+                                <option data-ng-repeat="state in filters.states" data-ng-value="state.location_id"
+                                    data-ng-bind="jsonParse(state.location_name)['en']"></option>
+                            </select>
+                        </div>
+
+                        {{-- city --}}
+                        <div class="mb-3">
+                            <label>City<b class="text-danger">&ast;</b></label>
+                            <select id="filter-city" class="form-select">
+                                <option value="default">-- select city --</option>
+                                <option data-ng-repeat="city in filters.cities" data-ng-value="city.location_id"
+                                    data-ng-bind="jsonParse(city.location_name)['en']"></option>
+                            </select>
+                        </div>
+
+                        {{-- area --}}
+                        <div class="mb-3">
+                            <label>Arae<b class="text-danger">&ast;</b></label>
+                            <select id="filter-area" class="form-select" required>
+                                <option value="default">-- select area --</option>
+                                <option data-ng-repeat="area in filters.areas" data-ng-value="area.location_id"
+                                    data-ng-bind="jsonParse(area.location_name)['en']"></option>
                             </select>
                         </div>
                     </div>
@@ -86,7 +126,8 @@
                                         <td class="text-center">-</td>
                                         <td class="col-fit">
                                             <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
-                                                href="/technicians/profile/<% technician.tech_code %>" target="_blank"></a>
+                                                href="/technicians/profile/<% technician.tech_code %>"
+                                                target="_blank"></a>
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                 data-ng-click="setUser($index)"></button>
                                         </td>
@@ -183,13 +224,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Country<b class="text-danger">&ast;</b></label>
-                                        <select name="country_id" id="country" class="form-control" required>
-                                            <option value="">-- select country --</option>
-                                            <option data-ng-repeat="country in countries track by $index"
-                                                data-ng-value="country.id"
-                                                data-ng-bind="jsonParse(country.location_name)['en']">
-                                                sudan
-                                            </option>
+                                        <select name="country_id" id="country" class="form-select" required>
+                                            <option value="default">-- select country --</option>
+                                            <option data-ng-repeat="country in countries"
+                                                data-ng-value="country.location_id"
+                                                data-ng-bind="jsonParse(country.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -197,8 +236,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>State<b class="text-danger">&ast;</b></label>
-                                        <select name="state_id" id="states" class="form-control" required>
-                                            <option value="">-- select state --</option>
+                                        <select name="state_id" id="state" class="form-select" required>
+                                            <option value="default">-- select state --</option>
+                                            <option data-ng-repeat="state in techModal.states"
+                                                data-ng-value="state.location_id"
+                                                data-ng-bind="jsonParse(state.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -207,8 +249,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>City<b class="text-danger">&ast;</b></label>
-                                        <select name="city_id" id="citys" class="form-control" required>
-                                            <option value="">-- select city --</option>
+                                        <select name="city_id" id="city" class="form-select" required>
+                                            <option value="default">-- select city --</option>
+                                            <option data-ng-repeat="city in techModal.cities"
+                                                data-ng-value="city.location_id"
+                                                data-ng-bind="jsonParse(city.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -216,10 +261,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Arae<b class="text-danger">&ast;</b></label>
-                                        <select name="area_id" id="area" class="form-control" required>
-                                            <option value="">-- select area --</option>
-                                            <option value="1">Khartoum, Omdurman</option>
-                                            <option value="2">Cairo, Maadi</option>
+                                        <select name="area_id" id="area" class="form-select" required>
+                                            <option value="default">-- select area --</option>
+                                            <option data-ng-repeat="area in techModal.areas"
+                                                data-ng-value="area.location_id"
+                                                data-ng-bind="jsonParse(area.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -244,6 +290,18 @@
                         <script>
                             $('#techForm').on('submit', e => e.preventDefault()).validate({
                                 rules: {
+                                    country_id: {
+                                        notEqual: 'default'
+                                    },
+                                    state_id: {
+                                        notEqual: 'default'
+                                    },
+                                    city_id: {
+                                        notEqual: 'default'
+                                    },
+                                    area_id: {
+                                        notEqual: 'default'
+                                    },
                                     identification: {
                                         digits: true
                                     },
@@ -347,7 +405,7 @@
 
 @section('js')
     <script>
-        var scope, limit = 1,
+        var scope, limit = 24,
             app = angular.module('myApp', [], function($interpolateProvider) {
                 $interpolateProvider.startSymbol('<%');
                 $interpolateProvider.endSymbol('%>');
@@ -361,10 +419,19 @@
             $scope.updateTechnician = false;
             $scope.technicianId = 0;
             $scope.technicians = [];
-            $scope.locations = <?= json_encode($locations) ?>;
+            $scope.countries = <?= json_encode($countries) ?>;
+            $scope.techModal = {
+                states: [],
+                cities: [],
+                areas: [],
+            };
+            $scope.filters = {
+                states: [],
+                cities: [],
+                areas: [],
+            };
             $scope.showTechnician = [];
             $scope.last_id = 0;
-            $scope.countries = [];
             $scope.jsonParse = (str) => JSON.parse(str);
             $scope.dataLoader = function(reload = false) {
                 if ($scope.noMore) return;
@@ -372,7 +439,8 @@
 
                 $('.loading-spinner').show();
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.technicians = [];
+                    $scope.last_id = 0;
                 }
                 var pck = $('#filter-package').val();
                 $.post("/technicians/load", {
@@ -386,30 +454,14 @@
                     var ln = data.length;
                     $scope.$apply(() => {
                         $scope.loading = false;
-                        if (ln < limit) $scope.noMore = true;
                         if (ln) {
+                            $scope.noMore = ln < limit;
                             $scope.technicians = data;
                             console.log(data)
                             $scope.last_id = data[ln - 1].tech_id;
                         }
                     });
                 }, 'json');
-
-                $scope.loadCountries = function(reload = false) {
-                    $('.loading-spinner').show();
-                    if (reload) {
-                        $scope.page = 1;
-                    }
-                    $.post("/technicians/countries/load/", {
-                        _token: '{{ csrf_token() }}'
-                    }, function(data) {
-                        $('.loading-spinner').hide();
-                        $scope.$apply(() => {
-                            $scope.countries = data;
-                            console.log(data)
-                        });
-                    }, 'json');
-                }
             }
             $scope.setUser = (indx) => {
                 $scope.updateTechnician = indx;
@@ -420,7 +472,6 @@
                 $('#edit_active').modal('show');
             };
             $scope.dataLoader();
-            $scope.loadCountries()
             scope = $scope;
         });
 
@@ -437,70 +488,81 @@
                     .loading) scope.dataLoader();
             });
 
+            $('#filter-country').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.filters.states = [];
+                    scope.filters.cities = [];
+                    scope.filters.areas = [];
+                });
+                locationsLoad(2, val, function(data) {
+                    scope.$apply(() => scope.filters.states = data);
+                });
+            });
+
+            $('#filter-state').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.filters.cities = [];
+                    scope.filters.areas = [];
+                });
+                locationsLoad(3, val, function(data) {
+                    scope.$apply(() => scope.filters.cities = data);
+                });
+            });
+
+            $('#filter-city').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.filters.areas = [];
+                });
+
+                locationsLoad(4, val, function(data) {
+                    scope.$apply(() => scope.filters.areas = data);
+                });
+            });
+
             $('#country').on('change', function() {
-                var idState = this.value;
-                console.log(idState);
-                $('#states').html('');
-                $.ajax({
-                    url: 'state/' + idState,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(res) {
-                        $.each(res, function(key, value) {
-                            $('#states').append('<option id="class" value="' +
-                                value
-                                .id +
-                                '">' + scope.jsonParse(value.location_name)['en'] +
-                                '</option>');
-                        });
-                    }
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.techModal.states = [];
+                    scope.techModal.cities = [];
+                    scope.techModal.areas = [];
+                });
+                locationsLoad(2, val, function(data) {
+                    scope.$apply(() => scope.techModal.states = data);
                 });
             });
 
-            $('#states').on('click', function() {
-                var idState = this.value;
-                $('#citys').html('');
-                $.ajax({
-                    url: 'cites/' + idState,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(res) {
-                        $.each(res, function(key, value) {
-                            console.log(value)
-                            $('#citys').append('<option id="class" value="' +
-                                value
-                                .id +
-                                '">' + scope.jsonParse(value.location_name)['en'] +
-                                '</option>');
-                        });
-                    }
+            $('#state').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.techModal.cities = [];
+                    scope.techModal.areas = [];
                 });
-
+                locationsLoad(3, val, function(data) {
+                    scope.$apply(() => scope.techModal.cities = data);
+                });
             });
 
-            $('#citys').on('click', function() {
-                var idState = this.value;
-                $('#area').html('');
-                $.ajax({
-                    url: 'areas/' + idState,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(res) {
-                        $.each(res, function(key, value) {
-                            $('#area').append('<option id="class" value="' +
-                                value
-                                .id +
-                                '">' + scope.jsonParse(value.location_name)['en'] +
-                                '</option>');
-                        });
-                    }
+            $('#city').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.techModal.areas = [];
                 });
 
-            });
-
-            $(document).ready(function() {
-                $('.js-example-basic-single').select2();
+                locationsLoad(4, val, function(data) {
+                    scope.$apply(() => scope.techModal.areas = data);
+                });
             });
         });
+
+        function locationsLoad(type, parent, callback) {
+            $.post('/locations/load/', {
+                type: type,
+                parent: parent,
+                _token: '{{ csrf_token() }}'
+            }, callback, 'json');
+        }
     </script>
 @endsection
