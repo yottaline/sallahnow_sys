@@ -33,7 +33,7 @@ return new class extends Migration
             $table->integer('post_create_tech')->nullable()->unsigned();
             $table->dateTime('post_create_time');
             $table->integer('post_modify_user')->nullable()->unsigned();
-            $table->dateTime('post_modify_time')->nullable()->unsigned();
+            $table->dateTime('post_modify_time')->nullable();
 
         });
     }
