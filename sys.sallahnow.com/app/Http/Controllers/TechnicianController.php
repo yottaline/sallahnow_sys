@@ -23,6 +23,7 @@ class TechnicianController extends Controller
     public function index()
     {
         $countries = Location::where('location_type', '1')->orderBy('location_id', 'ASC')->get();
+
         return view('content.technicians.index', compact('countries'));
     }
 
