@@ -34,6 +34,7 @@ return new class extends Migration
             $table->dateTime('post_create_time');
             $table->integer('post_modify_user')->nullable()->unsigned();
             $table->dateTime('post_modify_time')->nullable();
+
         });
     }
 

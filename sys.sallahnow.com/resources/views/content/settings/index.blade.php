@@ -675,7 +675,7 @@
                 $(`#${target}Box .loading-spinner`).show();
                 $.post('/settings/location/load/', {
                     type: parent ? (+parent.location_type + 1) : 1,
-                    parent: parent ? parent.id : 0,
+                    parent: parent ? parent.location_id : 0,
                     _token: "{{ csrf_token() }}"
                 }, function(data) {
                     $(`#${target}Box .loading-spinner`).hide();
