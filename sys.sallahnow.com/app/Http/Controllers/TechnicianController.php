@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 // use Illuminate\Support\Facades\Hash;
 
 // use function Pest\Laravel\json;
@@ -34,9 +35,10 @@ class TechnicianController extends Controller
             ->limit($request->limit);
 
         if ($request->q) {
-            $technicians->where(function (Buiulder $query) {
-                $query->where('tech_name', 'like', request('q'))
-                    ->orLike();
+            $technicians->where(function (Builder $query) {
+                $query->where('tech_name', 'like', '%' .request('q') . '%')
+                ->orWhere('tech_mobile', request('q'))
+                ->orWhere('tech_email', request('q'))->get();
             });
         }
         if ($request->package) {
@@ -68,13 +70,14 @@ class TechnicianController extends Controller
         ]);
 
         $id = intval($request->technician_id);
-        // $mobile = $request->mobile;
-        // $email = $request->email;
-        // $identification = $request->identification;
+        $mobile = $request->mobile;
+        $email = $request->email;
+        $identification = $request->identification;
 
-        // if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '=', $mobile)->first())
-        // if($email && Technician::where('tech_id', '!=', $id)->where('tech_email', '=', $email)->first())
-        // if($identification && Technician::where('tech_id', '!=', $id)->where('tech_identification', '=', $identification)->first())
+        // return Technician::where('tech_id', '!=', $id)->where('tech_mobile', '=', $mobile)->first();
+        if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '=', $mobile)->first())
+        if($email && Technician::where('tech_id', '!=', $id)->where('tech_email', '=', $email)->first())
+        if($identification && Technician::where('tech_id', '!=', $id)->where('tech_identification', '=', $identification)->first())
 
         $param = [
             'tech_name'              => $request->name,

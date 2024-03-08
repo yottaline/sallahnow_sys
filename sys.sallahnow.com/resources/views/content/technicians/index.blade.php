@@ -86,8 +86,8 @@
                             </div>
                         </div>
 
-                        <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
+                        {{-- <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5> --}}
 
                         <div data-ng-if="technicians.length" class="table-responsive">
                             <table class="table table-hover" id="example">
