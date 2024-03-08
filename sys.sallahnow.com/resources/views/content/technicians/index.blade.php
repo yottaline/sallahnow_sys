@@ -180,6 +180,9 @@
                                         <input class="form-control" name="identification" type="text"
                                             data-ng-value="technicians[updateTechnician].tech_identification"
                                             id="IdentificationT">
+                                        @error('identification')
+                                            <p class="alert alert-danger">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -191,6 +194,9 @@
                                             data-ng-value="technicians[updateTechnician].tech_mobile" required
                                             id="mobile" />
                                     </div>
+                                    @error('mobile')
+                                        <p class="alert alert-danger">{{ $message }}</p>
+                                    @enderror
                                 </div>
                                 {{-- email --}}
                                 <div class="col-12 col-md-6">
@@ -340,8 +346,8 @@
                                             });
                                         } else toastr.error(response.message);
                                     }).fail(function(jqXHR, textStatus, errorThrown) {
-                                        toastr.error("error");
-                                        $('#techModal').modal('hide');
+                                        toastr.error(jqXHR.responseJSON.message);
+                                        // $('#techModal').modal('hide');
                                     }).always(function() {
                                         $(form).find('button').prop('disabled', false);
                                     });

@@ -42,15 +42,15 @@ class TechnicianController extends Controller
     public function submit(Request $request)
     {
         // return $request;
-        $request->validate([
+       $request->validate([
             'name'            => 'required|string',
-            'mobile'          => 'required|numeric|unique',
+            'mobile'          => 'required|numeric',
         ]);
 
         $id = intval($request->technician_id);
-        $mobile = $request->mobile;
-        $email = $request->email;
-        $identification = $request->identification;
+        // $mobile = $request->mobile;
+        // $email = $request->email;
+        // $identification = $request->identification;
         // if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '!=', $id)->first())
 
         $param = [
@@ -70,6 +70,10 @@ class TechnicianController extends Controller
         ];
 
         if (!$id) {
+            $request->validate([
+                'mobile' =>'required | unique:technicians,tech_mobile',
+                'email'  => 'required | unique:technicians,tech_email',
+            ]);
             $param['tech_code'] = strtoupper($this->uniqidReal());
             $param['tech_password'] = '';
             $param['devise_token'] = strtoupper($this->uniqidReal());
