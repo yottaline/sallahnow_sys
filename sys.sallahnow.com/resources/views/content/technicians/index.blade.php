@@ -340,6 +340,7 @@
                                             });
                                         } else toastr.error(response.message);
                                     }).fail(function(jqXHR, textStatus, errorThrown) {
+                                        // console.log()
                                         toastr.error(jqXHR.responseJSON.message);
                                         // $('#techModal').modal('hide');
                                     }).always(function() {
@@ -355,47 +356,6 @@
                                 }));
                             });
                         </script>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="show_technician" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <p>Full Name : <span data-ng-bind="showTechnician.name"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Mobile : <span data-ng-bind="showTechnician.mobile"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Birth Day : <span data-ng-bind="showTechnician.birth"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Address : <span data-ng-bind="showTechnician.address"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Rate : <span data-ng-bind="showTechnician.rate"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Points: <span data-ng-bind="showTechnician.points"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Identification : <span data-ng-bind="showTechnician.identification"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Bio : <span data-ng-bind="showTechnician.bio"></span></p>
-                        </div>
-                        <div class="mb-3">
-                            <p>Notes : <span data-ng-bind="showTechnician.notes"></span></p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger text-center"
-                                data-bs-dismiss="modal">Close</button>
-                        </div>
                     </div>
                 </div>
             </div>

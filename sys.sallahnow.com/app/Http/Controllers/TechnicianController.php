@@ -74,10 +74,30 @@ class TechnicianController extends Controller
         $email = $request->email;
         $identification = $request->identification;
 
-        // return Technician::where('tech_id', '!=', $id)->where('tech_mobile', '=', $mobile)->first();
         if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '=', $mobile)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('number'),
+            ]);
+            return ;
+        }
         if($email && Technician::where('tech_id', '!=', $id)->where('tech_email', '=', $email)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('email'),
+            ]);
+            return ;
+        }
         if($identification && Technician::where('tech_id', '!=', $id)->where('tech_identification', '=', $identification)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' => $this->validateMessage('identification'),
+            ]);
+            return ;
+        }
 
         $param = [
             'tech_name'              => $request->name,
@@ -156,6 +176,12 @@ class TechnicianController extends Controller
     //         echo json_encode($technician);
     //     }
     // }
+
+
+    private function validateMessage($message)
+    {
+        return 'This ' . $message . ' already exists';
+    }
 
     private function uniqidReal($lenght = 12)
     {
