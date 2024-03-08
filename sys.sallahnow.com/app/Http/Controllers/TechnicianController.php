@@ -30,20 +30,39 @@ class TechnicianController extends Controller
 
     public function load(Request $request)
     {
-        // return $request;
-        if (!$request->package) {
-            $technicians = Technician::orderBy('tech_register', 'desc')->limit(6)->offset(0)->get();
-            echo json_encode($technicians);
-        } else {
-            $technicians = Technician::where('tech_pkg', $request->package)->get();
-            echo json_encode($technicians);
+        $technicians = Technician::orderBy('tech_register', 'desc')
+            ->limit($request->limit);
+
+        if ($request->q) {
+            $technicians->where(function (Buiulder $query) {
+                $query->where('tech_name', 'like', request('q'))
+                    ->orLike();
+            });
         }
+        if ($request->package) {
+            $technicians->where('tech_pkg', $request->package);
+        }
+        if ($request->last_id) {
+            $technicians->where('tech_id', '<', $request->last_id);
+        }
+
+        if ($request->area) {
+            $technicians->where('tech_area', $request->area);
+        } elseif ($request->city) {
+            $technicians->where('tech_city', $request->city);
+        } elseif ($request->state) {
+            $technicians->where('tech_state', $request->state);
+        } elseif ($request->country) {
+            $technicians->where('tech_country', $request->country);
+        }
+
+        echo json_encode($technicians->get());
     }
 
     public function submit(Request $request)
     {
         // return $request;
-       $request->validate([
+        $request->validate([
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
         ]);
@@ -52,7 +71,10 @@ class TechnicianController extends Controller
         // $mobile = $request->mobile;
         // $email = $request->email;
         // $identification = $request->identification;
-        // if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '!=', $id)->first())
+
+        // if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '=', $mobile)->first())
+        // if($email && Technician::where('tech_id', '!=', $id)->where('tech_email', '=', $email)->first())
+        // if($identification && Technician::where('tech_id', '!=', $id)->where('tech_identification', '=', $identification)->first())
 
         $param = [
             'tech_name'              => $request->name,
@@ -72,7 +94,7 @@ class TechnicianController extends Controller
 
         if (!$id) {
             $request->validate([
-                'mobile' =>'required | unique:technicians,tech_mobile',
+                'mobile' => 'required | unique:technicians,tech_mobile',
                 'email'  => 'required | unique:technicians,tech_email',
             ]);
             $param['tech_code'] = strtoupper($this->uniqidReal());

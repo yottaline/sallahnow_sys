@@ -16,7 +16,7 @@
                         <div class="mb-3">
                             <label for="roleFilter">Package</label>
                             <select id="filter-package" class="form-select">
-                                <option value=""></option>
+                                <option value="0"></option>
                                 <option value="1">Free</option>
                                 <option value="2">Silver | 1 Month</option>
                                 <option value="3">Silver | 6 Month</option>
@@ -32,7 +32,7 @@
                         <div class="mb-3">
                             <label>Country<b class="text-danger">&ast;</b></label>
                             <select id="filter-country" class="form-select">
-                                <option value="default">-- select country --</option>
+                                <option value="0">-- select country --</option>
                                 <option data-ng-repeat="country in countries" data-ng-value="country.location_id"
                                     data-ng-bind="jsonParse(country.location_name)['en']"></option>
                             </select>
@@ -41,7 +41,7 @@
                         <div class="mb-3">
                             <label>State<b class="text-danger">&ast;</b></label>
                             <select id="filter-state" class="form-select">
-                                <option value="default">-- select state --</option>
+                                <option value="0">-- select state --</option>
                                 <option data-ng-repeat="state in filters.states" data-ng-value="state.location_id"
                                     data-ng-bind="jsonParse(state.location_name)['en']"></option>
                             </select>
@@ -51,7 +51,7 @@
                         <div class="mb-3">
                             <label>City<b class="text-danger">&ast;</b></label>
                             <select id="filter-city" class="form-select">
-                                <option value="default">-- select city --</option>
+                                <option value="0">-- select city --</option>
                                 <option data-ng-repeat="city in filters.cities" data-ng-value="city.location_id"
                                     data-ng-bind="jsonParse(city.location_name)['en']"></option>
                             </select>
@@ -61,7 +61,7 @@
                         <div class="mb-3">
                             <label>Arae<b class="text-danger">&ast;</b></label>
                             <select id="filter-area" class="form-select" required>
-                                <option value="default">-- select area --</option>
+                                <option value="0">-- select area --</option>
                                 <option data-ng-repeat="area in filters.areas" data-ng-value="area.location_id"
                                     data-ng-bind="jsonParse(area.location_name)['en']"></option>
                             </select>
@@ -180,9 +180,6 @@
                                         <input class="form-control" name="identification" type="text"
                                             data-ng-value="technicians[updateTechnician].tech_identification"
                                             id="IdentificationT">
-                                        @error('identification')
-                                            <p class="alert alert-danger">{{ $message }}</p>
-                                        @enderror
                                     </div>
                                 </div>
 
@@ -194,9 +191,6 @@
                                             data-ng-value="technicians[updateTechnician].tech_mobile" required
                                             id="mobile" />
                                     </div>
-                                    @error('mobile')
-                                        <p class="alert alert-danger">{{ $message }}</p>
-                                    @enderror
                                 </div>
                                 {{-- email --}}
                                 <div class="col-12 col-md-6">
@@ -440,22 +434,29 @@
             $scope.last_id = 0;
             $scope.jsonParse = (str) => JSON.parse(str);
             $scope.dataLoader = function(reload = false) {
+                if (reload) {
+                    $scope.technicians = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
+                }
+
                 if ($scope.noMore) return;
                 $scope.loading = true;
 
                 $('.loading-spinner').show();
-                if (reload) {
-                    $scope.technicians = [];
-                    $scope.last_id = 0;
-                }
-                var pck = $('#filter-package').val();
-                $.post("/technicians/load", {
+                var request = {
+                    package: $('#filter-package').val(),
+                    country: $('#filter-country').val(),
+                    state: $('#filter-state').val(),
+                    city: $('#filter-city').val(),
+                    area: $('#filter-area').val(),
                     q: $scope.q,
-                    last_id: $scope.page,
+                    last_id: $scope.last_id,
                     limit: limit,
-                    package: pck,
                     _token: '{{ csrf_token() }}'
-                }, function(data) {
+                };
+
+                $.post("/technicians/load", request, function(data) {
                     $('.loading-spinner').hide();
                     var ln = data.length;
                     $scope.$apply(() => {
