@@ -116,10 +116,6 @@ class TechnicianController extends Controller
         ];
 
         if (!$id) {
-            $request->validate([
-                'mobile' => 'required | unique:technicians,tech_mobile',
-                'email'  => 'required | unique:technicians,tech_email',
-            ]);
             $param['tech_code'] = strtoupper($this->uniqidReal());
             $param['tech_password'] = '';
             $param['devise_token'] = strtoupper($this->uniqidReal());
@@ -139,43 +135,36 @@ class TechnicianController extends Controller
     }
 
 
-    // public function updateActive(Request $request)
-    // {
-    //     $id = $request->technician_id;
-    //     Technician::where('id', $id)->update(['tech_blocked' => $request->blocked]);
-    //     session()->flash('Add', 'Active Technician has been updated successfully');
-    //     return back();
-    // }
-
-
     public function profile($code)
     {
         $technician = Technician::where('tech_code', $code)->first();
-        return view('content.technicians.profile', compact('technician'));
+        $country    = Location::where('location_id', $technician->tech_country)->first();
+        $state      = Location::where('location_id', $technician->tech_state)->first();
+        $city       = Location::where('location_id', $technician->tech_city)->first();
+        $area       = Location::where('location_id', $technician->tech_area)->first();
+        if($technician)
+        {
+            return view('content.technicians.profile', compact('technician', 'country', 'state', 'city', 'area'));
+        }
+        return redirect('/');
     }
 
-    // public function test(Request $request)
-    // {
-    //     $package = $request->package;
-    //     $country = $request->country;
-    //     $city    = $request->city;
 
-    //     if($package && $country && $city){
-    //         $technician = Technician::where('tech_pkg', $package)
-    //                       ->orWhere('tech_country', $country)
-    //                       ->orWhere('tech_city', $city)->get();
-    //         echo json_encode($technician);
-    //     }elseif($package){
-    //         $technician = Technician::where('tech_pkg', $package)->get();
-    //         echo json_encode($technician);
-    //     }elseif($country){
-    //         $technician = Technician::where('tech_country', $country)->get();
-    //         echo json_encode($technician);
-    //     }elseif($city){
-    //         $technician = Technician::where('tech_city', $city)->get();
-    //         echo json_encode($technician);
-    //     }
-    // }
+    public function addNote(Request $request)
+    {
+        $tech_id = $request->tech_id;
+
+        $status = Technician::where('tech_id', $tech_id)->update([
+            'tech_notes' => $request->note
+        ]);
+
+        // $record = Technician::where('tech_id', $tech_id)->first();
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $status,
+        ]);
+
+    }
 
 
     private function validateMessage($message)

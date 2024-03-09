@@ -35,7 +35,7 @@ Route::prefix('roles')->middleware('auth')->group(function () {
     Route::get('/', 'UserGroupController@index')->name('role_index');
     Route::post('load', 'UserGroupController@load');
     Route::post('store', 'UserGroupController@store')->name('role_store');
-    Route::put('addPermissions', 'UserGroupController@addPermissions')->name('addPermissions');
+    Route::put('addPermissions', 'UserGroupController@addPermissions');
     Route::post('getPermission/{id}', 'UserGroupController@getPermissions');
     Route::put('update/{role}', 'RoleController@update')->name('role_update');
     Route::delete('delete', 'RoleController@delete')->name('role_delete');
@@ -49,9 +49,7 @@ Route::prefix('technicians')->middleware(['auth'])->group(function () {
     Route::match(['post', 'put'], 'submit', 'TechnicianController@submit');
     Route::get('profile/{technician}', 'TechnicianController@profile');
     Route::post('countries/load', 'TechnicianController@loadCountries');
-    Route::get('state/{country_id}', 'TechnicianController@loadState');
-    Route::get('cites/{state_id}', 'TechnicianController@loadCites');
-    Route::get('areas/{city_id}', 'TechnicianController@loadArea');
+    Route::post('add_note', 'TechnicianController@addNote');
 });
 
 Route::prefix('locations')->middleware(['auth'])->group(function () {

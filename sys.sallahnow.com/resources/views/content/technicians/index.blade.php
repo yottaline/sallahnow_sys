@@ -213,7 +213,7 @@
                                 {{-- birthday --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
-                                        <label for="BirthdayT">Birthday<b class="text-danger">&ast;</b></label>
+                                        <label for="BirthdayT">Birthday</label>
                                         <input id="inputBirthdate" type="text" class="form-control text-center"
                                             name="birth" maxlength="10"
                                             data-ng-value="technicians[updateTechnician].tech_birth" id="BirthdayT">
@@ -365,7 +365,7 @@
 
 @section('js')
     <script>
-        var scope, limit = 24,
+        var scope, limit = 14,
             app = angular.module('myApp', [], function($interpolateProvider) {
                 $interpolateProvider.startSymbol('<%');
                 $interpolateProvider.endSymbol('%>');

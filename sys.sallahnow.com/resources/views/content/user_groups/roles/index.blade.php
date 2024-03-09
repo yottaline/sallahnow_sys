@@ -4,23 +4,7 @@
 @endsection
 @section('content')
     <!--  content start -->
-    <div class="container-fluid mt-5" data-ng-app="myApp" data-ng-controller="myCtrl">
-        @if (session()->has('Add'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>{{ session()->get('Add') }}</strong>
-                <span aria-hidden="true" class="close" data-bs-dismiss="alert" aria-label="Close"> <i
-                        class="bi bi-x-circle"></i></span>
-            </div>
-        @endif
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="container-fluid" data-ng-app="myApp" data-ng-controller="myCtrl">
         <div class="row">
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
@@ -41,12 +25,12 @@
                             <label for="roleFilter">Roles</label>
                             <ul class="list-group" data-ng-repeat="role in roles track by $index">
                                 <div class="input-group mb-2">
-                                    <li class="list-group-item" style="width:80%" data-ng-bind="role.user_group_name"
-                                        data-ng-value="role.id"></li>
+                                    <li class="list-group-item" style="width:80%" data-ng-bind="role.ugroup_name"
+                                        data-ng-value="role.ugroup_id"></li>
                                     <button class="input-group-text" id="basic-addon1">
-                                        <i class="bi-eye" data-ng-click="setPermissions(role)"></i>
+                                        <i class="bi-eye" data-ng-click="setPermissions($index)"></i>
                                     </button>
-                                    @if (in_array('add-users', explode(',', auth()->user()->role->ugroup_privileges)))
+                                    @if (in_array('add-technician ', explode(',', auth()->user()->role->ugroup_privileges)))
                                         <button class="input-group-text" id="basic-addon1">
                                             <i class="bi-caret-right-fill" data-ng-click="getPermissions(role)"></i>
                                         </button>
@@ -60,20 +44,26 @@
             <div class="col-12 col-sm-8 col-lg-9">
                 <div class="card card-box perms">
                     <div class="card-body">
-                        <div class="d-flex">
-                            <h5 class="card-title fw-semibold pt-1 me-auto mb-3">Permissions
-                            </h5>
-                        </div>
                         <div>
-                            <form action="{{ route('addPermissions') }}" method="post">
+                            <form id="permissionForm" action="/roles/addPermissions/" method="post">
                                 @csrf @method('PUT')
-                                <div class="card mb-3 p-2">
+                                <input type="text" hidden ng-value="roles[roleId].ugroup_id" name="ugroup_id">
+                                <div class="card card-box">
                                     <div class="card-body">
-                                        <h5 class="card-title">Users Permissions</h5>
-                                        <div class="row">
-                                            <input type="text" hidden data-ng-value="roleId" name="role_id">
-                                            <div class="card-box">
-                                                <div class="row">
+                                        <div id="users">
+                                            <div class="list-box border p-3">
+                                                <div class="d-flex">
+                                                    <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                                        <span class="spinner-border-sm text-warning me-2"
+                                                            role="status"></span><span>USER PERMISSIONS</span>
+                                                    </h5>
+                                                    <div>
+                                                        <input type="checkbox" readonly
+                                                            class="btn btn-outline-dark form-check-input btn-circle bi-check-circle-fill">
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row p-3">
                                                     <div class="col-sm-3">
                                                         <div class="form-check form-switch">
                                                             <input class="form-check-input" type="checkbox"
@@ -107,17 +97,27 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card mb-3 p-2">
+                                <div class="card card-box">
                                     <div class="card-body">
-                                        <h5 class="card-title">Technicians Permissions</h5>
-                                        <div class="row">
-                                            <input type="text" hidden data-ng-value="roleId" name="role_id">
-                                            <div class="card-box">
-                                                <div class="row">
+                                        <div id="users">
+                                            <div class="list-box border p-3">
+                                                <div class="d-flex">
+                                                    <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                                        <span class="spinner-border-sm text-warning me-2"
+                                                            role="status"></span><span>TECHNICIAN PERMISSIONS</span>
+                                                    </h5>
+                                                    <div>
+                                                        <input type="checkbox" readonly
+                                                            class="btn btn-outline-dark form-check-input btn-circle bi-check-circle-fill">
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row p-3">
                                                     <div class="col-sm-3">
                                                         <div class="form-check form-switch">
                                                             <input class="form-check-input" type="checkbox"
@@ -151,14 +151,72 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <button class="btn btn-dark" type="submit"><i
-                                        class="bi bi-plus-circle-fill"></i></button>
+                                <div class="text-end">
+                                    <button class="btn btn-dark" type="submit"><i
+                                            class="bi bi-plus-circle-fill"></i></button>
+                                </div>
                             </form>
+
+                            <script>
+                                $('#permissionForm').on('submit', e => e.preventDefault()).validate({
+                                    rules: {
+                                        ugroup_id: {
+                                            required: true,
+                                            notEqual: 0
+                                        },
+                                        name: {
+                                            required: true
+                                        }
+                                    },
+                                    submitHandler: function(form) {
+                                        var formData = new FormData(form),
+                                            action = $(form).attr('action'),
+                                            method = $(form).attr('method');
+
+                                        $(form).find('button').prop('disabled', true);
+                                        $.ajax({
+                                            url: action,
+                                            type: method,
+                                            data: formData,
+                                            processData: false,
+                                            contentType: false,
+                                        }).done(function(data, textStatus, jqXHR) {
+                                            var response = JSON.parse(data);
+                                            if (response.status) {
+                                                toastr.success('Data processed successfully');
+                                                scope.$apply(() => {
+                                                    if (scope.roleId === false) {
+                                                        scope.roles.unshift(response.data);
+                                                        scope.dataLoader();
+                                                    } else {
+                                                        scope.roles[scope.roleId] = response.data;
+                                                        scope.dataLoader();
+                                                    }
+                                                });
+                                            } else toastr.error(response.message);
+                                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                                            // console.log()
+                                            toastr.error(jqXHR.responseJSON.message);
+                                            // $('#techModal').modal('hide');
+                                        }).always(function() {
+                                            $(form).find('button').prop('disabled', false);
+                                        });
+                                    }
+                                });
+
+                                $(function() {
+                                    $("#inputBirthdate").datetimepicker($.extend({}, dtp_opt, {
+                                        showTodayButton: false,
+                                        format: "YYYY-MM-DD",
+                                    }));
+                                });
+                            </script>
+
                         </div>
                     </div>
                 </div>
@@ -169,7 +227,7 @@
                             </h5>
                         </div>
                         <div>
-                            <p>The permsission is Role : <span data-ng-bind="permissions.user_group_privileges"></span></p>
+                            <p>The permsission is Role : <span data-ng-bind="permissions.ugroup_privileges"></span></p>
                         </div>
                     </div>
                 </div>
@@ -200,12 +258,14 @@
                     });
                 }, 'json');
             }
-            $scope.setPermissions = ($role) => {
-                $scope.roleId = $role.id;
+            $scope.setPermissions = (index) => {
+                $scope.roleId = index;
+                console.log(index)
             };
             $scope.getPermissions = ($role) => {
                 $('.perms').hide();
-                $.post("/roles/getPermission/" + $role.id, {
+                $scope.roleId = $;
+                $.post("/roles/getPermission/" + $role.ugroup_id, {
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.perm').show();

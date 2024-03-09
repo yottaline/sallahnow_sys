@@ -14,7 +14,7 @@ class PermissionController extends Controller
     }
 
     public function index() {
-        $permissions = Permission::all();
+        $permissions = Permission::first();
 
         return view('content.user_groups.index', compact('permissions'));
     }

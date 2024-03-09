@@ -9,10 +9,8 @@ use function Pest\Laravel\json;
 
 class UserGroupController extends Controller
 {
-    public function index(){
-
-        // $roles = User_group::where('id', 1)->first();
-        // return explode(',',$roles->user_group_privileges);
+    public function index()
+   {
         return view('content.user_groups.roles.index');
     }
 
@@ -22,7 +20,6 @@ class UserGroupController extends Controller
     }
 
     public function store(Request $request) {
-        return $request;
         $request->validate(['name' => 'required']);
         User_group::create([
             'ugroup_name' => $request->name,
@@ -32,19 +29,22 @@ class UserGroupController extends Controller
         return back();
     }
     public function addPermissions(Request $request) {
-        // return (',', $arr);
-        $request->validate(['role_id' => 'required']);
-        $arr = implode(',',$request->name);
-        User_group::where('ugroup_id', $request->role_id)->update([
-            'ugroup_privileges' => $arr
+
+        $name = implode(" ,",$request->name);
+        $request->validate(['ugroup_id' => 'required']);
+       $status = User_group::where('ugroup_id', $request->ugroup_id)->update([
+            'ugroup_privileges' =>$name
         ]);
-        session()->flash('Add', 'Permissions data has been added successfully');
-        return back();
+        $record = User_group::where('ugroup_id', $request->ugroup_id)->first();
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $record,
+        ]);
     }
 
-    public function getPermissions($id) {
-       $permissions = User_group::find($id);
-       return json_decode($permissions->ugroup_privileges);
-       echo json_encode($id);
+    public function getPermissions($ugroup_id) {
+
+       $permissions = User_group::where('ugroup_id',$ugroup_id)->first();
+       echo json_encode($permissions);
     }
 }
