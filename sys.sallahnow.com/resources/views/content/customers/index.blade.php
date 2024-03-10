@@ -14,9 +14,47 @@
                 <div class="card card-box">
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="roleFilter">Package</label>
-                            <select name="" id="" class="form-select">
-                                <option value=""></option>
+                            <label for="roleFilter">Status</label>
+                            <select id="filter-status" class="form-select">
+                                <option value="">-- SELECT STATUS --</option>
+                                <option value="1">Actived</option>
+                                <option value="2">Blocked</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Country<b class="text-danger">&ast;</b></label>
+                            <select id="filter-country" class="form-select">
+                                <option value="0">-- SELECT COUNTRY --</option>
+                                <option data-ng-repeat="country in countries" data-ng-value="country.location_id"
+                                    data-ng-bind="jsonParse(country.location_name)['en']"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>State<b class="text-danger">&ast;</b></label>
+                            <select id="filter-state" class="form-select">
+                                <option value="0">-- SELECT STATSUS --</option>
+                                <option data-ng-repeat="state in filters.states" data-ng-value="state.location_id"
+                                    data-ng-bind="jsonParse(state.location_name)['en']"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>City<b class="text-danger">&ast;</b></label>
+                            <select id="filter-city" class="form-select">
+                                <option value="0">-- SELECT CITY --</option>
+                                <option data-ng-repeat="city in filters.cities" data-ng-value="city.location_id"
+                                    data-ng-bind="jsonParse(city.location_name)['en']"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Arae<b class="text-danger">&ast;</b></label>
+                            <select id="filter-area" class="form-select" required>
+                                <option value="0">-- SELECT AREA --</option>
+                                <option data-ng-repeat="area in filters.areas" data-ng-value="area.location_id"
+                                    data-ng-bind="jsonParse(area.location_name)['en']"></option>
                             </select>
                         </div>
                     </div>
@@ -39,8 +77,8 @@
                             </div>
                         </div>
 
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
+                        {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5> --}}
 
                         <div data-ng-if="customers.length" class="table-responsive">
                             <table class="table table-hover" id="example">
@@ -104,7 +142,8 @@
                         <form id="techForm" method="post" action="/customers/submit">
                             @csrf
                             <input data-ng-if="customerUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="customer_id" data-ng-value="customers[customerUpdate].customer_id">
+                            <input type="hidden" name="customer_id"
+                                data-ng-value="customers[customerUpdate].customer_id">
                             <div class="row">
                                 {{-- name --}}
                                 <div class="col-12 col-md-12">
@@ -139,10 +178,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Country<b class="text-danger">&ast;</b></label>
-                                        <select name="customer_country" class="form-control" required>
-                                            <option value="">-- select country --</option>
-                                            <option value="1">sudan</option>
-                                            <option value="2">Egypt</option>
+                                        <select name="customer_country" id="country" class="form-select" required>
+                                            <option value="">-- SELECT COUNTRY --</option>
+                                            <option data-ng-repeat="country in countries"
+                                                data-ng-value="country.location_id"
+                                                data-ng-bind="jsonParse(country.location_name)['ar']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -150,10 +190,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>State<b class="text-danger">&ast;</b></label>
-                                        <select name="customer_state" class="form-control" required>
+                                        <select name="customer_state" id="state" class="form-select" required>
                                             <option value="">-- select state --</option>
-                                            <option value="1">Khartoum</option>
-                                            <option value="2">Cairo</option>
+                                            <option data-ng-repeat="city in cousModal.states"
+                                                data-ng-value="city.location_id"
+                                                data-ng-bind="jsonParse(city.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -162,10 +203,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>City<b class="text-danger">&ast;</b></label>
-                                        <select name="customer_city" class="form-control" required>
+                                        <select name="customer_city" id="city" class="form-select" required>
                                             <option value="">-- select city --</option>
-                                            <option value="1">Khartoum</option>
-                                            <option value="2">Cairo</option>
+                                            <option data-ng-repeat="city in cousModal.cities"
+                                                data-ng-value="city.location_id"
+                                                data-ng-bind="jsonParse(city.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -173,10 +215,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Arae<b class="text-danger">&ast;</b></label>
-                                        <select name="customer_area" class="form-control" required>
+                                        <select name="customer_area" id="area" class="form-select" required>
                                             <option value="">-- select area --</option>
-                                            <option value="1">Khartoum, Omdurman</option>
-                                            <option value="2">Cairo, Maadi</option>
+                                            <option data-ng-repeat="city in cousModal.areas"
+                                                data-ng-value="city.location_id"
+                                                data-ng-bind="jsonParse(city.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -296,21 +339,13 @@
                                 data-ng-value="customers[customerUpdate].customer_id">
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="mb-3">
-                                        <label>Customer Note<b class="text-danger">&ast;</b></label>
-                                        <select name="active" id="" class="form-control">
-                                            <option value="">-- SELECT CUSTOMER STATSUS --</option>
-                                            <option value="1">Active</option>
-                                            <option value="0">Bloced</option>
-                                        </select>
-                                    </div>
+                                    <p class="mb-2">Are you sure you want to change status the customer?</p>
                                 </div>
-                            </div>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-outline-secondary me-auto"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-outline-primary">Submit</button>
-                            </div>
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-outline-secondary me-auto"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                </div>
                         </form>
                     </div>
                 </div>
@@ -319,32 +354,53 @@
     @endsection
     @section('js')
         <script>
-            var scope, app = angular.module('myApp', [], function($interpolateProvider) {
-                $interpolateProvider.startSymbol('<%');
-                $interpolateProvider.endSymbol('%>');
-            });
+            var scope, limit = 14,
+                app = angular.module('myApp', [], function($interpolateProvider) {
+                    $interpolateProvider.startSymbol('<%');
+                    $interpolateProvider.endSymbol('%>');
+                });
 
             app.controller('myCtrl', function($scope) {
                 $('.loading-spinner').hide();
+                $scope.jsonParse = (str) => JSON.parse(str);
                 $scope.activeOb = {
-                    name: ['Bloced', 'Active'],
-                    color: ['danger', 'success']
+                    name: ['', 'Active', 'Bloced'],
+                    color: ['', 'success', 'danger']
                 };
                 $scope.q = '';
                 $scope.customerUpdate = false;
                 $scope.customers = [];
                 $scope.page = 1;
+                $scope.countries = <?= json_encode($countries) ?>;
+                $scope.cousModal = {
+                    states: [],
+                    cities: [],
+                    areas: [],
+                };
+                $scope.filters = {
+                    states: [],
+                    cities: [],
+                    areas: [],
+                };
                 $scope.dataLoader = function(reload = false) {
                     $('.loading-spinner').show();
                     if (reload) {
                         $scope.page = 1;
                     }
-                    $.post("/customers/load", {
+
+                    var request = {
+                        status: $('#filter-status').val(),
+                        country: $('#filter-country').val(),
+                        state: $('#filter-state').val(),
+                        city: $('#filter-city').val(),
+                        area: $('#filter-area').val(),
                         q: $scope.q,
-                        page: $scope.page,
-                        limit: 24,
+                        last_id: $scope.last_id,
+                        limit: limit,
                         _token: '{{ csrf_token() }}'
-                    }, function(data) {
+                    };
+
+                    $.post("/customers/load", request, function(data) {
                         $('.loading-spinner').hide();
                         $scope.$apply(() => {
                             $scope.customers = data;
@@ -465,6 +521,88 @@
                     scope.$apply(() => scope.q = $(this).find('input').val());
                     scope.dataLoader(true);
                 });
+
+                $(window).scroll(function() {
+                    if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 80) &&
+                        !scope
+                        .loading) scope.dataLoader();
+                });
+
+                $('#filter-country').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.filters.states = [];
+                        scope.filters.cities = [];
+                        scope.filters.areas = [];
+                    });
+                    locationsLoad(2, val, function(data) {
+                        scope.$apply(() => scope.filters.states = data);
+                    });
+                });
+
+                $('#filter-state').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.filters.cities = [];
+                        scope.filters.areas = [];
+                    });
+                    locationsLoad(3, val, function(data) {
+                        scope.$apply(() => scope.filters.cities = data);
+                    });
+                });
+
+                $('#filter-city').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.filters.areas = [];
+                    });
+
+                    locationsLoad(4, val, function(data) {
+                        scope.$apply(() => scope.filters.areas = data);
+                    });
+                });
+
+                $('#country').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.cousModal.states = [];
+                        scope.cousModal.cities = [];
+                        scope.cousModal.areas = [];
+                    });
+                    locationsLoad(2, val, function(data) {
+                        scope.$apply(() => scope.cousModal.states = data);
+                    });
+                });
+
+                $('#state').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.cousModal.cities = [];
+                        scope.cousModal.areas = [];
+                    });
+                    locationsLoad(3, val, function(data) {
+                        scope.$apply(() => scope.cousModal.cities = data);
+                    });
+                });
+
+                $('#city').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.cousModal.areas = [];
+                    });
+
+                    locationsLoad(4, val, function(data) {
+                        scope.$apply(() => scope.cousModal.areas = data);
+                    });
+                });
             });
+
+            function locationsLoad(type, parent, callback) {
+                $.post('/locations/load/', {
+                    type: type,
+                    parent: parent,
+                    _token: '{{ csrf_token() }}'
+                }, callback, 'json');
+            }
         </script>
     @endsection
