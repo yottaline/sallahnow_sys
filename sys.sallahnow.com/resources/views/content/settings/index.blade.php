@@ -229,7 +229,6 @@
 
                             <div data-ng-if="!brands.length" class="text-center py-5 text-secondary">
                                 <i class="bi bi-exclamation-circle  display-4"></i>
-                                <i class="bi bi-exclamation-circle display-4"></i>
                                 <h5>No records</h5>
                             </div>
                         </div>
@@ -285,7 +284,6 @@
 
                             <div data-ng-if="!models.length" class="text-center py-5 text-secondary">
                                 <i class="bi bi-exclamation-circle  display-4"></i>
-                                <i class="bi bi-exclamation-circle display-4"></i>
                                 <h5>No records</h5>
                             </div>
                         </div>

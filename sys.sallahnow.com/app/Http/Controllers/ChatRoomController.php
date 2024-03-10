@@ -16,15 +16,23 @@ class ChatRoomController extends Controller
     }
 
     public function index() {
-        return view('content.chats.index');
+        $technicians = Technician::all();
+        return view('content.chats.index', compact('technicians'));
     }
 
     public function getChatRoom($tech_id) {
-        // Chat_Room_Members::where()->get();
         $chats = DB::table('chat_room_members')
                  ->join('chat_rooms', 'chat_room_members.member_room', '=', 'chat_rooms.room_id')
-                 ->where('member_tech', $tech_id)->get();
-        echo json_encode($chats);
+                 ->where('chat_room_members.member_tech', $tech_id)->get();
+        if(count($chats) > 0){
+            echo json_encode($chats);
+        }else{
+            echo json_encode([
+                'status' => false,
+                'message' => 'not data'
+            ]);
+        }
+
     }
 
 

@@ -14,10 +14,8 @@ class PostController extends Controller
 {
 
     // private $location = 'posts/';
-    // private $photosPath = 'posts/photos';
+    private $photosPath = 'photos';
     // private $filesPath = 'posts/files';
-
-    private $photosPath = 'posts/photos';
     function index()
     {
         return view('content.posts.index');
@@ -35,7 +33,6 @@ class PostController extends Controller
         }else{
             $posts = DB::table('posts')
             ->join('users', 'posts.post_create_user', '=', 'users.id')
-            // ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id')
             ->where('post_deleted', '=', '0')
             ->orderBy('post_create_time', 'desc')->limit(15)->offset(0)->get();
 
@@ -52,7 +49,7 @@ class PostController extends Controller
             ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
             ->where('post_code', $code)->first() : null;
 
-        $file = Storage::get('public/' . $code . '.txt');
+        $file = Storage::get('public/post/' . $code . '.txt');
 
         return view('content.posts.editor', compact('data', 'file'));
     }
@@ -71,8 +68,10 @@ class PostController extends Controller
 
         $photo = $request->file('photo');
         if ($photo) { #if has photo add photo
-            $photoName = $this->uniqidReal(rand(4, 18)); //$photo->getClientOriginalName();
-            $photo->move($this->photosPath, $photoName);
+            $extension = $photo->getClientOriginalExtension();
+            $photoName = $this->uniqidReal(rand(4, 18));
+            $nameEx    = $photoName.'.'. $extension;
+            $photo->storeAs($this->photosPath,$nameEx,'posts');
             $param['post_photo'] = $photoName;
         }
 
@@ -118,7 +117,7 @@ class PostController extends Controller
 
         $post = Post::where('post_id', $post_id)->first();
         $code  = $post->post_code;
-        $status = Storage::disk('public')->put($code . '.txt', $context);
+        $status = Storage::disk('posts')->put($code . '.txt', $context);
         echo json_encode([
             'status' => boolval($status),
         ]);

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\File;
 
 class BrandController extends Controller
 {
+    private $location = 'Image/Brands/';
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -30,39 +32,32 @@ class BrandController extends Controller
             'logo'   => 'required'
         ]);
 
-        $logo = $request->file('logo');
-        $logoName = $logo->getClientOriginalName();
-        $location = 'Image/Brands/';
+        $param = [
+            'brand_name' => $request->name,
+        ];
+
+        $photo = $request->file('logo');
+        if ($photo) {
+            $photoName = $this->uniqidReal(rand(4, 18));
+            $photo->move($this->location, $photoName);
+            $param['brand_logo'] = $photoName;
+        }
 
         $id = intval($request->brand_id);
-        if(!$id){
-            if($request->file('logo')){
-
-
-                $logo->move($location , $logoName);
-
-                $logoPath = url('Image/Brands', $logoName);
-                $status = Brand::create([
-                    'brand_name' => $request->name,
-                    'brand_logo' => $logoName,
-                ]);
-            };
+        if(!$id)
+        {
+            $status = Brand::create($param);
             $id = $status->id;
         }
-        else{
-
+        else
+        {
             $data = Brand::where('brand_id', $id)->first();
 
-            if($request->file('logo')){
-                if(!empty($data->brand_logo) && File::exists($location)){
-                    File::delete($location . $data->brand_logo);
-                }
-
-                $status = Brand::where('brand_id', $id)->update([
-                    'brand_name' => $request->name,
-                    'brand_logo' => $logoName,
-                ]);
+            if(!empty($data->brand_logo) && File::exists($this->location)){
+                File::delete($this->location . $data->brand_logo);
             }
+            $status = Brand::where('brand_id', $id)->update($param);
+
         }
         $record = Brand::where('brand_id', $id)->first();
         echo json_encode([
@@ -77,5 +72,17 @@ class BrandController extends Controller
         ->select('brands.brand_name','users.user_name')
         ->get();
         echo json_encode($userName);
+    }
+
+    private function uniqidReal($lenght = 12)
+    {
+        if (function_exists("random_bytes")) {
+            $bytes = random_bytes(ceil($lenght / 2));
+        } elseif (function_exists("openssl_random_pseudo_bytes")) {
+            $bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
+        } else {
+            throw new \Exception("no cryptographically secure random function available");
+        }
+        return substr(bin2hex($bytes), 0, $lenght);
     }
 }

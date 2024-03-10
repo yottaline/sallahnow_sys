@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Location;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Claims\Custom;
+use Illuminate\Database\Eloquent\Builder;
 
 class CustomerController extends Controller
 {
@@ -14,16 +16,46 @@ class CustomerController extends Controller
         return $this->middleware('auth');
     }
 
-    public function index() {
-        return view('content.customers.index');
+    public function index()
+    {
+        $countries = Location::where('location_type', '1')->orderBy('location_id', 'ASC')->get();
+        return view('content.customers.index', compact('countries'));
     }
 
-    public function load() {
-        $customers = Customer::limit(15)->offset(0)->orderByDesc('customer_register')->get();
-        echo json_encode($customers);
+    public function load(Request $request)
+    {
+        $customers = Customer::limit($request->limit)->orderByDesc('customer_register');
+
+        if ($request->q) {
+            $customers->where(function (Builder $query) {
+                $query->where('customer_name', 'like', '%' .request('q') . '%')
+                ->orWhere('customer_mobile', request('q'))
+                ->orWhere('customer_email', request('q'))->get();
+            });
+        }
+        if ($request->status) {
+            $customers->where('customer_active', $request->status);
+        }
+
+        if ($request->last_id) {
+            $customers->where('customer_id', '<', $request->last_id);
+        }
+
+        if ($request->area) {
+            $customers->where('customer_area', $request->area);
+        } elseif ($request->city) {
+            $customers->where('customer_city', $request->city);
+        } elseif ($request->state) {
+            $customers->where('customer_state', $request->state);
+        } elseif ($request->country) {
+            $customers->where('customer_country', $request->country);
+        }
+
+        echo json_encode($customers->get());
     }
 
-    public function submit(Request $request) {
+    public function submit(Request $request)
+    {
         // return $request;
         $data = $request->validate([
             'customer_name'  => 'required | string',
@@ -36,7 +68,28 @@ class CustomerController extends Controller
             'customer_address'  => 'required | string',
         ]);
         $customer_id = $request->customer_id;
-        $code        = strtoupper($this->uniqidReal());
+        $email = $request->customer_email;
+        $mobile = $request->customer_mobile;
+
+        if(Customer::where('customer_id', '!=', $customer_id)->where('customer_mobile', '=', $mobile)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('number'),
+            ]);
+            return ;
+        }
+        if($email && Customer::where('customer_id', '!=', $customer_id)->where('customer_email', '=', $email)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('email'),
+            ]);
+            return ;
+        }
+
+
+        $code   = strtoupper($this->uniqidReal());
         if(!$customer_id){
 
             $data['customer_code'] = $code;
@@ -58,7 +111,8 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function updateNote(Request $request) {
+    public function updateNote(Request $request)
+     {
         $customer_id = $request->customer_id;
         $status      = Customer::where('customer_id', $customer_id)->update([
             'customer_notes'  => $request->note
@@ -70,12 +124,18 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function updateActive(Request $request) {
+    public function updateActive(Request $request)
+    {
         $customer_id = $request->customer_id;
-        $status      = Customer::where('customer_id', $customer_id)->update([
-            'customer_active'  => $request->active
-        ]);
         $record = Customer::where('customer_id', $customer_id)->first();
+        if($record->customer_active == 1)
+        {
+           $status = $record->update(['customer_active' => 2]);
+        }
+        else
+        {
+            $status = $record->update(['customer_active' => 1]);
+        }
         echo json_encode([
             'status' => boolval($status),
             'data' => $record,
@@ -94,5 +154,10 @@ class CustomerController extends Controller
             throw new \Exception("no cryptographically secure random function available");
         }
         return substr(bin2hex($bytes), 0, $lenght);
+    }
+
+    private function validateMessage($message)
+    {
+        return 'This ' . $message . ' already exists';
     }
 }

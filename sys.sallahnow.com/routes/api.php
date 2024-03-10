@@ -51,10 +51,10 @@ Route::middleware('api')->group(function() {
     });
 
     Route::prefix('chats')->group( function() {
-        Route::get('get-chats/{tech_id}', 'ChatApiController@chat');
-        Route::post('create-room', 'ChatApiController@createRoom');
-        Route::post('add-member', 'ChatApiController@addMember');
-        Route::post('create-message', 'ChatApiController@createMessage');
+        Route::get('get_chats/{tech_id}', 'ChatApiController@chat');
+        Route::post('create_room', 'ChatApiController@createRoom');
+        Route::post('add_member', 'ChatApiController@addMember');
+        Route::post('create_message', 'ChatApiController@createMessage');
     });
 
     Route::prefix('tickets')->group( function() {

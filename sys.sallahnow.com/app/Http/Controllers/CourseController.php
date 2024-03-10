@@ -10,11 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-        // private $location = 'posts/';
-    // private $photosPath = 'posts/photos';
-    // private $filesPath = 'posts/files';
-
-    private $photosPath = 'courses/photos';
+    private $photosPath = '/photos';
     public function index() {
         return view('content.courses.index');
     }
@@ -30,10 +26,10 @@ class CourseController extends Controller
 
     public function editor($code = null)
     {
-        $data = $code ?DB::table('courses')
+        $data = $code ? DB::table('courses')
         ->join('users', 'courses.course_create_user', '=', 'users.id')
         ->where('course_code', $code)->first() : null;
-        $file = Storage::get('public/' . $code . '.txt');
+        $file = Storage::get('public/courses/' . $code . '.txt');
 
         return view('content.courses.create', compact('data', 'file'));
     }
@@ -50,7 +46,9 @@ class CourseController extends Controller
         $photo = $request->file('photo');
         if ($photo) {
             $photoName = $this->uniqidReal(rand(4, 18));
-            $photo->move($this->photosPath, $photoName);
+            $extension = $photo->getClientOriginalExtension();
+            $nameEx    = $photoName.'.'. $extension;
+            $photo->storeAs($this->photosPath,$nameEx,'posts');
             $param['post_photo'] = $photoName;
         }
 
@@ -94,21 +92,21 @@ class CourseController extends Controller
       ]);
     }
 
-    public function addFile(Request $request) {
-        // return $request;
+    public function addFile(Request $request)
+    {
         $course_id = $request->course_id;
-        $request->validate(['course_file' => 'required|file']);
+        $context   = $request->context;
 
-        $attach = $request->file('course_file');
-        $attachName = $attach->getClientOriginalName();
-        $location = 'Image/Courses/Files';
-
-        $status = Course::where('course_id', $course_id)->update(['course_file' => $attachName]);
-        $record = Course::where('course_id', $course_id)->first();
+        $course  = Course::where('course_id', $course_id)->first();
+        $code   = $course->course_code;
+        $status = Storage::disk('courses')->put($code . '.txt', $context);
         echo json_encode([
             'status' => boolval($status),
-            'data' => $record,
         ]);
+
+
+
+
     }
 
     public function updateArchived(Request $request)
