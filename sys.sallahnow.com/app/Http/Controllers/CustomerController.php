@@ -36,6 +36,27 @@ class CustomerController extends Controller
             'customer_address'  => 'required | string',
         ]);
         $customer_id = $request->customer_id;
+        $email = $request->customer_email;
+        $mobile = $request->customer_mobile;
+
+        if(Customer::where('customer_id', '!=', $customer_id)->where('customer_mobile', '=', $mobile)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('number'),
+            ]);
+            return ;
+        }
+        if($email && Customer::where('customer_id', '!=', $customer_id)->where('customer_email', '=', $email)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('email'),
+            ]);
+            return ;
+        }
+
+
         $code        = strtoupper($this->uniqidReal());
         if(!$customer_id){
 
@@ -94,5 +115,10 @@ class CustomerController extends Controller
             throw new \Exception("no cryptographically secure random function available");
         }
         return substr(bin2hex($bytes), 0, $lenght);
+    }
+
+    private function validateMessage($message)
+    {
+        return 'This ' . $message . ' already exists';
     }
 }

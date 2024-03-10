@@ -107,7 +107,7 @@
                             <input type="hidden" name="customer_id" data-ng-value="customers[customerUpdate].customer_id">
                             <div class="row">
                                 {{-- name --}}
-                                <div class="col-12 col-md-6">
+                                <div class="col-12 col-md-12">
                                     <div class="mb-3">
                                         <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="customer_name" maxlength="120"
@@ -170,7 +170,7 @@
                                     </div>
                                 </div>
                                 {{-- area --}}
-                                <div class="col-12 col-md-12">
+                                <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Arae<b class="text-danger">&ast;</b></label>
                                         <select name="customer_area" class="form-control" required>

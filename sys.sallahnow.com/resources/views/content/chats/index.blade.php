@@ -23,22 +23,44 @@
                                 </div>
                             </div> --}}
                             <div class="row">
-                                <div class="col-12 col-md-12">
+                                {{-- <div class="col-12 col-md-12">
                                     <div class="mb-3">
                                         <input type="search" class="form-control" name="search" placeholder="Search..."
                                             id="search">
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-12 col-md-12">
                                     <div class="mb-3">
                                         <label for="TechnicianName">Technician Name<b class="text-danger">&ast;</b></label>
-                                        <select class="form-control" name="technician_name" id="TechnicianName"></select>
+                                        <select class="form-control" name="technician_name" id="technicianName">
+                                            <option value="0">-- SELECT TECHNICIAN NAME--</option>
+                                            <option data-ng-repeat="tech in technicians track by $index"
+                                                data-ng-value="tech.tech_id" data-ng-bind="tech.tech_name"></option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-12">
-                                    <div class="mb-3">
-                                        <label for="RoomCode">Room Code<b class="text-danger">&ast;</b></label>
-                                        <select class="form-control" name="room" id="RoomCode"></select>
+                                    <div class="d-flex">
+                                        <h6 class="fw-bold me-auto">
+                                            <small class="spinner-border-sm text-warning" role="status"></small>
+                                            <span>Rooms</span>
+                                        </h6>
+                                    </div>
+                                    <ul data-ng-if="rooms.length" class="list-group list-group-flush">
+                                        <li data-ng-repeat="room in rooms"
+                                            class="list-group-item list-group-item-action d-flex bg-muted-8"
+                                            data-ng-class="activeCountry == $index ? 'active' : ''">
+                                            <span data-ng-bind="room.room_name" class="me-auto"></span>
+                                            <a href="" class="link-primary bi bi-eye me-2"
+                                                data-ng-click="toggleVisibility($index)"></a>
+                                            <a href="" class="link-primary bi bi-chevron-right"
+                                                data-ng-click="getMassages(room)"></a>
+                                        </li>
+                                    </ul>
+                                    <div data-ng-if="!rooms.length" class="py-5 text-center">
+                                        <h1 style="font-size: 60px"><i class="bi bi-exclamation-circle text-secondary"></i>
+                                        </h1>
+                                        <h6 class="text-secondary">No records</h6>
                                     </div>
                                 </div>
                             </div>
@@ -62,11 +84,10 @@
                                         class="font-monospace dir-ltr d-inline-block"></span>
                                 </div>
                             </div>
-                            <h6 data-ng-if="comments.count && comments.data.length == comments.count"
-                                class="text-center my-3 small text-secondary">All comments have been uploaded</h6>
-                            <div data-ng-if="!messages.length" class="text-center my-5">
-                                <h1 style="font-size: 90px"><i class="bi bi-chat-dots text-secondary"></i></h1>
-                                <h5 class="text-secondary"> No Replies...</h5>
+                            <div data-ng-if="!messages.length" class="py-5 text-center">
+                                <h1 style="font-size: 60px"><i class="bi bi-exclamation-circle text-secondary"></i>
+                                </h1>
+                                <h6 class="text-secondary">No records</h6>
                             </div>
                         </div>
                     </div>
@@ -87,7 +108,9 @@
             $('.loading-spinner').hide();
             $scope.chats = [];
             $scope.messages = [];
+            $scope.rooms = [];
             $room = false;
+            $scope.technicians = <?= !empty($technicians) ? json_encode($technicians) : 'null' ?>;
             $scope.page = 1;
             // $scope.dataLoader = function(reload = false) {
             //     $('.loading-spinner').show();
@@ -107,11 +130,18 @@
             //     }, 'json');
             // }
 
-            $scope.addRoom = (indx) => {
-                $scope.psot = indx;
-                $('#add_chat_room').modal('show');
+            $scope.getMassages = (room) => {
+                let id = room.member_id;
+                $.post("get-chat-msg/" + id, {
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    scope.$apply(() => {
+                        scope.messages = data;
+                        console.log(data)
+                    });
+                }, 'json');
             };
-            // $scope.dataLoader();
+
             scope = $scope;
         });
 
@@ -123,99 +153,20 @@
             });
         });
 
-        // add cost
-        $(function() {
-            $('#add_chat_room form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    console.log(data);
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('post deleted successfully');
-                        $('#add_chat_room').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.psot === false) {
-                                $scope.dataLoader(true);
-                            } else {
-                                scope.psots[scope.psot] = response
-                                    .data;
-                                $scope.dataLoader();
-                            }
-                        });
-                    } else toastr.error("Error");
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    // error msg
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-        });
-
-        $('#search').on('change', function() {
-            var idState = this.value;
-            console.log(idState);
-            $('#TechnicianName').html('');
-            $.ajax({
-                url: 'get-technician/' + idState,
-                type: 'GET',
-                dataType: 'json',
-                success: function(res) {
-                    $.each(res, function(key, value) {
-                        $('#TechnicianName').append('<option id="class" value="' + value
-                            .tech_id +
-                            '">' + value.tech_name + '</option>');
-                    });
-                }
-            });
-        });
-
-        $('#TechnicianName').on('click', function() {
-            var idState = this.value;
-            console.log(idState);
-            $('#RoomCode').html('');
-            $.ajax({
-                url: 'get-chat-room/' + idState,
-                type: 'GET',
-                dataType: 'json',
-                success: function(res) {
-                    $.each(res, function(key, value) {
-                        console.log(value)
-                        $('#RoomCode').append('<option id="class" value="' + value
-                            .member_id +
-                            '">' + value.room_name + '</option>');
-                    });
-                }
-            });
-        });
-
-        $('#RoomCode').on('click', function() {
-            var idState = this.value;
-            console.log(idState);
-            $.post("get-chat-msg/" + idState, {
-                _token: '{{ csrf_token() }}'
-            }, function(data) {
+        $('#technicianName').on('change', function() {
+            var val = $(this).val();
+            console.log(val)
+            $.get("get-chat-room/" + val, function(data) {
                 $('.perm').show();
                 scope.$apply(() => {
-                    scope.messages = data;
+                    scope.rooms = data;
                     console.log(data)
                 });
             }, 'json');
         });
+
+        // $(document).ready(function() {
+        //     $('#select2').select2();
+        // });
     </script>
 @endsection

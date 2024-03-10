@@ -1,3 +1,3 @@
-@extends('index');
+@extends('index')
 @section('content')
 @endsection

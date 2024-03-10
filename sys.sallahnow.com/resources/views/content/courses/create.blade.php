@@ -87,7 +87,7 @@
                                     <div class="row">
                                         <div class="col-12 col-md-12">
                                             <div class="row">
-                                                <div class="col-12 col-md-6">
+                                                <div class="col-12 col-md-12">
                                                     <div class="mb-3">
                                                         <label for="titleAr-input">Title<b
                                                                 class="text-danger form-conter">&ast;</b></label>
@@ -103,6 +103,16 @@
                                                         <input id="titleAr-input" name="cost" type="text"
                                                             class="one-space form-control" maxlength="120"
                                                             data-ng-value="data.course_cost" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="titleAr-input">Tyoe<b
+                                                                class="text-danger form-conter">&ast;</b></label>
+                                                        <select name="type" class="form-select" id="">
+                                                            <option value="1">off</option>
+                                                            <option value="2">on</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -129,9 +139,10 @@
                 <div class="card crad-box mb-3">
                     <div class="card-body">
                         <h6 class="fw-bold small">ADD FILE</h6>
-                        <form id="addFileForm" action="/posts/file_submit/" method="post">
+                        <form id="addFileForm" action="/courses/add_file/" method="post">
                             @csrf
-                            <input type="hidden" name="post_id" data-ng-value="data.post_id">
+                            @method('PUT')
+                            <input type="text" name="course_id" hidden data-ng-value="data.course_id">
                             <textarea name="context" class="d-none"></textarea>
                             <div class="row">
                                 <div class="col-12">

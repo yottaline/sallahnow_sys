@@ -23,8 +23,10 @@
                         {{-- It will be worked on soon --}}
                         <div class="mb-3">
                             <label for="roleFilter">Status</label>
-                            <select name="" id="" class="form-select">
-                                <option value=""></option>
+                            <select id="filter-status" class="form-select">
+                                <option value="">-----</option>
+                                <option value="1">Active</option>
+                                <option value="0">Blocd</option>
                             </select>
                         </div>
                     </div>
@@ -46,8 +48,8 @@
                             </div>
 
                         </div>
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
+                        {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5> --}}
                         <div data-ng-if="users.length" class="table-responsive">
                             <table class="table table-hover" id="user_table">
                                 <thead>
@@ -236,12 +238,15 @@
             $scope.users = [];
             $scope.roles = [];
             $scope.page = 1;
+            $scope.q = ' ';
             $scope.dataLoader = function(reload = false) {
                 $('.loading-spinner').show();
                 if (reload) {
                     $scope.page = 1;
                 }
                 $.post("/users/load/", {
+                    status: $('#filter-status').val(),
+                    q: $scope.q,
                     page: $scope.page,
                     limit: 24,
                     _token: '{{ csrf_token() }}'
@@ -309,7 +314,7 @@
                                 scope.dataLoader(true);
                             }
                         });
-                    } else toastr.error("Error");
+                    } else toastr.error(response.message);
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     toastr.error("error");
                     controls.log(jqXHR.responseJSON.message);
@@ -353,9 +358,9 @@
                                 scope.dataLoader(true);
                             }
                         });
-                    } else toastr.error("Error");
+                    } else toastr.error(response.message);
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error("error");
+                    toastr.error(response.message);
                     controls.log(jqXHR.responseJSON.message);
                     $('#useForm').modal('hide');
                 }).always(function() {

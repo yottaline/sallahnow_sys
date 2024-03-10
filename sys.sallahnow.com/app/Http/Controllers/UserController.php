@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserController extends Controller
 {
@@ -23,12 +24,27 @@ class UserController extends Controller
         return view('content.users.index',);
     }
 
-    public function load()
+    public function load(Request $request)
     {
+
         $users = DB::table('users')
         ->join('user_groups', 'users.user_group', '=', 'user_groups.ugroup_id')
-        ->orderBy('users.user_create', 'desc')->limit(15)->offset(0)->get();
-        echo json_encode($users);
+        ->orderBy('users.user_create', 'desc')
+        ->limit($request->limit);
+
+    if ($request->q) {
+        $users= User::where(function (Builder $query) {
+            $query->where('user_name', 'like', '%' .request('q') . '%')
+            ->orWhere('user_email', request('q'))
+            ->orWhere('user_mobile', request('q'));
+        });
+    }
+    if($request->status)
+    {
+        $users->where('user_active', $request->status);
+    }
+        echo json_encode($users->get());
+
     }
 
     public function submit(Request $request)
@@ -38,8 +54,31 @@ class UserController extends Controller
             'name'     => 'required|string',
             'mobile'   => 'required|numeric',
             'password' => 'required',
-            // 'email'    => 'email|unique:users,user_email'
         ]);
+
+
+        $id = intval($request->user_id);
+
+        $mobile = $request->mobile;
+        $email = $request->email;
+
+        if(User::where('id', '!=', $id)->where('user_mobile', '=', $mobile)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('number'),
+            ]);
+            return ;
+        }
+        if($email && User::where('id', '!=', $id)->where('user_email', '=', $email)->first())
+        {
+            echo json_encode([
+                'status' => false,
+                'message' =>  $this->validateMessage('email'),
+            ]);
+            return ;
+        }
+
 
         $parma = [
             'user_name'           => $request->name,
@@ -50,7 +89,6 @@ class UserController extends Controller
             'user_create'         => now()
         ];
 
-        $id = intval($request->user_id);
         if(!$id) {
         $status = User::create($parma);
         $id     = $status->id;
@@ -119,5 +157,10 @@ class UserController extends Controller
         $user->roles($role)->detach();
         session()->flash('error', 'Role Deleted successful');
         return back();
+    }
+
+    private function validateMessage($message)
+    {
+        return 'This ' . $message . ' already exists';
     }
 }
