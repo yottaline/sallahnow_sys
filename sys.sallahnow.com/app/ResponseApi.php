@@ -30,7 +30,7 @@ trait ResponseApi {
         return response() -> json(
             [
                 'status' => true,
-                'status_number'   => '200',
+                'status_number'   => '100',
                 'msg'    => $msg,
                 $key     => $value
             ]

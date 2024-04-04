@@ -20,6 +20,11 @@ class Chat_Room_Message extends Model
         'msg_create'
     ];
 
+    public static function getFirstElementById($item)
+    {
+        return self::where('msg_id', $item)->first();
+    }
+
     public function room() {
         return $this->belongsTo(Chat_Room::class, 'msg_room', 'msg_id');
     }

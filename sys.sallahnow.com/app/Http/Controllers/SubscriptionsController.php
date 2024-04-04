@@ -23,8 +23,9 @@ class SubscriptionsController extends Controller
 
     public function load() {
         $subscriptions = DB::table('subscriptions')
-        ->join('technicians', 'subscriptions.sub_tech', '=', 'technicians.tech_id')
-        ->join('users', 'subscriptions.sub_register_by','=', 'users.id')->orderBy('subscriptions.sub_register', 'desc')->limit(15)->offset(0)->get();
+        ->join('technicians', 'subscriptions.sub_tech', '=', 'technicians.tech_id')->orderBy('subscriptions.sub_register', 'desc')->limit(15)->offset(0)->get();
+
+        // ->join('users', 'subscriptions.sub_register_by','=', 'users.id')
         echo json_encode($subscriptions);
     }
 

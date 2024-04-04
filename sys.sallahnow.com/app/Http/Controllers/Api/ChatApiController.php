@@ -15,7 +15,7 @@ class ChatApiController extends Controller
     use ResponseApi;
     public function __construct()
     {
-        return $this->middleware('auth:technician-api');
+        return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
     public function chat($tech_id) {
@@ -25,6 +25,7 @@ class ChatApiController extends Controller
     }
 
     public function createRoom(Request $request) {
+
         $request->validate([
             'room_type' => 'required|numeric'
         ]);
@@ -38,6 +39,7 @@ class ChatApiController extends Controller
         ]);
 
         $room = Chat_Room::where('room_id', $status->id)->first();
+
         return $this->returnData('room', $room);
     }
 
@@ -47,28 +49,27 @@ class ChatApiController extends Controller
             'member_room' => 'required|numeric',
             'member_tech' => 'required|numeric',
         ]);
+        $status = Chat_Room_Members::submit($request->member_room, $request->member_tech);
 
-        $status = Chat_Room_Members::create([
-            'member_room'   => $request->member_room,
-            'member_tech'   => $request->member_tech,
-            // 'member_admin'  => $request->member_admin,
-            'member_add'    => Carbon::now()
-        ]);
-        $member = Chat_Room_Members::where('member_id', $status->id)->first();
+        $member = Chat_Room_Members::getChatMember($status->id);
+
         return $this->returnData('member', $member);
+
     }
 
     public function createMessage(Request $request) {
+
       $data = $request->validate([
             'msg_from'    => 'required |numeric',
             'msg_room'    => 'required |numeric',
             'msg_context' => 'required |string'
         ]);
+
         $data['msg_create'] = Carbon::now();
         $status = Chat_Room_Message::create($data);
         $msg_id = $status->id;
 
-        $message = Chat_Room_Message::where('msg_id', $msg_id)->first();
+        $message = Chat_Room_Message::getFirstElementById($msg_id);
         return $this->returnData('message', $message);
     }
 
