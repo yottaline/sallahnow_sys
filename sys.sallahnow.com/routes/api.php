@@ -22,18 +22,22 @@ Route::middleware('api')->group(function() {
         Route::post('profile', 'TechnicianApiController@profile');
         Route::put('update/{id}', 'TechnicianApiController@Update');
         //
-        Route::get('getModels', 'TechnicianApiController@getModels');
+        Route::get('get_models', 'TechnicianApiController@getModels');
         Route::get('getCompatibilities', 'TechnicianApiController@getCompatibilities');
         //
-        Route::get('get-packages', 'TechnicianApiController@getPackages');
-        //
-        Route::get('get-subscriptions', 'TechnicianApiController@getSubscriptions');
-        Route::put('subscriptions/change-status/{id}', 'TechnicianApiController@changeStatus');
-        // Route::put('subscriptions/change/status', 'TechnicianApiController@changeStatus');
-        Route::post('subscriptions/new-package', 'TechnicianApiController@subNewPackage');
+        Route::get('get_packages', 'TechnicianApiController@getPackages');
+
 
         // Route::post('post-cost', 'TechnicianApiController@postCost');
     });
+
+    Route::prefix('subscriptions')->group( function()
+    {
+        Route::get('/' , 'SubscriptionsApiController@getAll');
+        Route::put('change_status/{tech_id}', 'SubscriptionsApiController@changeStatus');
+        Route::post('sub_package', 'SubscriptionsApiController@subPackage');
+    });
+
 
     Route::prefix('posts')->group( function() {
         // posts
@@ -50,18 +54,20 @@ Route::middleware('api')->group(function() {
 
     });
 
-    Route::prefix('chats')->group( function() {
+    Route::prefix('chats')->group( function()
+    {
         Route::get('get_chats/{tech_id}', 'ChatApiController@chat');
         Route::post('create_room', 'ChatApiController@createRoom');
         Route::post('add_member', 'ChatApiController@addMember');
         Route::post('create_message', 'ChatApiController@createMessage');
     });
 
-    Route::prefix('tickets')->group( function() {
+    Route::prefix('tickets')->group( function()
+    {
         Route::get('/', 'SupportTicketApiController@getTickets');
-        Route::post('add-ticket', 'SupportTicketApiController@addTicket');
+        Route::post('add', 'SupportTicketApiController@addTicket');
         Route::get('replies/{ticket_id}', 'SupportTicketApiController@gtReplies');
-        Route::post('add-replie', 'SupportTicketApiController@addReplie');
+        Route::post('add_reply', 'SupportTicketApiController@addReplie');
     });
 
     Route::prefix('courses')->group( function() {

@@ -18,11 +18,15 @@ class PostsApiController extends Controller
     use ResponseApi;
     public function __construct()
     {
-        return $this->middleware('auth:technician-api');
+        return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
     public function getPost(){
         $posts = Post::all();
+        if(!$posts)
+        {
+            return $this->returnError('There are no posts', '108');
+        }
         return $this->returnData('posts', $posts);
     }
 
@@ -33,7 +37,7 @@ class PostsApiController extends Controller
             'body'   => 'required'
         ]);
         $code = strtoupper($this->uniqidReal());
-        if($request->file('photo')){ #if has photo add photo
+        if($request->file('photo')){
 
             $photo = $request->file('photo');
             $photoName = $photo->getClientOriginalName();
@@ -71,13 +75,19 @@ class PostsApiController extends Controller
 
     public function cost(Request $request) {
 
+        $request->validate([
+            'tech_id' => 'required | numeric',
+            'post_id' => 'required | numeric'
+        ]);
+
         $tech_id = $request->tech_id;
         $post_id = $request->post_id;
 
-        $technician_point = Technician::where('tech_id', $tech_id)->first();
-        if($technician_point->tech_points > 0){
+        $technician = Technician::where('tech_id', $tech_id)->first();
+        if($technician->tech_points > 0){
 
             $post  = Post::where('post_id', $post_id)->first();
+
             PointTranaction::create([
                 'points_count'    =>   $post->post_cost,
                 'points_src'      =>   9,
@@ -87,7 +97,7 @@ class PostsApiController extends Controller
                 'points_register' =>   Carbon::now()
             ]);
 
-            $point =  $technician_point->tech_points - $post->post_cost;
+            $point =  $technician->tech_points - $post->post_cost;
             Technician::where('tech_id', $tech_id)->update([
                 'tech_points' => $point
             ]);
@@ -115,6 +125,7 @@ class PostsApiController extends Controller
 
     public function comments($post_id) {
         $comments = Post_Comment::where('comment_post', $post_id)->get();
+
         return $this->returnData('comments', $comments);
     }
 
@@ -134,15 +145,24 @@ class PostsApiController extends Controller
 
         $comment_id = $status->id;
         $comment    = Post_Comment::where('comment_id', $comment_id)->first();
+
         return $this->returnData('comment', $comment, 'Comment created successfully');
     }
 
     public function postView($post_id) {
         $views = Post_View::where('view_post', $post_id)->get();
-        return $this->returnData('post_views', $views);
+
+        return $this->returnData('post', $views);
     }
 
     public function addView(Request $request) {
+
+        $request->validate([
+            'tech_device'  => 'required',
+            'view_tech'    => 'required|numeric',
+            'view_post'    => 'required|numeric'
+        ]);
+
       $data = Post_View::create([
             'view_device'  => $request->view_device,
             'view_tech'    => $request->view_tech,

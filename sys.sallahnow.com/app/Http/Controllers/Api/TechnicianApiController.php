@@ -34,7 +34,7 @@ class TechnicianApiController extends Controller
     {
         $request->validate([
             'tech_name'         => 'required',
-            'tech_mobile'       => 'required|numeric',
+            'tech_mobile'       => 'required|numeric|unique:technicians,tech_mobile',
             'tech_password'     => 'required',
             'country_id'        => 'required',
             'state_id'          => 'required',
@@ -44,8 +44,9 @@ class TechnicianApiController extends Controller
 
 
         $code = strtoupper($this->uniqidReal());
-        // $password = ;
         $devise_token = strtoupper($this->uniqidReal());
+
+
         Technician::create([
             'tech_name'              => $request->tech_name,
             'tech_email'             => $request->tech_email,
@@ -96,17 +97,29 @@ class TechnicianApiController extends Controller
 
     public function login()
     {
-        $credentials = request(['tech_mobile', 'password']);
-        if (! $token = auth('technician-api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $technician = Technician::where('tech_mobile', request('tech_mobile'))->first();
+        if(!$technician) {
+            return response()->json(['error' => 'Unauthorized'], 104);
+        }else {
+            $passwords = Hash::check(request('password'), $technician->tech_password);
+            if(!$passwords) {
+                return response()->json(['error' => 'The password is incorrect'], 102);
+            }else {
+                $token = auth()->guard('technician-api')->login($technician);
+                return $this->respondWithToken($token);
+            }
         }
+        // $credentials = request(['tech_mobile', 'password']);
+        // if (! $token = auth('technician-api')->attempt($credentials)) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
 
-        return $this->respondWithToken($token);
+        // return $this->respondWithToken($token);
     }
 
     public function profile()
     {
-        return response()->json(auth('technician-api')->user());
+        return $this->returnData('technician', auth('technician-api')->user());
     }
 
     public function update($id, Request $request)
@@ -189,57 +202,9 @@ class TechnicianApiController extends Controller
         return $this->returnData('packages', $packages);
     }
 
-    public function getSubscriptions() {
-        $subscriptions = Subscriptions::all();
-        return $this->returnData('subscriptions', $subscriptions);
-    }
 
-    public function changeStatus($id) {
-        $subscription = Subscriptions::where('id', $id)->first();
-        if($subscription->status == 1){
-           $status = Subscriptions::where('id', $id)->update(['status' => 0]);
-        }
-        else{
-            $status = Subscriptions::where('id',  $id)->update(['status' => 1]);
-        }
-        if(!$status){
-            return $this->returnError('status not change', '100');
-        }
-        return $this->returnSuccess('status change successfully');
-    }
 
-    public function subNewPackage(Request $request) {
-        $package = Package::where('id', $request->package_id)->first();
-        $pam = [
-            'package_id'     => $request->package_id,
-            'package_points' =>  $package->points,
-            'package_cost'   => $package->cost,
-            'package_period' => $package->period,
-            'package_priv'   => $package->priv,
-            'technician_id'  => $request->technician_name,
-            'start'          => $request->start,
-            'end'            => $request->end,
-            'register_by'    => auth()->user()->id
-        ];
 
-        $technician = Subscriptions::where('id', $request->technician_name)->first();
-
-        $id = $request->sub_id;
-        if(!$id) {
-            if($technician){
-                Subscriptions::where('id', $request->technician_name)->update(['status' => 0]);
-                $status  = Subscriptions::create($pam);
-                $id      = $status->id;
-            }else {
-                $status  = Subscriptions::create($pam);
-                $id      = $status->id;
-            }
-        }
-        else {
-            $status = Subscriptions::where('id', $id)->update($pam);
-        }
-        return response()->json('created',$status);
-    }
 
 
     protected function respondWithToken($token)
@@ -247,7 +212,8 @@ class TechnicianApiController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('technician-api')->factory()->getTTL() * 9999999
+            'expires_in' => auth('technician-api')->factory()->getTTL() * 9999999,
+            'status_code' => '100'
         ]);
     }
 

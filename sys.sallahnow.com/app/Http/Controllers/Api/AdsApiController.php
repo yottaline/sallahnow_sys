@@ -12,11 +12,12 @@ class AdsApiController extends Controller
     use ResponseApi;
     public function __construct()
     {
-        return $this->middleware('auth:technician-api');
+        return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
     public function ads() {
         $ads = Technician_ads::all();
+
         return $this->returnData('ads', $ads);
     }
 }
