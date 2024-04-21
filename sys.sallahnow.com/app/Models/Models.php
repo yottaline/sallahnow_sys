@@ -29,7 +29,7 @@ class Models extends Model
     }
 
     public function compatibilities(){
-        return $this->belongsToMany(Compatibility::class);
+        return $this->belongsToMany(Compatibility::class, 'compatibility_models', 'compatible_model');
     }
 
     public function suggestions() {

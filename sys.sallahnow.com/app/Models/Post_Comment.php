@@ -22,6 +22,21 @@ class Post_Comment extends Model
         'comment_create'
     ];
 
+    public static function fetch($id = 0, $post_id = null)
+    {
+        $comments = Post_Comment::orderBy('comment_create', 'desc');
+        if($id) $comments->where('comment_id', $id);
+        if($post_id) $comments->where('comment_post', $post_id);
+        return $id ? $comments->first() : $comments->get();
+    }
+
+    public static function submit($param)
+    {
+        $status = Post_Comment::create($param);
+
+        return $status ? $status->id : false;
+    } 
+
     public function posts() {
         return $this->belongsTo(Post::class, 'comment_post', 'comment_id');
     }

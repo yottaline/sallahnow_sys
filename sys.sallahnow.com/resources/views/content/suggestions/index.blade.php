@@ -55,7 +55,7 @@
                         </div>
                         <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
                         </h5>
-                        <div data-ng-if="suggestions.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="suggestions_table">
                                 <thead>
                                     <tr>
@@ -68,7 +68,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="sugg in suggestions track by $index">
+                                    <tr data-ng-repeat="sugg in list track by $index">
                                         <td data-ng-bind="sugg.sugg_id"></td>
                                         <td data-ng-bind="sugg.category_name"></td>
                                         <td data-ng-bind="sugg.tech_name"></td>
@@ -89,10 +89,8 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!suggestions.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle  display-4"></i>
-                            <h5>No records</h5>
-                        </div>
+                        @include('layouts.loade')
+
                     </div>
                 </div>
             </div>
@@ -105,9 +103,9 @@
                     <div class="modal-body">
                         <form method="POST" action="/suggestions/submit/">
                             @csrf
-                            <input data-ng-if="updateUser !== false" type="hidden" name="_method" value="put">
+                            <input data-ng-if="suggestionId !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="comp_id"
-                                data-ng-value="updateUser !== false ? users[updateUser].id : 0">
+                                data-ng-value="suggestionId !== false ? list[suggestionId].suug_id : 0">
                             <div class="btn-group">
                                 <div class="m-3">
                                     <input type="radio" class="btn-check" name="status" value="1" id="Accepted"
@@ -191,8 +189,6 @@
             </div>
         </div> --}}
 
-
-
     </div>
 @endsection
 @section('js')
@@ -207,28 +203,45 @@
                 name: ['New', 'Approved', 'Rejected'],
                 color: ['secondary', 'success', 'danger']
             }
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
+            $scope.last_id = 0;
             $scope.suggestionId = false;
             $scope.technicianName = false;
             $scope.cateName = false;
             $scope.userName = false;
-            $scope.suggestions = [];
+            $scope.list = [];
             $scope.categories = [];
             $scope.technicians = [];
-            $scope.page = 1;
+
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+                $('.loading-spinner').show();
+
                 $.post("/suggestions/load/", {
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.suggestions = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].sugg_id;
+                        };
                     });
                 }, 'json');
 
@@ -284,10 +297,10 @@
                         $('#modelForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.suggestionId === false) {
-                                scope.suggestions.unshift(response.data);
+                                scope.list.unshift(response.data);
                                 $scope.dataLoader();
                             } else {
-                                scope.suggestions[scope.suggestionId] = response.data;
+                                scope.list[scope.suggestionId] = response.data;
                                 $scope.dataLoader();
                             }
                         });

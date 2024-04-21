@@ -17,65 +17,69 @@ class SubscriptionsController extends Controller
         $this->middleware('auth');
     }
 
-    public function index() {
+    public function index() 
+    {
         return view('content.subscriptions.index');
     }
 
-    public function load() {
-        $subscriptions = DB::table('subscriptions')
-        ->join('technicians', 'subscriptions.sub_tech', '=', 'technicians.tech_id')->orderBy('subscriptions.sub_register', 'desc')->limit(15)->offset(0)->get();
-
-        // ->join('users', 'subscriptions.sub_register_by','=', 'users.id')
-        echo json_encode($subscriptions);
+    public function load(Request $request) 
+    {
+        $params   = $request->q ? ['q' => $request->q] : [];
+        $limit    = $request->limit;
+        $listId   = $request->last_id;
+        
+        echo json_encode(Subscriptions::fetch(0, $params, $limit, $listId));
     }
 
-    public function search($item) {
-        if ($item) {
-            $transient  = Technician::where('mobile',$item)->get();
-        } else {
-            $err = 'not technician';
-            echo json_encode($err);
-        }
-        echo json_encode($transient);
-    }
+    // public function search($item) {
+    //     if ($item) {
+    //         $transient  = Technician::where('mobile',$item)->get();
+    //     } else {
+    //         $err = 'not technician';
+    //         echo json_encode($err);
+    //     }
+    //     echo json_encode($transient);
+    // }
 
 
-    public function submit(Request $request) {
+    public function submit(Request $request)
+    {   
        $package = Package::where('pkg_id', $request->package_id)->first();
+       $technician_id =  $request->technician_name;
+       
         $pam = [
-            'sub_pkg'     => $request->package_id,
-            'sub_points' =>  $package->pkg_points,
-            'sub_cost'   => $package->pkg_cost,
+            'sub_pkg'            => $request->package_id,
+            'sub_points'         =>  $package->pkg_points,
+            'sub_cost'           => $package->pkg_cost,
             'sub_period'         => $package->pkg_period,
             'sub_priv'           => 'ty',
-            'sub_tech'           => $request->technician_name,
+            'sub_tech'           => $technician_id,
             'sub_start'          => $request->start,
             'sub_register_by'    => auth()->user()->id,
             'sub_register'       => now()
         ];
 
-        $end = Carbon::parse($request->start)->addMonth($package->pkg_period);
-        $technician = Subscriptions::where('sub_tech', $request->technician_name)->get();
+        $realTime = $request->start;
+        $time     = $package->pkg_period;
+        $end      = Subscriptions::parse($realTime, $time);
+
+        // 0105060A4CA7
+        $technician = Subscriptions::condition('sub_tech', '=', $technician_id);
+        
         $id = $request->sub_id;
+        
         if(!$id) {
            $pam['sub_end'] = $end;
             if($technician){
-                Subscriptions::where('sub_tech', $request->technician_name)->update(['sub_status' => 0]);
-                $status  = Subscriptions::create($pam);
-                $id      = $status->id;
-            }else {
-                $status  = Subscriptions::create($pam);
-                $id      = $status->id;
+                Subscriptions::changeStatus($technician_id);
             }
         }
-        else {
-            $status = Subscriptions::where('sub_id', $id)->update($pam);
-        }
 
-        $record =  Subscriptions::where('sub_id', $id)->first();
+        $result = Subscriptions::submit($pam, $id);
+
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Subscriptions::fetch($result) : [],
         ]);
     }
 

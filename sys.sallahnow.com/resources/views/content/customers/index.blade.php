@@ -80,7 +80,7 @@
                         {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
                         </h5> --}}
 
-                        <div data-ng-if="customers.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="example">
                                 <thead>
                                     <tr>
@@ -92,7 +92,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="customer in customers track by $index">
+                                    <tr data-ng-repeat="customer in list track by $index">
                                         <td data-ng-bind="customer.customer_code"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
@@ -126,10 +126,7 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!customers.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-3"></i>
-                            <h5 class="">No records</h5>
-                        </div>
+                        @include('layouts.loade')
                     </div>
                 </div>
             </div>
@@ -139,19 +136,17 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <form id="techForm" method="post" action="/customers/submit">
+                        <form id="custmForm" method="post" action="/customers/submit">
                             @csrf
                             <input data-ng-if="customerUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="customer_id"
-                                data-ng-value="customers[customerUpdate].customer_id">
+                            <input type="hidden" name="customer_id" data-ng-value="list[customerUpdate].customer_id">
                             <div class="row">
                                 {{-- name --}}
                                 <div class="col-12 col-md-12">
                                     <div class="mb-3">
                                         <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="customer_name" maxlength="120"
-                                            data-ng-value="customers[customerUpdate].customer_name" required
-                                            id="fullName">
+                                            data-ng-value="list[customerUpdate].customer_name" required id="fullName">
                                     </div>
                                 </div>
 
@@ -160,7 +155,7 @@
                                     <div class="mb-3">
                                         <label for="mobile">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="customer_mobile" maxlength="24"
-                                            data-ng-value="customers[customerUpdate].customer_mobile" required
+                                            data-ng-value="list[customerUpdate].customer_mobile" required
                                             id="mobile" />
                                     </div>
                                 </div>
@@ -170,7 +165,7 @@
                                         <label for="exampleInputEmail1">Email</label>
                                         <input type="email" class="form-control" name="customer_email"
                                             id="exampleInputEmail1"
-                                            data-ng-value="customerUpdate !== false ? customers[customerUpdate].customer_email : ''">
+                                            data-ng-value="customerUpdate !== false ? list[customerUpdate].customer_email : ''">
                                     </div>
                                 </div>
 
@@ -230,7 +225,7 @@
                                         <label for="addressCustomer">Address</label>
                                         <input type="text" class="form-control" name="customer_address"
                                             id="addressCustomer"
-                                            data-ng-value="customerUpdate !== false ? customers[customerUpdate].customer_address : ''" />
+                                            data-ng-value="customerUpdate !== false ? list[customerUpdate].customer_address : ''" />
                                     </div>
                                 </div>
 
@@ -243,7 +238,7 @@
                             </div>
                         </form>
                         <script>
-                            $('#techForm').on('submit', e => e.preventDefault()).validate({
+                            $('#custmForm').on('submit', e => e.preventDefault()).validate({
                                 rules: {
                                     customer_mobile: {
                                         digits: true
@@ -268,11 +263,11 @@
                                             $('#techModal').modal('hide');
                                             scope.$apply(() => {
                                                 if (scope.customerUpdate === false) {
-                                                    scope.customers.unshift(response.data);
-                                                    scope.dataLoader();
+                                                    scope.list.unshift(response.data);
+                                                    scope.dataLoader(true);
                                                 } else {
-                                                    scope.customers[scope.customerUpdate] = response.data;
-                                                    scope.dataLoader();
+                                                    scope.list[scope.customerUpdate] = response.data;
+                                                    scope.dataLoader(true);
                                                 }
                                             });
                                         } else toastr.error(response.message);
@@ -305,14 +300,13 @@
                         <form method="POST" action="/customers/update_note/">
                             @csrf
                             <input data-ng-if="customerUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="customer_id"
-                                data-ng-value="customers[customerUpdate].customer_id">
+                            <input type="hidden" name="customer_id" data-ng-value="list[customerUpdate].customer_id">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="mb-3">
                                         <label>Customer Note<b class="text-danger">&ast;</b></label>
-                                        <textarea class="form-control" rows="8" cols="30"
-                                            data-ng-value="customers[customerUpdate].customer_notes" name="note"></textarea>
+                                        <textarea class="form-control" rows="8" cols="30" data-ng-value="list[customerUpdate].customer_notes"
+                                            name="note"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -335,8 +329,7 @@
                         <form method="POST" action="/customers/update_active/">
                             @csrf
                             <input data-ng-if="customerUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="customer_id"
-                                data-ng-value="customers[customerUpdate].customer_id">
+                            <input type="hidden" name="customer_id" data-ng-value="list[customerUpdate].customer_id">
                             <div class="row">
                                 <div class="col-12">
                                     <p class="mb-2">Are you sure you want to change status the customer?</p>
@@ -351,258 +344,265 @@
                 </div>
             </div>
         </div>
-    @endsection
-    @section('js')
-        <script>
-            var scope, limit = 14,
-                app = angular.module('myApp', [], function($interpolateProvider) {
-                    $interpolateProvider.startSymbol('<%');
-                    $interpolateProvider.endSymbol('%>');
-                });
+    </div>
+@endsection
+@section('js')
+    <script>
+        var scope,
+            app = angular.module('myApp', [], function($interpolateProvider) {
+                $interpolateProvider.startSymbol('<%');
+                $interpolateProvider.endSymbol('%>');
+            });
 
-            app.controller('myCtrl', function($scope) {
-                $('.loading-spinner').hide();
-                $scope.jsonParse = (str) => JSON.parse(str);
-                $scope.activeOb = {
-                    name: ['', 'Active', 'Bloced'],
-                    color: ['', 'success', 'danger']
-                };
-                $scope.q = '';
-                $scope.customerUpdate = false;
-                $scope.customers = [];
-                $scope.page = 1;
-                $scope.countries = <?= json_encode($countries) ?>;
-                $scope.cousModal = {
-                    states: [],
-                    cities: [],
-                    areas: [],
-                };
-                $scope.filters = {
-                    states: [],
-                    cities: [],
-                    areas: [],
-                };
-                $scope.dataLoader = function(reload = false) {
-                    $('.loading-spinner').show();
-                    if (reload) {
-                        $scope.page = 1;
-                    }
+        app.controller('myCtrl', function($scope) {
+            $('.loading-spinner').hide();
+            $scope.jsonParse = (str) => JSON.parse(str);
+            $scope.activeOb = {
+                name: ['', 'Active', 'Bloced'],
+                color: ['', 'success', 'danger']
+            };
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
+            $scope.last_id = 0;
+            $scope.customerUpdate = false;
+            $scope.list = [];
+            $scope.countries = <?= json_encode($countries) ?>;
+            $scope.cousModal = {
+                states: [],
+                cities: [],
+                areas: [],
+            };
+            $scope.filters = {
+                states: [],
+                cities: [],
+                areas: [],
+            };
+            $scope.dataLoader = function(reload = false) {
+                $('.loading-spinner').show();
 
-                    var request = {
-                        status: $('#filter-status').val(),
-                        country: $('#filter-country').val(),
-                        state: $('#filter-state').val(),
-                        city: $('#filter-city').val(),
-                        area: $('#filter-area').val(),
-                        q: $scope.q,
-                        last_id: $scope.last_id,
-                        limit: limit,
-                        _token: '{{ csrf_token() }}'
-                    };
-
-                    $.post("/customers/load", request, function(data) {
-                        $('.loading-spinner').hide();
-                        $scope.$apply(() => {
-                            $scope.customers = data;
-                            $scope.page++;
-                        });
-                    }, 'json');
+                if (reload) {
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
-                $scope.setCustomer = (indx) => {
-                    $scope.customerUpdate = indx;
-                    $('#techModal').modal('show');
-                };
-                $scope.editActive = (index) => {
-                    $scope.customerUpdate = index;
-                    $('#customerActive').modal('show');
-                };
-
-                $scope.addNote = (index) => {
-                    $scope.customerUpdate = index;
-                    $('#addNoteForm').modal('show');
-                }
-                $scope.dataLoader();
-                scope = $scope;
-            });
-
-            // update note
-            $(function() {
-                $('#addNoteForm form').on('submit', function(e) {
-                    e.preventDefault();
-                    var form = $(this),
-                        formData = new FormData(this),
-                        action = form.attr('action'),
-                        method = form.attr('method'),
-                        controls = form.find('button, input'),
-                        spinner = $('#locationModal .loading-spinner');
-                    spinner.show();
-                    controls.prop('disabled', true);
-                    $.ajax({
-                        url: action,
-                        type: method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    }).done(function(data, textStatus, jqXHR) {
-                        var response = JSON.parse(data);
-                        if (response.status) {
-                            toastr.success('Note added successfully');
-                            $('#addNoteForm').modal('hide');
-                            scope.$apply(() => {
-                                if (scope.customerUpdate === false) {
-                                    scope.customers.unshift(response.data);
-                                    scope.dataLoader(true);
-                                } else {
-                                    scope.customers[scope.customerUpdate] = response.data;
-                                    scope.dataLoader(true);
-                                }
-                            });
-                        } else toastr.error("Error");
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        toastr.error("error");
-                        controls.log(jqXHR.responseJSON.message);
-                        $('#useForm').modal('hide');
-                    }).always(function() {
-                        spinner.hide();
-                        controls.prop('disabled', false);
-                    });
-
-                })
-            });
-
-            // change active
-            $(function() {
-                $('#customerActive form').on('submit', function(e) {
-                    e.preventDefault();
-                    var form = $(this),
-                        formData = new FormData(this),
-                        action = form.attr('action'),
-                        method = form.attr('method'),
-                        controls = form.find('button, input'),
-                        spinner = $('#locationModal .loading-spinner');
-                    spinner.show();
-                    controls.prop('disabled', true);
-                    $.ajax({
-                        url: action,
-                        type: method,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    }).done(function(data, textStatus, jqXHR) {
-                        var response = JSON.parse(data);
-                        if (response.status) {
-                            toastr.success('Actived successfully');
-                            $('#customerActive').modal('hide');
-                            scope.$apply(() => {
-                                if (scope.customerUpdate === false) {
-                                    scope.customers.unshift(response.data);
-                                    scope.dataLoader(true);
-                                } else {
-                                    scope.customers[scope.customerUpdate] = response.data;
-                                    scope.dataLoader(true);
-                                }
-                            });
-                        } else toastr.error("Error");
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        toastr.error("error");
-                        controls.log(jqXHR.responseJSON.message);
-                        $('#useForm').modal('hide');
-                    }).always(function() {
-                        spinner.hide();
-                        controls.prop('disabled', false);
-                    });
-
-                })
-            });
-
-            $(function() {
-                $('#searchForm').on('submit', function(e) {
-                    e.preventDefault();
-                    scope.$apply(() => scope.q = $(this).find('input').val());
-                    scope.dataLoader(true);
-                });
-
-                $(window).scroll(function() {
-                    if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 80) &&
-                        !scope
-                        .loading) scope.dataLoader();
-                });
-
-                $('#filter-country').on('change', function() {
-                    var val = $(this).val();
-                    scope.$apply(function() {
-                        scope.filters.states = [];
-                        scope.filters.cities = [];
-                        scope.filters.areas = [];
-                    });
-                    locationsLoad(2, val, function(data) {
-                        scope.$apply(() => scope.filters.states = data);
-                    });
-                });
-
-                $('#filter-state').on('change', function() {
-                    var val = $(this).val();
-                    scope.$apply(function() {
-                        scope.filters.cities = [];
-                        scope.filters.areas = [];
-                    });
-                    locationsLoad(3, val, function(data) {
-                        scope.$apply(() => scope.filters.cities = data);
-                    });
-                });
-
-                $('#filter-city').on('change', function() {
-                    var val = $(this).val();
-                    scope.$apply(function() {
-                        scope.filters.areas = [];
-                    });
-
-                    locationsLoad(4, val, function(data) {
-                        scope.$apply(() => scope.filters.areas = data);
-                    });
-                });
-
-                $('#country').on('change', function() {
-                    var val = $(this).val();
-                    scope.$apply(function() {
-                        scope.cousModal.states = [];
-                        scope.cousModal.cities = [];
-                        scope.cousModal.areas = [];
-                    });
-                    locationsLoad(2, val, function(data) {
-                        scope.$apply(() => scope.cousModal.states = data);
-                    });
-                });
-
-                $('#state').on('change', function() {
-                    var val = $(this).val();
-                    scope.$apply(function() {
-                        scope.cousModal.cities = [];
-                        scope.cousModal.areas = [];
-                    });
-                    locationsLoad(3, val, function(data) {
-                        scope.$apply(() => scope.cousModal.cities = data);
-                    });
-                });
-
-                $('#city').on('change', function() {
-                    var val = $(this).val();
-                    scope.$apply(function() {
-                        scope.cousModal.areas = [];
-                    });
-
-                    locationsLoad(4, val, function(data) {
-                        scope.$apply(() => scope.cousModal.areas = data);
-                    });
-                });
-            });
-
-            function locationsLoad(type, parent, callback) {
-                $.post('/locations/load/', {
-                    type: type,
-                    parent: parent,
+                if ($scope.noMore) return;
+                $scope.loading = true;
+                var request = {
+                    status: $('#filter-status').val(),
+                    country: $('#filter-country').val(),
+                    state: $('#filter-state').val(),
+                    city: $('#filter-city').val(),
+                    area: $('#filter-area').val(),
+                    q: $scope.q,
+                    last_id: $scope.last_id,
+                    limit: limit,
                     _token: '{{ csrf_token() }}'
-                }, callback, 'json');
+                };
+
+                $.post("/customers/load", request, function(data) {
+                    $('.loading-spinner').hide();
+                    var ln = data.length;
+                    $scope.$apply(() => {
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].customer_id;
+                        };
+                    });
+                }, 'json');
             }
-        </script>
-    @endsection
+            $scope.setCustomer = (indx) => {
+                $scope.customerUpdate = indx;
+                $('#techModal').modal('show');
+            };
+            $scope.editActive = (index) => {
+                $scope.customerUpdate = index;
+                $('#customerActive').modal('show');
+            };
+
+            $scope.addNote = (index) => {
+                $scope.customerUpdate = index;
+                $('#addNoteForm').modal('show');
+            }
+            $scope.dataLoader();
+            scope = $scope;
+        });
+
+        // update note
+        $(function() {
+            $('#addNoteForm form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    if (response.status) {
+                        toastr.success('Note added successfully');
+                        $('#addNoteForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.customerUpdate === false) {
+                                scope.list.unshift(response.data);
+                                scope.dataLoader(true);
+                            } else {
+                                scope.list[scope.customerUpdate] = response.data;
+                                scope.dataLoader(true);
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    toastr.error("error");
+                    controls.log(jqXHR.responseJSON.message);
+                    $('#useForm').modal('hide');
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        });
+
+        // change active
+        $(function() {
+            $('#customerActive form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    if (response.status) {
+                        toastr.success('Actived successfully');
+                        $('#customerActive').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.customerUpdate === false) {
+                                scope.list.unshift(response.data);
+                                scope.dataLoader(true);
+                            } else {
+                                scope.list[scope.customerUpdate] = response.data;
+                                scope.dataLoader(true);
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    toastr.error("error");
+                    controls.log(jqXHR.responseJSON.message);
+                    $('#useForm').modal('hide');
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        });
+
+        $(function() {
+            $('#searchForm').on('submit', function(e) {
+                e.preventDefault();
+                scope.$apply(() => scope.q = $(this).find('input').val());
+                scope.dataLoader(true);
+            });
+
+            $('#filter-country').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.filters.states = [];
+                    scope.filters.cities = [];
+                    scope.filters.areas = [];
+                });
+                locationsLoad(2, val, function(data) {
+                    scope.$apply(() => scope.filters.states = data);
+                });
+            });
+
+            $('#filter-state').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.filters.cities = [];
+                    scope.filters.areas = [];
+                });
+                locationsLoad(3, val, function(data) {
+                    scope.$apply(() => scope.filters.cities = data);
+                });
+            });
+
+            $('#filter-city').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.filters.areas = [];
+                });
+
+                locationsLoad(4, val, function(data) {
+                    scope.$apply(() => scope.filters.areas = data);
+                });
+            });
+
+            $('#country').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.cousModal.states = [];
+                    scope.cousModal.cities = [];
+                    scope.cousModal.areas = [];
+                });
+                locationsLoad(2, val, function(data) {
+                    scope.$apply(() => scope.cousModal.states = data);
+                });
+            });
+
+            $('#state').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.cousModal.cities = [];
+                    scope.cousModal.areas = [];
+                });
+                locationsLoad(3, val, function(data) {
+                    scope.$apply(() => scope.cousModal.cities = data);
+                });
+            });
+
+            $('#city').on('change', function() {
+                var val = $(this).val();
+                scope.$apply(function() {
+                    scope.cousModal.areas = [];
+                });
+
+                locationsLoad(4, val, function(data) {
+                    scope.$apply(() => scope.cousModal.areas = data);
+                });
+            });
+        });
+
+        function locationsLoad(type, parent, callback) {
+            $.post('/locations/load/', {
+                type: type,
+                parent: parent,
+                _token: '{{ csrf_token() }}'
+            }, callback, 'json');
+        }
+    </script>
+@endsection

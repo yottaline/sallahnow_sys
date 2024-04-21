@@ -9,21 +9,23 @@ use Illuminate\Support\Facades\DB;
 class CompatibilitiesSuggestionsController extends Controller
 {
 
-    public function index() {
+    public function index()
+    {
         return view('content.suggestions.index');
     }
 
-    public function load() {
-        $suggestions = DB::table('compatibilities_suggestions')
-        ->join('technicians', 'compatibilities_suggestions.sugg_tech', '=', 'technicians.tech_id')
-        ->join('users', 'compatibilities_suggestions.sugg_act_by', '=', 'users.id')
-        ->join('compatibility_categories', 'compatibilities_suggestions.sugg_category', '=', 'compatibility_categories.category_id')
-        ->orderBy('sugg_act_time', 'desc')->limit(15)->offset(0)->get();
-        echo json_encode($suggestions);
+    public function load(Request $request) 
+    {
+    
+        $params   = $request->q ? ['q' => $request->q] : [];
+        $limit    = $request->limit;
+        $listId   = $request->last_id;
+
+        echo json_encode(Compatibilities_suggestions::fetch(0, $params, $limit, $listId));
     }
 
     public function store(Request $request) {
-        // return $request;
+        
         $status = Compatibilities_suggestions::create([
             'sugg_status' => 0,
             'sugg_points' => '',

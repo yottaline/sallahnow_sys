@@ -2,6 +2,11 @@
 @section('title')
     Posts
 @endsection
+@section('search')
+    <form id="searchForm" role="search">
+        <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" placeholder="Search...">
+    </form>
+@endsection
 @section('content')
     <div class="container-fluid" data-ng-app="myApp" data-ng-controller="myCtrl">
         <div class="row">
@@ -43,10 +48,10 @@
                             </div>
                         </div>
 
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
+                        {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5> --}}
 
-                        <div data-ng-if="psots.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -58,7 +63,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="post in psots track by $index">
+                                    <tr data-ng-repeat="post in list track by $index">
                                         <td data-ng-bind="post.post_code"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
@@ -83,10 +88,8 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!psots.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-3"></i>
-                            <h5 class="">No records</h5>
-                        </div>
+                        @include('layouts.loade')
+
                     </div>
                 </div>
             </div>
@@ -99,7 +102,7 @@
                         <form method="POST" action="/posts/delete/" enctype="multipart/form-data">
                             @csrf
                             <input data-ng-if="updateBrand !== false" type="hidden" name="_method" value="delete">
-                            <input type="hidden" name="post_id" data-ng-value="psot !== false ? psots[psot].post_id : 0">
+                            <input type="hidden" name="post_id" data-ng-value="psot !== false ? list[psot].post_id : 0">
                             <p>are sure of the deleting process ?</p>
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -119,12 +122,11 @@
                         <form method="POST" action="/posts/add_cost/" enctype="multipart/form-data">
                             @csrf
                             <input data-ng-if="post !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="post_id"
-                                data-ng-value="psot !== false ? psots[psot].post_id : 0">
+                            <input type="hidden" name="post_id" data-ng-value="psot !== false ? list[psot].post_id : 0">
                             <div class="mb-3">
                                 <label for="CostPost">Cost <b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="cost" maxlength="24" required
-                                    id="category_id" />
+                                    id="category_id" data-ng-value="list[psot].post_cost" />
                             </div>
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -153,7 +155,11 @@
                                     style="font-size:10px; position:relative; top:-3px"></span>
                             </div>
                         </div>
-
+                        <div data-ng-if="loadingcommit" class="text-center my-5">
+                            <span class="loadingcommit spinner-border spinner-border-sm text-secondary me-2"
+                                role="status"></span>
+                            <span>Loading...</span>
+                        </div>
                         <div data-ng-if="comments.length" data-ng-repeat="c in comments"
                             class="bg-muted-2 p-3 border rounded-2 mb-3"
                             data-ng-class="!+c.comment_visible ? 'border-danger' : 'border-success'">
@@ -168,7 +174,7 @@
                                         data-ng-bind="c.review_name"></span></span>
                             </div>
                         </div>
-                        <div data-ng-if="!comments.length" class="text-center my-5">
+                        <div data-ng-if="!loadingcommit && !comments.length" class="text-center my-5">
                             <h1 style="font-size: 90px"><i class="bi bi-chat-dots text-secondary"></i></h1>
                             <h5 class="text-secondary"> No Comments...</h5>
                         </div>
@@ -177,7 +183,8 @@
                             <input type="hidden" name="post_id" data-ng-value="psot.post_id">
                             <div class="mb-3">
                                 <label for="CostPost">Add Comment <b class="text-danger">&ast;</b></label>
-                                <textarea type="text" rows="7" cols="30" class="form-control" name="comment" required></textarea>
+                                <textarea type="text" rows="7" cols="30" class="form-control" name="comment" id="commentdata"
+                                    required></textarea>
                             </div>
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -203,50 +210,74 @@
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
             $scope.slice = (str, start, len) => str.slice(start, len);
-            $scope.psots = [];
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
+            $scope.loadingcommit = false;
+            $scope.list = [];
             $scope.comments = []
             $post = false;
-            $scope.page = 1;
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+                $('.loading-spinner').show();
+
                 var filter_cost = $('#filter_cost').val();
+
                 $.post("/posts/load/", {
                     cost: filter_cost,
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.psots = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].post_id;
+                        };
                     });
                 }, 'json');
             }
 
-            $scope.deletePost = (indx) => {
-                $scope.psot = indx;
+            $scope.deletePost = (index) => {
+                $scope.psot = index;
                 $('#delete_post').modal('show');
             };
 
-            $scope.addCost = (indx) => {
-                $scope.psot = indx;
+            $scope.addCost = (index) => {
+                $scope.psot = index;
                 $('#add_cost').modal('show');
             };
 
             $scope.comment = (post) => {
+
+                $scope.comments = [];
+                $scope.loadingcommit = true;
+
                 $.post("/posts/get_comment/", {
                     id: post.post_id,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
-                    $('.loading-spinner').hide();
+                    $scope.loadingcommit = false;
+                    $('.loadingcommit').hide();
                     $scope.$apply(() => {
                         $scope.comments = data;
                     });
                 }, 'json');
+
                 $scope.psot = post;
                 $('#comment').modal('show');
             };
@@ -256,13 +287,11 @@
         });
 
 
-        // $(function() {
-        //     $('#load').on('clcik', function(e) {
-        //         e.preventDefault();
-        //         scope.$apply(() => scope.filter_cost = $(this).find('[id="filter_cost"]').val());
-        //         scope.dataLoader(true);
-        //     });
-        // });
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault();
+            scope.$apply(() => scope.q = $(this).find('input').val());
+            scope.dataLoader(true);
+        });
 
         // delete post
         $(function() {
@@ -283,18 +312,17 @@
                     processData: false,
                     contentType: false,
                 }).done(function(data, textStatus, jqXHR) {
-                    console.log(data);
                     var response = JSON.parse(data);
                     if (response.status) {
                         toastr.success('post deleted successfully');
                         $('#delete_post').modal('hide');
                         scope.$apply(() => {
                             if (scope.psot === false) {
-                                $scope.dataLoader(true);
+                                scope.dataLoader(true);
                             } else {
-                                scope.psots[scope.psot] = response
+                                scope.list[scope.psot] = response
                                     .data;
-                                $scope.dataLoader();
+                                scope.dataLoader();
                             }
                         });
                     } else toastr.error("Error");
@@ -327,18 +355,17 @@
                     processData: false,
                     contentType: false,
                 }).done(function(data, textStatus, jqXHR) {
-                    console.log(data);
                     var response = JSON.parse(data);
                     if (response.status) {
                         toastr.success('post update cost successfully');
                         $('#add_cost').modal('hide');
                         scope.$apply(() => {
                             if (scope.psot === false) {
-                                $scope.dataLoader(true);
+                                scope.dataLoader(true);
                             } else {
-                                scope.psots[scope.psot] = response
+                                scope.list[scope.psot] = response
                                     .data;
-                                $scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -371,18 +398,18 @@
                     processData: false,
                     contentType: false,
                 }).done(function(data, textStatus, jqXHR) {
-                    console.log(data);
                     var response = JSON.parse(data);
                     if (response.status) {
                         toastr.success('post update cost successfully');
                         $('#comment').modal('hide');
+                        $('#commentdata').val(' ')
                         scope.$apply(() => {
                             if (scope.psot === false) {
-                                $scope.dataLoader(true);
+                                scope.dataLoader(true);
                             } else {
-                                scope.psots[scope.psot] = response
+                                scope.list[scope.psot] = response
                                     .data;
-                                $scope.dataLoader();
+                                scope.dataLoader();
                             }
                         });
                     } else toastr.error("Error");

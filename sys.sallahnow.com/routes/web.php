@@ -137,7 +137,7 @@ Route::prefix('posts')->middleware('auth')->group(function () {
     Route::post('submit', 'PostController@submit');
     Route::post('file_submit', 'PostController@fileSubmit');
     Route::put('add_cost', 'PostController@addCost');
-    // Route::post('update-data', 'PostController@updateData');
+    Route::post('update-data', 'PostController@updateData');
     // Route::post('add-attach', 'PostController@addAttach');
     Route::delete('delete', 'PostController@delete');
     // comments

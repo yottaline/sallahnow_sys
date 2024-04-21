@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('compat_category')->unsigned();
             // $table->timestamps();
 
-
             $table->foreign('compat_category')->references('category_id')->on('compatibility_categories');
         });
     }

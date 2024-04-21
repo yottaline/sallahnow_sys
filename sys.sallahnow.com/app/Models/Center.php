@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Center extends Model
 {
@@ -32,6 +33,40 @@ class Center extends Model
         'center_modify_by',
         'center_create'
     ];
+
+
+    public static function fetch($id = 0, $params = null, $limit = null, $listId = null)
+    {
+        $centers = self::join('technicians', 'centers.center_owner', '=', 'technicians.tech_id')
+        ->orderBy('centers.center_create', 'desc')->limit($limit);
+
+        if (isset($params['q']))
+        {
+            $centers->where(function (Builder $query) use ($params) {
+                $query->where('centers.center_name', 'like', '%' . $params['q'] . '%')
+                    ->orWhere('centers.center_mobile', $params['q'])
+                    ->orWhere('centers.center_email', $params['q']);
+            });
+            unset($params['q']);
+        }
+        
+        if($listId) $centers->where('tech_id', '<', $listId);
+
+        return $id ? $centers->first() : $centers->get();
+    }
+
+    public static function submit($param, $id)
+    {
+        if ($id) return self::where('center_id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
+    
+    public static function towCondition($elOneCondition, $op, $elTowCondition, $oneCondition,  $opt, $towCondition)
+    {
+        $centers = self::where($elOneCondition,  $op, $elTowCondition)->where($oneCondition,  $opt, $towCondition);
+        return $centers->first();
+    }
 
     public function location() {
         return $this->belongsTo(Location::class);

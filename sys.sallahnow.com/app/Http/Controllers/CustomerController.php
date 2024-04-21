@@ -24,39 +24,21 @@ class CustomerController extends Controller
 
     public function load(Request $request)
     {
-        $customers = Customer::limit($request->limit)->orderByDesc('customer_register');
+        $params   = $request->q ? ['q' => $request->q] : [];
+        $limit    = $request->limit;
+        $listId   = $request->last_id;
+        $package  = $request->package;
+        $area     = $request->area;
+        $city     = $request->city;
+        $status   = $request->state;
+        $country  = $request->country;
 
-        if ($request->q) {
-            $customers->where(function (Builder $query) {
-                $query->where('customer_name', 'like', '%' .request('q') . '%')
-                ->orWhere('customer_mobile', request('q'))
-                ->orWhere('customer_email', request('q'))->get();
-            });
-        }
-        if ($request->status) {
-            $customers->where('customer_active', $request->status);
-        }
+        echo json_encode(Customer::fetch(0, $params, $limit, $listId, $area, $city, $status, $country));
 
-        if ($request->last_id) {
-            $customers->where('customer_id', '<', $request->last_id);
-        }
-
-        if ($request->area) {
-            $customers->where('customer_area', $request->area);
-        } elseif ($request->city) {
-            $customers->where('customer_city', $request->city);
-        } elseif ($request->state) {
-            $customers->where('customer_state', $request->state);
-        } elseif ($request->country) {
-            $customers->where('customer_country', $request->country);
-        }
-
-        echo json_encode($customers->get());
     }
 
     public function submit(Request $request)
     {
-        // return $request;
         $data = $request->validate([
             'customer_name'  => 'required | string',
             'customer_email' => 'required | string',
@@ -67,78 +49,58 @@ class CustomerController extends Controller
             'customer_area'     => 'required | numeric',
             'customer_address'  => 'required | string',
         ]);
-        $customer_id = $request->customer_id;
+        
+        $id = $request->customer_id;
         $email = $request->customer_email;
         $mobile = $request->customer_mobile;
 
-        if(Customer::where('customer_id', '!=', $customer_id)->where('customer_mobile', '=', $mobile)->first())
+        if(Customer::towCondition('customer_id', '!=', $id,'customer_mobile', '=', $mobile))
         {
-            echo json_encode([
-                'status' => false,
-                'message' =>  $this->validateMessage('number'),
-            ]);
-            return ;
-        }
-        if($email && Customer::where('customer_id', '!=', $customer_id)->where('customer_email', '=', $email)->first())
-        {
-            echo json_encode([
-                'status' => false,
-                'message' =>  $this->validateMessage('email'),
-            ]);
-            return ;
+            echo json_encode(['status' => false,'message' =>  $this->validateMessage('number')]);
+            return;   
         }
 
-
+        if($email && Customer::towCondition('customer_id', '!=', $id,'customer_email', '=', $email))
+        {
+            echo json_encode(['status' => false,'message' =>  $this->validateMessage('email')]);
+            return;
+        }
+       
         $code   = strtoupper($this->uniqidReal());
-        if(!$customer_id){
+        if(!$id){
 
             $data['customer_code'] = $code;
             $data['customer_password'] = '';
             $data['customer_register'] = Carbon::now();
             $data['customer_notes']    = '';
 
-            $status = Customer::create($data);
-            $customer_id = $status->id;
-
-        } else {
-            $status = Customer::where('customer_id', $customer_id)->update($data);
-        }
-
-        $record = Customer::where('customer_id', $customer_id)->first();
+        } 
+        $result = Customer::submit($data, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Customer::fetch($result) : [],
         ]);
     }
 
     public function updateNote(Request $request)
-     {
-        $customer_id = $request->customer_id;
-        $status      = Customer::where('customer_id', $customer_id)->update([
-            'customer_notes'  => $request->note
-        ]);
-        $record = Customer::where('customer_id', $customer_id)->first();
+    {
+        $id      = $request->customer_id;
+        $context = $request->note;
+        $result  = Customer::note($id, $context);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Customer::fetch($result) : [],
         ]);
     }
 
     public function updateActive(Request $request)
     {
-        $customer_id = $request->customer_id;
-        $record = Customer::where('customer_id', $customer_id)->first();
-        if($record->customer_active == 1)
-        {
-           $status = $record->update(['customer_active' => 2]);
-        }
-        else
-        {
-            $status = $record->update(['customer_active' => 1]);
-        }
+        $id = $request->customer_id;
+        $record = Customer::where('customer_id', $id)->first();
+        $result = Customer::status($record);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? $record : [],
         ]);
     }
 

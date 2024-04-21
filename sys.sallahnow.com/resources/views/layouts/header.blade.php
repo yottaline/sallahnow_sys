@@ -74,4 +74,7 @@
 
     <link rel="stylesheet" href="{{ asset('/assets/css/style.css?v=1.0.0') }}">
     <!-- <link rel="stylesheet" href="/assets/css/rtl_style.css?v=1.0.0"> -->
+    <script>
+        let limit = 24;
+    </script>
 </head>

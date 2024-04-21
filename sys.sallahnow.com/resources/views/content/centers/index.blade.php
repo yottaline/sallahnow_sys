@@ -39,10 +39,10 @@
                             </div>
                         </div>
 
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
+                        {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5> --}}
 
-                        <div data-ng-if="centers.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -54,7 +54,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="center in centers track by $index">
+                                    <tr data-ng-repeat="center in list track by $index">
                                         <td data-ng-bind="center.center_id"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
@@ -91,10 +91,8 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!centers.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-3"></i>
-                            <h5 class="">No records</h5>
-                        </div>
+                        @include('layouts.loade')
+
                     </div>
                 </div>
             </div>
@@ -107,14 +105,14 @@
                         <form id="cenForm" method="post" action="/centers/submit" enctype="multipart/form-data">
                             @csrf
                             <input data-ng-if="centerUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="center_id" data-ng-value="centers[centerUpdate].center_id">
+                            <input type="hidden" name="center_id" data-ng-value="list[centerUpdate].center_id">
                             <div class="row">
                                 {{-- name --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="fullName">Center Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name" maxlength="120"
-                                            data-ng-value="centers[centerUpdate].center_name" id="fullName">
+                                            data-ng-value="list[centerUpdate].center_name" id="fullName" required />
                                     </div>
                                 </div>
 
@@ -123,7 +121,7 @@
                                     <div class="mb-3">
                                         <label for="mobile">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="mobile" maxlength="24"
-                                            data-ng-value="centers[centerUpdate].center_mobile" id="mobile" />
+                                            data-ng-value="list[centerUpdate].center_mobile" id="mobile" required />
                                     </div>
                                 </div>
                                 {{-- Whatsapp --}}
@@ -131,7 +129,7 @@
                                     <div class="mb-3">
                                         <label for="Whatsapp">Whatsapp</label>
                                         <input class="form-control" name="center_whatsapp" type="text"
-                                            data-ng-value="centers[centerUpdate].center_whatsapp" id="Whatsapp">
+                                            data-ng-value="list[centerUpdate].center_whatsapp" id="Whatsapp" required />
                                     </div>
                                 </div>
                                 {{-- email --}}
@@ -140,7 +138,8 @@
                                         <label for="exampleInputEmail1">Email</label>
                                         <input type="email" class="form-control" name="email"
                                             id="exampleInputEmail1"
-                                            data-ng-value="centerUpdate !== false ? centers[centerUpdate].center_email : ''">
+                                            data-ng-value="centerUpdate !== false ? list[centerUpdate].center_email : ''"
+                                            required />
                                     </div>
                                 </div>
 
@@ -149,7 +148,7 @@
                                     <div class="mb-3">
                                         <label for="phoneT">Phone</label>
                                         <input type="text" class="form-control" name="tel" maxlength="24"
-                                            data-ng-value="centers[centerUpdate].center_tel" id="phoneT" />
+                                            data-ng-value="list[centerUpdate].center_tel" id="phoneT" required />
                                     </div>
                                 </div>
 
@@ -158,7 +157,7 @@
                                     <div class="mb-3">
                                         <label for="TaxNumber">Tax Number</label>
                                         <input type="text" class="form-control" name="center_tax" maxlength="24"
-                                            data-ng-value="centers[centerUpdate].center_tax" id="TaxNumber" />
+                                            data-ng-value="list[centerUpdate].center_tax" id="TaxNumber" required />
                                     </div>
                                 </div>
 
@@ -167,7 +166,7 @@
                                     <div class="mb-3">
                                         <label for="CrNumber">Cr Number</label>
                                         <input type="text" class="form-control" name="center_cr" maxlength="24"
-                                            data-ng-value="centers[centerUpdate].center_cr" id="CrNumber" />
+                                            data-ng-value="list[centerUpdate].center_cr" id="CrNumber" required />
                                     </div>
                                 </div>
 
@@ -175,7 +174,8 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="Logo">Logo</label>
-                                        <input type="file" class="form-control" name="logo" id="Logo" />
+                                        <input type="file" class="form-control" name="logo" id="Logo"
+                                            required />
                                     </div>
                                 </div>
 
@@ -183,10 +183,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Country<b class="text-danger">&ast;</b></label>
-                                        <select name="country_id" class="form-control" required>
-                                            <option value="">-- select country --</option>
-                                            <option value="1">sudan</option>
-                                            <option value="2">Egypt</option>
+                                        <select name="country_id" id="country" class="form-select" required>
+                                            <option value="default">-- select country --</option>
+                                            <option data-ng-repeat="country in countries"
+                                                data-ng-value="country.location_id"
+                                                data-ng-bind="jsonParse(country.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -194,10 +195,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>State<b class="text-danger">&ast;</b></label>
-                                        <select name="state_id" class="form-control" required>
-                                            <option value="">-- select state --</option>
-                                            <option value="1">Khartoum</option>
-                                            <option value="2">Cairo</option>
+                                        <select name="state_id" id="state" class="form-select" required>
+                                            <option value="default">-- select state --</option>
+                                            <option data-ng-repeat="state in techModal.states"
+                                                data-ng-value="state.location_id"
+                                                data-ng-bind="jsonParse(state.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -206,10 +208,11 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>City<b class="text-danger">&ast;</b></label>
-                                        <select name="city_id" class="form-control" required>
-                                            <option value="">-- select city --</option>
-                                            <option value="1">Khartoum</option>
-                                            <option value="2">Cairo</option>
+                                        <select name="city_id" id="city" class="form-select" required>
+                                            <option value="default">-- select city --</option>
+                                            <option data-ng-repeat="city in techModal.cities"
+                                                data-ng-value="city.location_id"
+                                                data-ng-bind="jsonParse(city.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -217,37 +220,36 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Arae<b class="text-danger">&ast;</b></label>
-                                        <select name="area_id" class="form-control" required>
-                                            <option value="">-- select area --</option>
-                                            <option value="1">Khartoum, Omdurman</option>
-                                            <option value="2">Cairo, Maadi</option>
+                                        <select name="area_id" id="area" class="form-select" required>
+                                            <option value="default">-- select area --</option>
+                                            <option data-ng-repeat="area in techModal.areas"
+                                                data-ng-value="area.location_id"
+                                                data-ng-bind="jsonParse(area.location_name)['en']"></option>
                                         </select>
                                     </div>
                                 </div>
-
                                 {{-- address --}}
                                 <div class="col-12">
                                     <div class="mb-3">
                                         <label for="addressCenter">Address</label>
                                         <input type="text" class="form-control" name="address" id="addressCenter"
-                                            data-ng-value="centerUpdate !== false ? centers[centerUpdate].center_address : ''" />
+                                            data-ng-value="centerUpdate !== false ? list[centerUpdate].center_address : ''"
+                                            required />
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-12 col-md-12">
-                                        <div class="mb-3">
-                                            <input type="search" class="form-control" name="search"
-                                                placeholder="Search..." id="search">
-                                        </div>
+                                <div class="col-12 col-md-12">
+                                    <div class="mb-3">
+                                        <input type="search" class="form-control" name="search"
+                                            placeholder="Search..." id="search">
                                     </div>
-                                    <div class="col-12 col-md-12">
-                                        <div class="mb-3">
-                                            <label for="TechnicianName">Technician Name<b
-                                                    class="text-danger">&ast;</b></label>
-                                            <select class="form-control" name="technician_name"
-                                                id="TechnicianName"></select>
-                                        </div>
+                                </div>
+                                <div class="col-12 col-md-12">
+                                    <div class="mb-3">
+                                        <label for="TechnicianName">Technician Name<b
+                                                class="text-danger">&ast;</b></label>
+                                        <select class="form-control" name="technician_name" id="TechnicianName"
+                                            required></select>
                                     </div>
                                 </div>
 
@@ -298,11 +300,11 @@
                                             $('#centerForm').modal('hide');
                                             scope.$apply(() => {
                                                 if (scope.centerUpdate === false) {
-                                                    scope.centers.unshift(response.data);
-                                                    scope.dataLoader();
+                                                    scope.list.unshift(response.data);
+                                                    scope.dataLoader(true);
                                                 } else {
-                                                    scope.centers[scope.centerUpdate] = response.data;
-                                                    scope.dataLoader();
+                                                    scope.list[scope.centerUpdate] = response.data;
+                                                    scope.dataLoader(true);
                                                 }
                                             });
                                         } else toastr.error(response.message);
@@ -406,30 +408,52 @@
             app.controller('myCtrl', function($scope) {
                 $('.loading-spinner').hide();
                 $scope.q = '';
+                $scope.noMore = false;
+                $scope.loading = false;
                 $scope.centerUpdate = false;
                 $scope.technicianId = 0;
-                $scope.centers = [];
+                $scope.countries = <?= json_encode($countries) ?>;
+                $scope.jsonParse = (str) => JSON.parse(str);
+                $scope.list = [];
+                $scope.last_id = 0;
                 $scope.technicianName = false;
-                $scope.page = 1;
+                $scope.techModal = {
+                    states: [],
+                    cities: [],
+                    areas: [],
+                };
                 $scope.dataLoader = function(reload = false) {
-                    $('.loading-spinner').show();
+
                     if (reload) {
-                        $scope.page = 1;
+                        $scope.list = [];
+                        $scope.last_id = 0;
+                        $scope.noMore = false;
                     }
+                    if ($scope.noMore) return;
+                    $scope.loading = true;
+
+                    $('.loading-spinner').show();
+
                     $.post("/centers/load", {
+                        last_id: $scope.last_id,
+                        limit: limit,
                         q: $scope.q,
-                        page: $scope.page,
-                        limit: 24,
                         _token: '{{ csrf_token() }}'
                     }, function(data) {
                         $('.loading-spinner').hide();
+                        var ln = data.length;
                         $scope.$apply(() => {
-                            $scope.centers = data;
-                            console.log(data)
-                            $scope.page++;
+                            $scope.loading = false;
+                            if (ln) {
+                                $scope.noMore = ln < limit;
+                                $scope.list = data;
+                                console.log(data)
+                                $scope.last_id = data[ln - 1].center_id;
+                            };
                         });
                     }, 'json');
                 }
+
                 $scope.setCenter = (indx) => {
                     $scope.centerUpdate = indx;
                     $('#centerForm').modal('show');
@@ -439,19 +463,7 @@
                     $('#add_owner').modal('show');
                 }
 
-                // $scope.getTechnicianName = function() {
-                //     $.post("/centers/getTechnicianName/", {
-                //         _token: '{{ csrf_token() }}'
-                //     }, function(data) {
-                //         $('.loading-spinner').hide();
-                //         $scope.$apply(() => {
-                //             $scope.technicianName = data;
-                //         });
-                //     }, 'json');
-                // }
-
                 $scope.dataLoader();
-                // $scope.getTechnicianName();
                 scope = $scope;
             });
 
@@ -479,6 +491,47 @@
                     scope.$apply(() => scope.q = $(this).find('input').val());
                     scope.dataLoader(true);
                 });
+                $('#country').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.techModal.states = [];
+                        scope.techModal.cities = [];
+                        scope.techModal.areas = [];
+                    });
+                    locationsLoad(2, val, function(data) {
+                        scope.$apply(() => scope.techModal.states = data);
+                    });
+                });
+
+                $('#state').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.techModal.cities = [];
+                        scope.techModal.areas = [];
+                    });
+                    locationsLoad(3, val, function(data) {
+                        scope.$apply(() => scope.techModal.cities = data);
+                    });
+                });
+
+                $('#city').on('change', function() {
+                    var val = $(this).val();
+                    scope.$apply(function() {
+                        scope.techModal.areas = [];
+                    });
+
+                    locationsLoad(4, val, function(data) {
+                        scope.$apply(() => scope.techModal.areas = data);
+                    });
+                });
             });
+
+            function locationsLoad(type, parent, callback) {
+                $.post('/locations/load/', {
+                    type: type,
+                    parent: parent,
+                    _token: '{{ csrf_token() }}'
+                }, callback, 'json');
+            }
         </script>
     @endsection

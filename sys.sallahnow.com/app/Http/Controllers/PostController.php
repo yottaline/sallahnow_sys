@@ -23,35 +23,24 @@ class PostController extends Controller
 
     function load(Request $request)
     {
-        $cost = $request->cost;
-        if($cost){
+        $params = $request->q ? ['q' => $request->q] : [];
+        $limit  = $request->limit;
+        $listId = $request->list_id;
+        $cost   = $request->cost;
 
-            $posts = DB::table('posts')
-            ->where('post_cost', '=', $cost)->orderBy('post_create_time', 'desc')->get();
-            echo json_encode($posts);
-
-        }else{
-            $posts = DB::table('posts')
-            ->join('users', 'posts.post_create_user', '=', 'users.id')
-            ->where('post_deleted', '=', '0')
-            ->orderBy('post_create_time', 'desc')->limit(15)->offset(0)->get();
-
-        echo json_encode($posts);
-
-        }
+        echo json_encode(Post::fetch(0, $params, $limit, $listId, $cost));
 
     }
 
     function editor($code = null)
     {
-        $data = $code ? DB::table('posts')
-            ->join('users', 'posts.post_create_user', '=', 'users.id', 'left')
-            ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
-            ->where('post_code', $code)->first() : null;
+       $post = Post::editor($code);
 
-        $file = Storage::get('public/post/' . $code . '.txt');
-
-        return view('content.posts.editor', compact('data', 'file'));
+       $data = $post['data'];
+       
+       $file = $post['file'];
+       
+       return view('content.posts.editor', compact('data', 'file'));
     }
 
     function submit(Request $request)
@@ -76,89 +65,71 @@ class PostController extends Controller
         }
 
         $id = $request->id;
-        if (!$id) {
+        if (!$id)
+        {
             $param['post_code'] = strtoupper($this->uniqidReal());
             $param['post_create_user'] = auth()->user()->id;
             $param['post_archive_time'] = now();
             $param['post_delete_user'] = 0;
             $param['post_create_time'] = now();
-            $status = Post::create($param);
-            if (!$status) {
-                echo json_encode([
-                    'status' => false,
-                ]);
-                return;
-            }
-            $id =  $status->id;
+
         } else {
+
             $param['post_modify_user'] = auth()->user()->id;
             $param['post_modify_time'] = now();
-            $record = Post::where('post_id', $id)->first();
+            
+            $record = Post::fetch($id);
             if ($photo && $record->post_photo) {
                 File::delete($this->photosPath . $record->post_photo);
             }
-            $status = Post::where('post_id', $id)->update($param);
-        }
 
-        $record = DB::table('posts')
-            ->join('users', 'posts.post_create_user', '=', 'users.id', 'left')
-            ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
-            ->where('post_id', $id)->first();
+        }
+        
+        $result = Post::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Post::fetch($id) : [],
         ]);
+        
     }
 
     function fileSubmit(Request $request)
     {
         $post_id = $request->post_id;
         $context = $request->context;
-
-        $post = Post::where('post_id', $post_id)->first();
-        $code  = $post->post_code;
-        $status = Storage::disk('posts')->put($code . '.txt', $context);
-        echo json_encode([
-            'status' => boolval($status),
-        ]);
+        
+        $post = Post::fetch($post_id);
+        
+       $status = Post::file($post, $context);
+        echo json_encode(['status' => boolval($status)]);
     }
 
     function addCost(Request $request)
     {
-        $request->validate([
-            'cost' => 'required|numeric'
-        ]);
-        $post_id = $request->post_id;
-        $status = Post::where('post_id', $post_id)->update([
-            'post_cost'  => $request->cost
-        ]);
-
-        $record = Post::where('post_id', $post_id)->first();
+        $request->validate(['cost' => 'required|numeric']);
+        
+        $id = $request->post_id;
+        
+        $result = Post::cost($id, $request->cost); 
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Post::fetch($id) : [],
         ]);
     }
 
-
-
     function updateData(Request $request)
     {
-        $post_id  = $request->id;
-        if ($request->key == 'post_allow_comment') {
-            $status = Post::where('post_id', $post_id)->update(['post_allow_comments' => $request->val]);
-        } elseif ($request->key == 'post_archived') {
-            $status = Post::where('post_id', $post_id)->update(['post_archived' => $request->val]);
-        }
-        echo json_encode([
-            'status' => boolval($status),
-        ]);
+        $id    = $request->id;
+        $key   = $request->key;
+        $value = $request->val;
+        $status = Post::changes($id, $key, $value); 
+        echo json_encode(['status' => boolval($status)]);
     }
 
     function delete(Request $request)
     {
-        $status = Post::where('post_id', $request->post_id)
-            ->update(['post_deleted' => 1]);
+        $id = $request->post_id;
+        $status = Post::deleteItem($id);
         echo json_encode([
             'status' => boolval($status),
         ]);
@@ -169,24 +140,22 @@ class PostController extends Controller
     function getComment(Request $request)
     {
         $post_id = $request->id;
-        $comments = Post_Comment::where('comment_post', $post_id)
-            ->orderBy('comment_create', 'desc')->get();
-        echo json_encode($comments);
+        echo json_encode(Post_Comment::fetch(0, $post_id));
     }
 
     function addComment(Request $request)
     {
-        $status = Post_Comment::create([
+        $params = [
             'comment_post'     => $request->post_id,
             'comment_context'  => $request->comment,
             'comment_create'   => Carbon::now(),
             'comment_user'     => auth()->user()->id
-        ]);
-        $comment_id = $status->status;
-        $record     = Post_Comment::where('comment_id', $comment_id)->first();
+        ];
+        
+        $result = Post_Comment::submit($params);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Post_Comment::fetch($result) : [],
         ]);
     }
 
