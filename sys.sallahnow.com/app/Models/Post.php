@@ -43,7 +43,7 @@ class Post extends Model
         ->where('post_deleted', '=', '0')
         ->orderBy('post_create_time', 'desc')->limit($limit);
 
-        if($cost) $posts->where('posts.post_cost', $cost);
+        if($listId) $posts->where('post_id', '<', $listId);
         
         if (isset($params['q']))
         {
@@ -55,16 +55,15 @@ class Post extends Model
             unset($params['q']);
         }
         
-        if($listId) $posts->where('posts.post_id', '<', $listId);
-
+        if ($params) $posts->where($params);
+        
         return $id ? $posts->first() : $posts->get();
         
     }
 
     public static function editor($code = null)
     {
-        $data = $code ? DB::table('posts')
-            ->join('users', 'posts.post_create_user', '=', 'users.id', 'left')
+        $data = $code ? self::join('users', 'posts.post_create_user', '=', 'users.id', 'left')
             ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
             ->where('post_code', $code)->first() : null;
 
@@ -87,33 +86,6 @@ class Post extends Model
         return $status ? $status : false;
     }
     
-    public static function cost($id, $cost)
-    {
-        $data = Post::where('post_id', $id)->update(['post_cost' => $cost]);
-
-        return $data ? $data : false;
-    }
-
-    public static function changes($id, $key, $value)
-    {
-        if($key == 'post_allow_comment')
-        {
-             $status = Post::where('post_id', $id)->update(['post_allow_comments' => $value]);
-        } 
-        elseif($key == 'post_archived')
-        {
-            $status = Post::where('post_id', $id)->update(['post_archived' => $value]);
-        }
-
-        return $status ? $status : false;
-    }
-
-    public static function deleteItem($id)
-    {
-        $status = Post::where('post_id', $id)->update(['post_deleted' => 1]);
-
-        return $status ? $status : false;
-    }
 
     function get($column, $value)
     {

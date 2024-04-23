@@ -48,13 +48,11 @@ class Technician extends Authenticatable implements JWTSubject
         'tech_register'
     ];
 
-    public static function fetch($id = 0, $params = null ,$limit = null, $listId = null, $package = null, $area = null, $city = null, $state = null, $country = null, $select = null)
+    public static function fetch($id = 0, $params = null ,$limit = null, $listId = null, $select = null)
     {
         $technicians = self::orderBy('tech_register', 'desc')->limit($limit);
 
         if($listId) $technicians->where('tech_id', '<', $listId);
-
-        if($package) $technicians->where('tech_pkg', $package);
 
         if (isset($params['q']))
         {
@@ -65,24 +63,8 @@ class Technician extends Authenticatable implements JWTSubject
             });
             unset($params['q']);
         }
-
-        if ($area) {
-
-            $technicians->where('tech_area', $area);
-
-        } elseif ($city) {
-
-            $technicians->where('tech_city', $city);
-
-        } elseif ($state) {
-
-            $technicians->where('tech_state', $state);
-
-        } elseif ($country) {
-
-            $technicians->where('tech_country', $country);
-
-        }
+        
+        if($params) $technicians->where($params);
 
         return $id ? $technicians->first() : $technicians->get();
     }
@@ -92,12 +74,6 @@ class Technician extends Authenticatable implements JWTSubject
         if ($id) return self::where('tech_id', $id)->update($param) ? $id : false;
         $status = self::create($param);
         return $status ? $status->tech_id : false;
-    }
-
-    public static function towCondition($elOneCondition, $op, $elTowCondition, $oneCondition,  $opt, $towCondition)
-    {
-        $technicians = self::where($elOneCondition,  $op, $elTowCondition)->where($oneCondition,  $opt, $towCondition);
-        return $technicians->first();
     }
 
     protected $casts = [

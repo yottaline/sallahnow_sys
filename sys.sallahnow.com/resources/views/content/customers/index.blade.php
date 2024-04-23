@@ -132,7 +132,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="techModal" tabindex="-1" role="dialog" aria-labelledby="techModalLabel">
+        <div class="modal fade" id="custModal" tabindex="-1" role="dialog" aria-labelledby="custModalLabel">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -260,7 +260,7 @@
                                         var response = JSON.parse(data);
                                         if (response.status) {
                                             toastr.success('Data processed successfully');
-                                            $('#techModal').modal('hide');
+                                            $('#custModal').modal('hide');
                                             scope.$apply(() => {
                                                 if (scope.customerUpdate === false) {
                                                     scope.list.unshift(response.data);
@@ -273,7 +273,7 @@
                                         } else toastr.error(response.message);
                                     }).fail(function(jqXHR, textStatus, errorThrown) {
                                         toastr.error("error");
-                                        $('#techModal').modal('hide');
+                                        $('#custModal').modal('hide');
                                     }).always(function() {
                                         $(form).find('button').prop('disabled', false);
                                     });
@@ -293,7 +293,7 @@
         </div>
 
         {{-- add - note  --}}
-        <div class="modal fade" id="addNoteForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal fade" id="addNoteForm" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -322,14 +322,16 @@
         </div>
 
         {{-- change customer_active --}}
-        <div class="modal fade" id="customerActive" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal fade" id="customerActive" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <form method="POST" action="/customers/update_active/">
+                        <form method="POST" action="/customers/update_active">
                             @csrf
                             <input data-ng-if="customerUpdate !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="customer_id" data-ng-value="list[customerUpdate].customer_id">
+                            <input type="hidden" name="customer_active"
+                                data-ng-value="list[customerUpdate].customer_active">
                             <div class="row">
                                 <div class="col-12">
                                     <p class="mb-2">Are you sure you want to change status the customer?</p>
@@ -416,7 +418,7 @@
             }
             $scope.setCustomer = (indx) => {
                 $scope.customerUpdate = indx;
-                $('#techModal').modal('show');
+                $('#custModal').modal('show');
             };
             $scope.editActive = (index) => {
                 $scope.customerUpdate = index;

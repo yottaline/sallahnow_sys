@@ -98,10 +98,6 @@
 
                         @include('layouts.loade')
 
-                        {{-- <div data-ng-if="!subscriptions.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle  display-4"></i>
-                            <h5>No records</h5>
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -178,13 +174,12 @@
 
         <!-- start change status  Modal -->
         <div class="modal fade" id="changeStatus" tabindex="-1" role="dialog" aria-labelledby="changeStatusLabel">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
                         <form method="POST" action="/subscriptions/change/">
                             @csrf @method('PUT')
-                            <input type="hidden" name="sub_id"
-                                data-ng-value="subscriptions[updateSubscription].sub_id">
+                            <input type="hidden" name="sub_id" data-ng-value="list[updateSubscription].sub_id">
                             <p>Are you sure the subscription status has changed?</p>
                             <div class="row">
                                 <div class="d-flex">
@@ -325,11 +320,11 @@
                         scope.$apply(() => {
                             if (scope.updateSubscription === false) {
                                 scope.list.unshift(response.data);
-                                scope.dataLoader();
+                                scope.dataLoader(true);
                             } else {
                                 scope.list[scope.updateSubscription] = response
                                     .data;
-                                scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");

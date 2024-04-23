@@ -49,38 +49,38 @@
                         </div>
                         <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
                         </h5>
-                        <div data-ng-if="points.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="points_table">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Technician Name</th>
-                                        <th>Points Count</th>
-                                        <th>Process type</th>
-                                        <th>Point source</th>
-                                        <th>Date</th>
+                                        <th class="text-center">Technician Name</th>
+                                        <th class="text-center">Points Count</th>
+                                        <th class="text-center">Process type</th>
+                                        <th class="text-center">Point source</th>
+                                        <th class="text-center">Date</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody id="test">
 
-                                    <tr data-ng-repeat="point in points track by $index" id="tBoody">
+                                    <tr data-ng-repeat="point in list track by $index" id="tBoody">
                                         <td data-ng-bind="point.points_id"></td>
-                                        <td data-ng-bind="point.tech_name"></td>
-                                        <td data-ng-bind="point.points_count"></td>
-                                        <td>
+                                        <td class="text-center" data-ng-bind="point.tech_name"></td>
+                                        <td class="text-center" data-ng-bind="point.points_count"></td>
+                                        <td class="text-center">
                                             <span
-                                                class="badge bg-<%procesObj.color[point.points_process]%> rounded-pill font-monospace"><%procesObj.name[point.points_process]%></span>
+                                                class="badge bg-<%procesObj.color[point.points_process]%> rounded-pill font-monospace p-2"><%procesObj.name[point.points_process]%></span>
 
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <span
-                                                class="badge bg-dark rounded-pill font-monospace"><%scrObj.name[point.points_src]%></span>
+                                                class="badge bg-dark rounded-pill font-monospace p-2"><%scrObj.name[point.points_src]%></span>
 
                                         </td>
-                                        <td data-ng-bind="point.points_register"></td>
-                                        <td>
-                                            <div class="col-fit">
+                                        <td class="text-center" data-ng-bind="point.points_register"></td>
+                                        <td class="col-fit">
+                                            <div>
                                                 {{-- <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
                                                     href="/points/profile/<% point.technician_id %>" target="_blank"></a>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -94,10 +94,8 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!points.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-4"></i>
-                            <h5>No records</h5>
-                        </div>
+                        @include('layouts.loade')
+
                     </div>
                 </div>
             </div>
@@ -138,7 +136,8 @@
                                 </div>
                                 <div class="col-12 col-md-12">
                                     <div class="mb-3">
-                                        <label for="TechnicianName">Technician Name<b class="text-danger">&ast;</b></label>
+                                        <label for="TechnicianName">Technician Name<b
+                                                class="text-danger">&ast;</b></label>
                                         <select class="form-control" name="technician_name" id="TechnicianName"></select>
                                     </div>
                                 </div>
@@ -197,11 +196,6 @@
         </div> --}}
         <!-- end change process  Modal -->
 
-
-
-
-
-
     </div>
 @endsection
 @section('js')
@@ -222,22 +216,38 @@
                 ],
             }
             $scope.updatePoint = false;
-            $scope.points = [];
-            $scope.page = 1;
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
+            $scope.list = [];
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+                $('.loading-spinner').show();
+
                 $.post("/points/load/", {
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.points = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].center_id;
+                        };
                     });
                 }, 'json');
             }
@@ -312,12 +322,12 @@
                         $('#pointForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.updatePoint === false) {
-                                scope.points.unshift(response.data);
-                                scope.dataLoader();
+                                scope.list.unshift(response.data);
+                                scope.dataLoader(true);
                             } else {
-                                scope.points[scope.updatePoint] = response
+                                scope.list[scope.updatePoint] = response
                                     .data;
-                                scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");

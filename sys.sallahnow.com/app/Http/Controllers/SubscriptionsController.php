@@ -44,7 +44,7 @@ class SubscriptionsController extends Controller
 
     public function submit(Request $request)
     {   
-       $package = Package::where('pkg_id', $request->package_id)->first();
+       $package = Package::fetch($request->package_id);
        $technician_id =  $request->technician_name;
        
         $pam = [
@@ -64,7 +64,8 @@ class SubscriptionsController extends Controller
         $end      = Subscriptions::parse($realTime, $time);
 
         // 0105060A4CA7
-        $technician = Subscriptions::condition('sub_tech', '=', $technician_id);
+        $params[] = ['sub_tech', $technician_id];
+        $technician = Subscriptions::fetch(0, $params);
         
         $id = $request->sub_id;
         
@@ -76,36 +77,30 @@ class SubscriptionsController extends Controller
         }
 
         $result = Subscriptions::submit($pam, $id);
-
         echo json_encode([
             'status' => boolval($result),
             'data' => $result ? Subscriptions::fetch($result) : [],
         ]);
     }
 
-    public function technicianName() {
-        $technician_name = DB::table('technicians')
-        ->join('subscriptions', 'technicians.tech_id', '=', 'subscriptions.sub_tech')->get();
-        echo json_encode($technician_name);
-    }
+    // public function technicianName() {
+    //     $technician_name = DB::table('technicians')
+    //     ->join('subscriptions', 'technicians.tech_id', '=', 'subscriptions.sub_tech')->get();
+    //     echo json_encode($technician_name);
+    // }
 
-    public function userName() {
-        $technician_name = DB::table('users')
-        ->join('subscriptions', 'users.id', '=', 'subscriptions.sub_register_by')
-        ->orderBy('subscriptions.created_at', 'desc')
-        ->get();
-        echo json_encode($technician_name);
-    }
+    // public function userName() {
+    //     $technician_name = DB::table('users')
+    //     ->join('subscriptions', 'users.id', '=', 'subscriptions.sub_register_by')
+    //     ->orderBy('subscriptions.created_at', 'desc')
+    //     ->get();
+    //     echo json_encode($technician_name);
+    // }
 
     public function changeStatus(Request $request) {
         $id = $request->sub_id;
-        $sub = Subscriptions::where('sub_id', $id)->first();
-        if($sub->sub_status == 1){
-           $status = Subscriptions::where('sub_id', $id)->update(['sub_status' => 0]);
-        }
-        elseif($sub->sub_status == 0){
-            $status = Subscriptions::where('sub_id',  $id)->update(['sub_status' => 1]);
-        }
+        $subscription = Subscriptions::fetch($id);
+        $status = $subscription->sub_status ? Subscriptions::submit(['sub_status' => 0], $id) : Subscriptions::submit(['sub_status' => 1], $id);
 
         echo json_encode([
             'status' => boolval($status)

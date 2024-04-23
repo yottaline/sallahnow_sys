@@ -26,9 +26,9 @@ class PostController extends Controller
         $params = $request->q ? ['q' => $request->q] : [];
         $limit  = $request->limit;
         $listId = $request->list_id;
-        $cost   = $request->cost;
+        if ($request->cost) $params[] = ['post_cost', $request->cost];
 
-        echo json_encode(Post::fetch(0, $params, $limit, $listId, $cost));
+        echo json_encode(Post::fetch(0, $params, $limit, $listId));
 
     }
 
@@ -37,7 +37,6 @@ class PostController extends Controller
        $post = Post::editor($code);
 
        $data = $post['data'];
-       
        $file = $post['file'];
        
        return view('content.posts.editor', compact('data', 'file'));
@@ -45,10 +44,7 @@ class PostController extends Controller
 
     function submit(Request $request)
     {
-        $request->validate([
-            'title'  => 'required',
-            'body'   => 'required'
-        ]);
+        $request->validate(['title'=> 'required','body'=> 'required']);
 
         $param = [
             'post_title'       => $request->title,
@@ -97,7 +93,6 @@ class PostController extends Controller
     {
         $post_id = $request->post_id;
         $context = $request->context;
-        
         $post = Post::fetch($post_id);
         
        $status = Post::file($post, $context);
@@ -108,9 +103,10 @@ class PostController extends Controller
     {
         $request->validate(['cost' => 'required|numeric']);
         
-        $id = $request->post_id;
+        $id    = $request->post_id;
+        $params = ['post_cost' => $request->cost];
         
-        $result = Post::cost($id, $request->cost); 
+        $result = Post::submit($params, $id); 
         echo json_encode([
             'status' => boolval($result),
             'data' => $result ? Post::fetch($id) : [],
@@ -122,14 +118,22 @@ class PostController extends Controller
         $id    = $request->id;
         $key   = $request->key;
         $value = $request->val;
-        $status = Post::changes($id, $key, $value); 
+        
+        if ($key == 'post_allow_comment')
+        {
+            $status =  Post::submit(['post_allow_comments' => $value], $id);
+        }
+        elseif ($key == 'post_archived')
+        {
+           $status = Post::submit(['post_archived' => $value], $id);
+        }
         echo json_encode(['status' => boolval($status)]);
     }
 
     function delete(Request $request)
     {
         $id = $request->post_id;
-        $status = Post::deleteItem($id);
+        $status = Post::submit(['post_deleted' => 1], $id);
         echo json_encode([
             'status' => boolval($status),
         ]);
@@ -153,9 +157,10 @@ class PostController extends Controller
         ];
         
         $result = Post_Comment::submit($params);
+        $id = $result;
         echo json_encode([
             'status' => boolval($result),
-            'data' => $result ? Post_Comment::fetch($result) : [],
+            'data' => $result ? Post_Comment::fetch($id) : [],
         ]);
     }
 

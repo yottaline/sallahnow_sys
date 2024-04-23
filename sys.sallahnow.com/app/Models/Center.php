@@ -37,20 +37,22 @@ class Center extends Model
 
     public static function fetch($id = 0, $params = null, $limit = null, $listId = null)
     {
-        $centers = self::join('technicians', 'centers.center_owner', '=', 'technicians.tech_id')
-        ->orderBy('centers.center_create', 'desc')->limit($limit);
+        $centers = self::join('technicians', 'center_owner', '=', 'tech_id')
+        ->orderBy('center_create', 'desc')->limit($limit);
 
+        if($listId) $centers->where('center_id', '<', $listId);
+        
         if (isset($params['q']))
         {
             $centers->where(function (Builder $query) use ($params) {
-                $query->where('centers.center_name', 'like', '%' . $params['q'] . '%')
-                    ->orWhere('centers.center_mobile', $params['q'])
-                    ->orWhere('centers.center_email', $params['q']);
+                $query->where('center_name', 'like', '%' . $params['q'] . '%')
+                    ->orWhere('center_mobile', $params['q'])
+                    ->orWhere('center_email', $params['q']);
             });
             unset($params['q']);
         }
         
-        if($listId) $centers->where('tech_id', '<', $listId);
+        if ($params) $centers->where($params);
 
         return $id ? $centers->first() : $centers->get();
     }
@@ -62,11 +64,6 @@ class Center extends Model
         return $status ? $status->id : false;
     }
     
-    public static function towCondition($elOneCondition, $op, $elTowCondition, $oneCondition,  $opt, $towCondition)
-    {
-        $centers = self::where($elOneCondition,  $op, $elTowCondition)->where($oneCondition,  $opt, $towCondition);
-        return $centers->first();
-    }
 
     public function location() {
         return $this->belongsTo(Location::class);

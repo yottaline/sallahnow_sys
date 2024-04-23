@@ -27,18 +27,20 @@ class CustomerController extends Controller
         $params   = $request->q ? ['q' => $request->q] : [];
         $limit    = $request->limit;
         $listId   = $request->last_id;
-        $package  = $request->package;
-        $area     = $request->area;
-        $city     = $request->city;
-        $status   = $request->state;
-        $country  = $request->country;
+        
+        if ($request->status) $params[]      = ['customer_active', $request->status];
+        if ($request->area) $params[]        = ['customer_area', $request->area];
+        elseif ($request->city) $params[]    = ['customer_city', $request->city];
+        elseif ($request->state) $params[]   = ['customer_state', $request->state];
+        elseif ($request->country) $params[] = ['customer_country', $request->country];
 
-        echo json_encode(Customer::fetch(0, $params, $limit, $listId, $area, $city, $status, $country));
+
+        echo json_encode(Customer::fetch(0, $params, $limit, $listId));
 
     }
 
     public function submit(Request $request)
-    {
+    {   
         $data = $request->validate([
             'customer_name'  => 'required | string',
             'customer_email' => 'required | string',
@@ -54,13 +56,13 @@ class CustomerController extends Controller
         $email = $request->customer_email;
         $mobile = $request->customer_mobile;
 
-        if(Customer::towCondition('customer_id', '!=', $id,'customer_mobile', '=', $mobile))
+        if (count(Customer::fetch(0, [['customer_id', '!=', $id], ['customer_mobile', $mobile]])))
         {
             echo json_encode(['status' => false,'message' =>  $this->validateMessage('number')]);
-            return;   
+            return; 
         }
 
-        if($email && Customer::towCondition('customer_id', '!=', $id,'customer_email', '=', $email))
+        if($email && count(Customer::fetch(0, [['customer_id', '!=', $id], ['customer_email', $email]])))
         {
             echo json_encode(['status' => false,'message' =>  $this->validateMessage('email')]);
             return;
@@ -85,8 +87,9 @@ class CustomerController extends Controller
     public function updateNote(Request $request)
     {
         $id      = $request->customer_id;
-        $context = $request->note;
-        $result  = Customer::note($id, $context);
+        $context = ['customer_notes'  => $request->note];
+        
+        $result  = Customer::submit($context, $id);
         echo json_encode([
             'status' => boolval($result),
             'data' => $result ? Customer::fetch($result) : [],
@@ -96,11 +99,13 @@ class CustomerController extends Controller
     public function updateActive(Request $request)
     {
         $id = $request->customer_id;
-        $record = Customer::where('customer_id', $id)->first();
-        $result = Customer::status($record);
+        if ($request->customer_active == 1) $params  = ['customer_active' => 2];
+        elseif ($request->customer_active == 2) $params  = ['customer_active' => 1];
+        
+        $result = Customer::submit($params, $id);
         echo json_encode([
             'status' => boolval($result),
-            'data' => $result ? $record : [],
+            'data' => $result ? Customer::fetch($id) : [],
         ]);
     }
 

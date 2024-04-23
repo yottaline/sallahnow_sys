@@ -322,7 +322,7 @@
                             } else {
                                 scope.list[scope.psot] = response
                                     .data;
-                                scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -421,6 +421,11 @@
                 });
 
             })
+        });
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault();
+            scope.$apply(() => scope.q = $(this).find('input').val());
+            scope.dataLoader(true);
         });
     </script>
 @endsection

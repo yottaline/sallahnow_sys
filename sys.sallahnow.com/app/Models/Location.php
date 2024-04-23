@@ -16,6 +16,18 @@ class Location extends Model
         'location_visible'
     ];
 
+    public static function fetch($id = 0, $params = null, $limit = null, $lastID = null)
+    {
+        $locations = self::limit($limit);
+
+        if($lastID) $locations->where('location_id', '<', $lastID);
+
+        
+        if($params) $locations->where($params);
+
+        return $id ? $locations->first() : $locations->get();
+    }
+
     public function centers()
     {
         return $this->hasMany(Center::class);

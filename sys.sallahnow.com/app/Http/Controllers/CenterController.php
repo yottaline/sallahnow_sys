@@ -7,6 +7,7 @@ use App\Models\Technician;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 
 
 class CenterController extends Controller
@@ -18,8 +19,8 @@ class CenterController extends Controller
 
     public function index() 
     {    
-        $countries = Location::where('location_type', '1')->orderBy('location_id', 'ASC')->get();
-        
+        $params[] = ['location_type', '1'];
+        $countries = Location::fetch(0, $params);
         return view('content.centers.index', compact('countries'));
     }
 
@@ -46,31 +47,32 @@ class CenterController extends Controller
         $center_cr = $request->center_cr;
         
         $id = $request->center_id;
-        
-        if(Center::towCondition('center_id', '!=', $id, 'center_mobile', '=', $mobile))
+
+        if (count(Center::fetch(0, [['center_id', '!=', $id], ['center_mobile', '=', $mobile]])))
         {
             echo json_encode(['status' => false,'message' =>  $this->validateMessage('number')]);
-            return ;
+            return; 
         }
 
-        if($email && Center::towCondition('center_id', '!=', $id, 'center_email', '=', $email))
+        if ($email && count(Center::fetch(0, [['center_id', '!=', $id], ['center_email', '=', $email]])))
         {
             echo json_encode(['status' => false,'message' =>  $this->validateMessage('email')]);
-            return ;  
+            return; 
         }
-    
-        if($whatsapp && Center::towCondition('center_id', '!=', $id, 'center_whatsapp', '=', $whatsapp))
+
+        if ($whatsapp && count(Center::fetch(0, [['center_id', '!=', $id], ['center_whatsapp', '=', $whatsapp]])))
         {
-            echo json_encode(['status' => false,'message' =>  $this->validateMessage('Whatsapp Number')]);
-            return ;  
+            echo json_encode(['status' => false,'message' =>  $this->validateMessage('whatsapp')]);
+            return; 
         }
         
-        // if($center_tax && Center::towCondition('center_id', '!=', $id, 'center_tax', '=', $center_tax))
+        
+        // if($center_tax && count(Center::fetch(0, [['center_id', '!=', $id], ['center_tax', '=', $center_tax]])))
         // {
         //     echo json_encode(['status' => false,'message' =>  $this->validateMessage('Tax Number')]);
         //     return ;  
         // }
-        // if($center_cr && Center::towCondition('center_id', '!=', $id, 'center_cr', '=', $center_cr))
+        // if($center_cr && count(Center::fetch(0, [['center_id', '!=', $id], ['center_cr', '=', $center_cr]])))
         // {
         //     echo json_encode(['status' => false,'message' =>  $this->validateMessage('Commercial Registry')]);
         //     return ;  
@@ -106,6 +108,11 @@ class CenterController extends Controller
         }else {
             $parm['center_modify']    = Carbon::now();
             $parm['center_modify_by'] = auth()->user()->id;
+            
+            $record = Center::fetch($id);
+            if ($logo && $record->center_logo) {
+                File::delete('Image/Centers/' . $record->center_logo);
+            }
         }
 
         $result = Center::submit($parm, $id);
@@ -116,7 +123,8 @@ class CenterController extends Controller
     }
 
     public function getTechnician($item) {
-        $technician_name = Technician::where('tech_code', 'like', '%' . $item . '%')->get();
+        $params[] = ['tech_code',  $item];
+        $technician_name = Technician::fetch(0, $params);
         echo json_encode($technician_name);
     }
 

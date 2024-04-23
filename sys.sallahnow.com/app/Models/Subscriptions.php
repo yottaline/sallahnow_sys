@@ -27,7 +27,7 @@ class Subscriptions extends Model
         'sub_register'
     ];
 
-    public static function fetch($id = 0, $params = null ,$limit = null, $listId = null, $select = null)
+    public static function fetch($id = 0, $params = null ,$limit = null, $listId = null)
     {
         $subscriptions = self::join('technicians', 'subscriptions.sub_tech', '=', 'technicians.tech_id')
         ->orderBy('subscriptions.sub_register', 'desc')->limit($limit);
@@ -38,13 +38,15 @@ class Subscriptions extends Model
         if (isset($params['q']))
         {
             $subscriptions->where(function (Builder $query) use ($params) {
-                $query->where('subscriptions.sub_points', 'like', '%' . $params['q'] . '%')
-                    ->orWhere('technicians.tech_name', $params['q'])
-                    ->orWhere('subscriptions.sub_pkg', $params['q']);
+                $query->where('sub_points', 'like', '%' . $params['q'] . '%')
+                    ->orWhere('tech_name', $params['q'])
+                    ->orWhere('sub_pkg', $params['q']);
             });
             unset($params['q']);
         }
 
+        if ($id) $subscriptions->where('sub_id', $id);
+        
         return $id ? $subscriptions->first() : $subscriptions->get();
     }
 
@@ -60,10 +62,6 @@ class Subscriptions extends Model
         return Carbon::parse($realTime)->addMonth($time);
     }
 
-    public static function condition($el1, $op, $el2)
-    {
-        return self::where($el1, $op, $el2)->first();
-    }
 
     public static function changeStatus($id)
     {

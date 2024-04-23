@@ -32,10 +32,12 @@ class Customer extends Authenticatable implements JWTSubject
         'customer_register'
     ];
 
-    public static function fetch($id = 0, $params = null, $limit = null, $listId = null, $area = null, $city = null, $state = null, $country = null)
+    public static function fetch($id = 0, $params = null, $limit = null, $listId = null)
     {
         $customers = self::limit($limit)->orderByDesc('customer_register');
 
+        if($listId) $customers->where('customer_id', '<', $listId);
+        
         if (isset($params['q']))
         {
             $customers->where(function (Builder $query) use ($params) {
@@ -46,25 +48,7 @@ class Customer extends Authenticatable implements JWTSubject
             unset($params['q']);
         }
         
-        if($listId) $customers->where('customer_id', '<', $listId);
-
-        if ($area) {
-
-            $customers->where('customer_area', $area);
-
-        } elseif ($city) {
-
-            $customers->where('customer_city', $city);
-
-        } elseif ($state) {
-
-            $customers->where('customer_state', $state);
-
-        } elseif ($country) {
-
-            $customers->where('customer_country', $country);
-
-        }
+        if($params) $customers->where($params);
 
         return $id ? $customers->first() : $customers->get();
     }
@@ -75,32 +59,7 @@ class Customer extends Authenticatable implements JWTSubject
         $status = self::create($param);
         return $status ? $status->customer_id : false;
     }
-
-    public static function note($id, $context)
-    {
-        $status = self::where('customer_id', $id)->update(['customer_notes'  => $context]);
-        return $status ? $status : false;
-    }
     
-    public static function status($record)
-    {
-        if($record->customer_active == 1)
-        {
-           $status = $record->update(['customer_active' => 2]);
-        }
-        else
-        {
-            $status = $record->update(['customer_active' => 1]);
-        }
-
-        return $status ? $status : false;
-    }
-
-    public static function towCondition($elOneCondition, $op, $elTowCondition, $oneCondition,  $opt, $towCondition)
-    {
-        $technicians = self::where($elOneCondition,  $op, $elTowCondition)->where($oneCondition,  $opt, $towCondition);
-        return $technicians->first();
-    }
     
     public function location() {
         return $this->belongsTo(Location::class, 'customer_country', 'customer_id');
