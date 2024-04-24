@@ -55,7 +55,7 @@
                         </div>
                         <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
                         </h5>
-                        <div data-ng-if="compatibiliy.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="compatibiliy_table">
                                 <thead>
                                     <tr>
@@ -66,12 +66,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="comp in compatibiliy track by $index">
+                                    <tr data-ng-repeat="comp in list track by $index">
                                         <td data-ng-bind="comp.id"></td>
-                                        <td data-ng-bind="cateName[$index].name"></td>
-                                        <td data-ng-bind="jsonParse(comp.part)['en']"></td>
-                                        <td>
-                                            <div class="col-fit">
+                                        <td data-ng-bind="comp.category_name"></td>
+                                        <td data-ng-bind="jsonParse(comp.compat_part)['en']"></td>
+                                        <td class="col-fit">
+                                            <div>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                     data-ng-click="setCompatibility($index)"></button>
                                             </div>
@@ -81,10 +81,9 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!compatibiliy.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-4"></i>
-                            <h5>No records</h5>
-                        </div>
+                        @include('layouts.loade')
+
+
                     </div>
                 </div>
             </div>
@@ -99,21 +98,21 @@
                             @csrf
                             <input data-ng-if="updateComp !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="comp_id"
-                                data-ng-value="updateComp !== false ? compatibiliy[updateComp].id : 0">
+                                data-ng-value="updateComp !== false ? list[updateComp].compat_id : 0">
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="NamEN">Name EN<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name_en" maxlength="24"
                                             id="NamEN"
-                                            data-ng-value="updateComp !== false ? jsonParse(compatibiliy[updateComp].part)['en'] : ''">
+                                            data-ng-value="updateComp !== false ? jsonParse(list[updateComp].compat_part)['en'] : ''">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="NamAR">Name AR</label>
                                         <input type="text" class="form-control" name="name_ar" id="NamAR"
-                                            data-ng-value="updateComp !== false ? jsonParse(compatibiliy[updateComp].part)['ar'] : ''">
+                                            data-ng-value="updateComp !== false ? jsonParse(list[updateComp].compat_part)['ar'] : ''">
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -121,8 +120,9 @@
                                         <label for="role">Categories</label>
                                         <select name="cate_id" class="form-control" id="role">
                                             <option value="">-- SELECT CATEGORY NAME</option>
-                                            <option data-ng-repeat="cate in categories" data-ng-value="cate.id"
-                                                data-ng-bind="cate.name"></option>
+                                            <option data-ng-repeat="category in categories"
+                                                data-ng-value="category.category_id" data-ng-bind="category.category_name">
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -132,8 +132,8 @@
                                 </p>
                                 <div class="col-12 col-md-4" data-ng-repeat="model in models">
                                     <div class="mb-3">
-                                        <label data-ng-bind="model.name" class="m-1"></label><input type="checkbox"
-                                            data-ng-value="model.id" name="model_id">
+                                        <label data-ng-bind="model.model_name" class="m-1"></label><input type="checkbox"
+                                            data-ng-value="model.model_id" name="model_id">
                                     </div>
                                 </div>
                                 <div class="d-flex">
@@ -149,8 +149,6 @@
         </div>
         <!-- end add new compatibiliy  Modal -->
 
-
-
     </div>
 @endsection
 @section('js')
@@ -160,43 +158,48 @@
             $('.loading-spinner').hide();
             $scope.jsonParse = (str) => JSON.parse(str);
             $scope.updateComp = false;
-            $scope.cateName = false;
-            $scope.compatibiliy = [];
-            $scope.categories = [];
-            $scope.models = [];
-            $scope.page = 1;
+            $scope.list = [];
+            $scope.categories = <?= json_encode($categories) ?>;;
+            $scope.models = <?= json_encode($models) ?>;
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+
+                if ($scope.noMore) return;
+                $scope.loading = true;
+
+                $('.loading-spinner').show();
+
                 $.post("/compatibilities/load/", {
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.compatibiliy = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].compat_id;
+                        };
                     });
                 }, 'json');
-
-                $.post("/CompatibilityCategories/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.categories = data;
-                    });
-                }, 'json');
-
             }
-
-
-
-            $scope.setCompatibility = (indx) => {
-                $scope.updateComp = indx;
+            $scope.setCompatibility = (index) => {
+                $scope.updateComp = index;
+                console.log(index)
                 $('#compatibilityForm').modal('show');
             };
 
@@ -229,10 +232,10 @@
                         $('#compatibilityForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.updateComp === false) {
-                                scope.compatibiliy.unshift(response.data);
+                                scope.list.unshift(response.data);
                                 $scope.dataLoader();
                             } else {
-                                scope.compatibiliy[scope.updateComp] = response.data;
+                                scope.list[scope.updateComp] = response.data;
                                 $scope.dataLoader();
                             }
                         });

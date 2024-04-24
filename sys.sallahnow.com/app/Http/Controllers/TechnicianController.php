@@ -31,39 +31,23 @@ class TechnicianController extends Controller
 
     public function load(Request $request)
     {
-        $technicians = Technician::orderBy('tech_register', 'desc')
-            ->limit($request->limit);
+        $params   = $request->q ? ['q' => $request->q] : [];
+        $limit    = $request->limit;
+        $listId   = $request->last_id;
 
-        if ($request->q) {
-            $technicians->where(function (Builder $query) {
-                $query->where('tech_name', 'like', '%' .request('q') . '%')
-                ->orWhere('tech_mobile', request('q'))
-                ->orWhere('tech_email', request('q'))->get();
-            });
-        }
-        if ($request->package) {
-            $technicians->where('tech_pkg', $request->package);
-        }
-        if ($request->last_id) {
-            $technicians->where('tech_id', '<', $request->last_id);
-        }
+        if ($request->package) $params[] = ['tech_pkg', $request->package];
+        if ($request->area) $params[]     = ['tech_area', $request->area];
+        if ($request->city) $params[]     = ['tech_city', $request->city];
+        if ($request->state) $params[]    = ['tech_state', $request->state];
+        if ($request->country) $params[]  = ['tech_country', $request->country];
 
-        if ($request->area) {
-            $technicians->where('tech_area', $request->area);
-        } elseif ($request->city) {
-            $technicians->where('tech_city', $request->city);
-        } elseif ($request->state) {
-            $technicians->where('tech_state', $request->state);
-        } elseif ($request->country) {
-            $technicians->where('tech_country', $request->country);
-        }
 
-        echo json_encode($technicians->get());
+        echo json_encode(Technician::fetch(0, $params ,$limit, $listId));
+
     }
 
     public function submit(Request $request)
     {
-        // return $request;
         $request->validate([
             'name'            => 'required|string',
             'mobile'          => 'required|numeric',
@@ -74,30 +58,24 @@ class TechnicianController extends Controller
         $email = $request->email;
         $identification = $request->identification;
 
-        if(Technician::where('tech_id', '!=', $id)->where('tech_mobile', '=', $mobile)->first())
+        if (count(Technician::fetch(0, [['tech_id', '!=', $id], ['tech_mobile', '=', $mobile]])))
         {
-            echo json_encode([
-                'status' => false,
-                'message' =>  $this->validateMessage('number'),
-            ]);
-            return ;
+            echo json_encode(['status' => false,'message' =>  $this->validateMessage('number')]);
+            return;  
         }
-        if($email && Technician::where('tech_id', '!=', $id)->where('tech_email', '=', $email)->first())
+
+        if ($email && count(Technician::fetch(0, [['tech_id', '!=', $id], ['tech_email', '=', $email]])))
         {
-            echo json_encode([
-                'status' => false,
-                'message' =>  $this->validateMessage('email'),
-            ]);
-            return ;
+            echo json_encode(['status' => false,'message' =>  $this->validateMessage('email')]);
+            return;  
         }
-        if($identification && Technician::where('tech_id', '!=', $id)->where('tech_identification', '=', $identification)->first())
+        
+        if ($identification && count(Technician::fetch(0, [['tech_id', '!=', $id], ['tech_identification', '=', $identification]])))
         {
-            echo json_encode([
-                'status' => false,
-                'message' => $this->validateMessage('identification'),
-            ]);
-            return ;
+            echo json_encode(['status' => false,'message' =>  $this->validateMessage('identification')]);
+            return;  
         }
+    
 
         $param = [
             'tech_name'              => $request->name,
@@ -120,49 +98,56 @@ class TechnicianController extends Controller
             $param['tech_password'] = '';
             $param['devise_token'] = strtoupper($this->uniqidReal());
             $param['tech_register_by'] = Auth::user()->id;
-            $status = Technician::create($param);
-
-            $id = $status->tech_id;
         } else {
-            $status = Technician::where('tech_id', $id)->update($param);
+            $param['tech_modify']    = Carbon::now();
+            $param['tech_modify_by'] = Auth::user()->id;
         }
 
-        $record = Technician::where('tech_id', $id)->first();
+
+        $result = Technician::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Technician::fetch($id) : [],
         ]);
     }
 
 
     public function profile($code)
     {
-        $technician = Technician::where('tech_code', $code)->first();
-        $country    = Location::where('location_id', $technician->tech_country)->first();
-        $state      = Location::where('location_id', $technician->tech_state)->first();
-        $city       = Location::where('location_id', $technician->tech_city)->first();
-        $area       = Location::where('location_id', $technician->tech_area)->first();
-        if($technician)
+        $params[] = ['tech_code', $code];
+        $technician = Technician::fetch(0, $params);
+    
+        if(count($technician))
         {
+            $country_id   = $technician[0]->tech_country;
+            $state_id     = $technician[0]->tech_state;
+            $city_id      = $technician[0]->tech_city;
+            $area_id      = $technician[0]->tech_area;
+    
+            $countries[] = ['location_id', $country_id];
+            $states[]    = ['location_id', $state_id];
+            $cites[]     = ['location_id', $city_id];
+            $areas[]     = ['location_id', $area_id];
+            
+            $country    = Location::fetch($countries[0], $countries);
+            $state    = Location::fetch($states[0], $states);
+            $city    = Location::fetch($cites[0], $cites);
+            $area    = Location::fetch($areas[0],$areas);
+            
             return view('content.technicians.profile', compact('technician', 'country', 'state', 'city', 'area'));
         }
+        
         return redirect('/');
     }
 
 
     public function addNote(Request $request)
     {
-        $tech_id = $request->tech_id;
-
-        $status = Technician::where('tech_id', $tech_id)->update([
-            'tech_notes' => $request->note
-        ]);
-
-        // $record = Technician::where('tech_id', $tech_id)->first();
-        echo json_encode([
-            'status' => boolval($status),
-            'data' => $status,
-        ]);
+        $id = $request->tech_id;
+        $params = ['tech_notes' => $request->note];
+        $status = Technician::submit($params, $id);
+        
+        echo json_encode(['status' => boolval($status),'data' => $status,]);
 
     }
 

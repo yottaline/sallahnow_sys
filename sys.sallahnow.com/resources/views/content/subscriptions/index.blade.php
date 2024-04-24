@@ -55,36 +55,36 @@
 
                         </div>
                         <h5 class="text-dark" id="data"> </h5>
-                        <div data-ng-if="subscriptions.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="subscriptions_table">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Technician Name</th>
-                                        <th>Package Points</th>
-                                        <th>User Name</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Status</th>
+                                        <th class="text-center">Technician Name</th>
+                                        <th class="text-center">Package Points</th>
+                                        {{-- <th>User Name</th> --}}
+                                        <th class="text-center">Start Date</th>
+                                        <th class="text-center">End Date</th>
+                                        <th class="text-center">Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="sub in subscriptions track by $index">
+                                    <tr data-ng-repeat="sub in list track by $index">
                                         <td data-ng-bind="sub.sub_id"></td>
-                                        <td data-ng-bind="sub.tech_name"></td>
-                                        <td data-ng-bind="sub.sub_points"></td>
-                                        <td data-ng-bind="sub.user_name"></td>
-                                        <td data-ng-bind="sub.sub_start"></td>
-                                        <td data-ng-bind="sub.sub_end"></td>
-                                        <td>
+                                        <td class="text-center" data-ng-bind="sub.tech_name"></td>
+                                        <td class="text-center" data-ng-bind="sub.sub_points"></td>
+                                        {{-- <td data-ng-bind="sub.user_name"></td> --}}
+                                        <td class="text-center" data-ng-bind="sub.sub_start"></td>
+                                        <td class="text-center" data-ng-bind="sub.sub_end"></td>
+                                        <td class="text-center">
                                             <span
                                                 class="badge bg-<%statusObj.color[sub.sub_status]%> rounded-pill font-monospace"><%statusObj.name[sub.sub_status]%></span>
 
                                         </td>
 
-                                        <td>
-                                            <div class="col-fit">
+                                        <td class="col-fit">
+                                            <div>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                     data-ng-click="setSubscriotion($index)"></button>
                                                 <button class="btn btn-outline-danger btn-circle bi bi-stopwatch"
@@ -96,10 +96,8 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!subscriptions.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle  display-4"></i>
-                            <h5>No records</h5>
-                        </div>
+                        @include('layouts.loade')
+
                     </div>
                 </div>
             </div>
@@ -114,7 +112,7 @@
                             @csrf @method('POST')
                             <input data-ng-if="updateSubscription !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="sub_id"
-                                data-ng-value="updateSubscription !== false ? subscriptions[updateSubscription].sub_id : 0">
+                                data-ng-value="updateSubscription !== false ? list[updateSubscription].sub_id : 0">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="mb-3">
@@ -148,7 +146,7 @@
                                         <label>Subscription Start<b class="text-danger">&ast;</b></label>
                                         <input id="subStart" type="text" class="form-control text-center"
                                             name="start" maxlength="10"
-                                            data-ng-value="subscriptions[updateSubscription].sub_start" />
+                                            data-ng-value="list[updateSubscription].sub_start" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -156,7 +154,7 @@
                                         <label>Subscription End<b class="text-danger">&ast;</b></label>
                                         <input id="subEnd" type="text" class="form-control text-center"
                                             name="end" maxlength="10"
-                                            data-ng-value="subscriptions[updateSubscription].sub_end">
+                                            data-ng-value="list[updateSubscription].sub_end">
                                     </div>
                                 </div>
                             </div>
@@ -176,13 +174,12 @@
 
         <!-- start change status  Modal -->
         <div class="modal fade" id="changeStatus" tabindex="-1" role="dialog" aria-labelledby="changeStatusLabel">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
                         <form method="POST" action="/subscriptions/change/">
                             @csrf @method('PUT')
-                            <input type="hidden" name="sub_id"
-                                data-ng-value="subscriptions[updateSubscription].sub_id">
+                            <input type="hidden" name="sub_id" data-ng-value="list[updateSubscription].sub_id">
                             <p>Are you sure the subscription status has changed?</p>
                             <div class="row">
                                 <div class="d-flex">
@@ -197,12 +194,6 @@
             </div>
         </div>
         <!-- end change status  Modal -->
-
-
-
-
-
-
     </div>
 @endsection
 @section('js')
@@ -217,37 +208,44 @@
                 name: ['in-active', 'Active'],
                 color: ['danger', 'success']
             }
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
             $scope.updateSubscription = false;
             $scope.technicianName = false;
             $scope.userName = false;
-            $scope.subscriptions = [];
-            $scope.page = 1;
+            $scope.list = [];
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.noMore = false;
+                    $scope.list = [];
+                    $scope.last_id = 0;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+                $('.loading-spinner').show();
+
                 $.post("/subscriptions/load/", {
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.subscriptions = data;
-                        console.log(data)
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].sub_id;
+                        };
                     });
                 }, 'json');
 
-                // $.post("/packages/load/", {
-                //     _token: '{{ csrf_token() }}'
-                // }, function(data) {
-                //     $('.loading-spinner').hide();
-                //     $scope.$apply(() => {
-                //         $scope.packages = data;
-                //     });
-                // }, 'json');
             }
 
             $scope.setSubscriotion = (indx) => {
@@ -321,12 +319,12 @@
                         $('#subscriotionForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.updateSubscription === false) {
-                                scope.subscriptions.unshift(response.data);
-                                scope.dataLoader();
+                                scope.list.unshift(response.data);
+                                scope.dataLoader(true);
                             } else {
-                                scope.subscriptions[scope.updateSubscription] = response
+                                scope.list[scope.updateSubscription] = response
                                     .data;
-                                scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -367,9 +365,9 @@
                             if (scope.updateSubscription === false) {
                                 $cope.dataLoader(true);
                             } else {
-                                scope.subscriptions[scope.updateSubscription] = response
+                                scope.list[scope.updateSubscription] = response
                                     .data;
-                                scope.dataLoader();
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -383,22 +381,10 @@
             })
         });
 
-        $('#searchInput').on('change', function() {
-            var idState = this.value;
-            console.log(idState);
-            $('#data').html('');
-            $.ajax({
-                url: 'search/' + idState,
-                type: 'GET',
-                dataType: 'json',
-                success: function(res) {
-                    $.each(res, function(key, value) {
-                        $('#data').append('<sapn class="text-primary"> Search result : ' + value
-                            .name +
-                            '</sapn>');
-                    });
-                }
-            });
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault();
+            scope.$apply(() => scope.q = $(this).find('input').val());
+            scope.dataLoader(true);
         });
     </script>
 @endsection

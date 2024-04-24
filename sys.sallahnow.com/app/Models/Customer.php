@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Builder;
 
 class Customer extends Authenticatable implements JWTSubject
 {
@@ -31,6 +32,35 @@ class Customer extends Authenticatable implements JWTSubject
         'customer_register'
     ];
 
+    public static function fetch($id = 0, $params = null, $limit = null, $listId = null)
+    {
+        $customers = self::limit($limit)->orderByDesc('customer_register');
+
+        if($listId) $customers->where('customer_id', '<', $listId);
+        
+        if (isset($params['q']))
+        {
+            $customers->where(function (Builder $query) use ($params) {
+                $query->where('customer_name', 'like', '%' . $params['q'] . '%')
+                        ->orWhere('customer_mobile', $params['q'])
+                        ->orWhere('customer_email', $params['q']);
+            });
+            unset($params['q']);
+        }
+        
+        if($params) $customers->where($params);
+
+        return $id ? $customers->first() : $customers->get();
+    }
+
+    public static function submit($param, $id)
+    {
+        if($id) return self::where('customer_id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->customer_id : false;
+    }
+    
+    
     public function location() {
         return $this->belongsTo(Location::class, 'customer_country', 'customer_id');
     }

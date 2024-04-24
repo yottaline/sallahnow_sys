@@ -53,38 +53,38 @@
                             </div>
 
                         </div>
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
-                        <div data-ng-if="transactions.length" class="table-responsive">
+                        {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5> --}}
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="transactions_table">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Technician Name</th>
-                                        <th>Amount</th>
-                                        <th>Process type </th>
-                                        <th>Method </th>
+                                        <th class="text-center">Technician Name</th>
+                                        <th class="text-center">Amount</th>
+                                        <th class="text-center">Process type </th>
+                                        <th class="text-center">Method </th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="tran in transactions track by $index">
+                                    <tr data-ng-repeat="tran in list track by $index">
                                         <td data-ng-bind="tran.trans_ref"></td>
-                                        <td data-ng-bind="tran.tech_name"></td>
-                                        <td data-ng-bind="tran.trans_amount"></td>
-                                        <td>
+                                        <td class="text-center" data-ng-bind="tran.tech_name"></td>
+                                        <td class="text-center" data-ng-bind="tran.trans_amount"></td>
+                                        <td class="text-center">
                                             <span
-                                                class="badge bg-<%procesObj.color[tran.trans_process]%> rounded-pill font-monospace"><%procesObj.name[tran.trans_process]%></span>
+                                                class="badge bg-<%procesObj.color[tran.trans_process]%> rounded-pill font-monospace p-2"><%procesObj.name[tran.trans_process]%></span>
 
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <span
-                                                class="badge bg-dark rounded-pill font-monospace"><%methodObj.name[tran.trans_method]%></span>
+                                                class="badge bg-dark rounded-pill font-monospace p-2"><%methodObj.name[tran.trans_method]%></span>
 
                                         </td>
 
-                                        <td>
-                                            <div class="col-fit">
+                                        <td class="col-fit">
+                                            <div>
                                                 <a class="btn btn-outline-dark btn-circle bi bi-link-45deg"
                                                     href="/transactions/profile/<% tran.trans_ref %>" target="_blank"></a>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -98,10 +98,8 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!transactions.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle  display-4"></i>
-                            <h5>No records</h5>
-                        </div>
+                        @include('layouts.loade')
+
                     </div>
                 </div>
             </div>
@@ -116,7 +114,7 @@
                             @csrf
                             <input data-ng-if="updateTransactions !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="tran_id"
-                                data-ng-value="updateTransactions !== false ? transactions[updateTransactions].trans_id : 0">
+                                data-ng-value="updateTransactions !== false ? list[updateTransactions].trans_id : 0">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="mb-3">
@@ -133,28 +131,32 @@
                                 </div>
                                 <div class="col-12 col-md-12">
                                     <div class="mb-3">
-                                        <input type="search" class="form-control" name="search"
-                                            placeholder="Search Technician By code" id="search">
+                                        <label>Search Technician By code</label>
+                                        <input type="search" class="form-control" name="search" id="search"
+                                            data-ng-value="list[updateTransactions].tech_code">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-12">
                                     <div class="mb-3">
                                         <label for="TechnicianName">Technician Name<b class="text-danger">&ast;</b></label>
-                                        <select class="form-control" name="technician_name" id="TechnicianName"></select>
+                                        <p data-ng-if="updateTransactions !== false" class="form-control mb-2"
+                                            data-ng-bind="list[updateTransactions].tech_name">
+                                        </p>
+                                        <select class="form-control" name="technician_id" id="TechnicianName"></select>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Amount<b class="text-danger">&ast;</b></label>
                                         <input id="amount" type="text" class="form-control" name="amount"
-                                            data-ng-value="transactions[updateTransactions].trans_amount" />
+                                            data-ng-value="list[updateTransactions].trans_amount" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label>Process<b class="text-danger">&ast;</b></label>
-                                        <select name="process" class="form-control" id="method">
-                                            <option value="">-- SELECT PROCESS NAME</option>
+                                        <select name="process" class="form-control" id="process">
+                                            <option value="">-- SELECT PROCESS NAME --</option>
                                             <option value="1">Spend</option>
                                             <option value="2">Earn</option>
                                         </select>
@@ -198,11 +200,6 @@
         </div> --}}
         <!-- end change process  Modal -->
 
-
-
-
-
-
     </div>
 @endsection
 @section('js')
@@ -220,36 +217,42 @@
             $scope.methodObj = {
                 name: ['', 'Gateway', 'Cash', 'Wallet', 'Cobon', 'Transfer'],
             }
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
+            $scope.centerUpdate = false;
             $scope.updateTransactions = false;
-            $scope.technicianName = false;
-            $scope.userName = false;
-            $scope.transactions = [];
-            $scope.page = 1;
+            $scope.list = [];
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+                $('.loading-spinner').show();
+
                 $.post("/transactions/load/", {
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.transactions = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].trans_id;
+                        };
                     });
                 }, 'json');
-
-                // $.post("/packages/load/", {
-                //     _token: '{{ csrf_token() }}'
-                // }, function(data) {
-                //     $('.loading-spinner').hide();
-                //     $scope.$apply(() => {
-                //         $scope.packages = data;
-                //     });
-                // }, 'json');
             }
 
             $scope.setTransaction = (indx) => {
@@ -257,10 +260,10 @@
                 $('#tranForm').modal('show');
             };
 
-            $scope.changePero = (indx) => {
-                $scope.updateSubscription = indx;
-                $('#changePerotus').modal('show');
-            };
+            // $scope.changePero = (indx) => {
+            //     $scope.updateSubscription = indx;
+            //     $('#changePerotus').modal('show');
+            // };
 
             $scope.dataLoader();
             scope = $scope;
@@ -276,6 +279,7 @@
                 dataType: 'json',
                 success: function(res) {
                     $.each(res, function(key, value) {
+                        console.log(value.tech_name);
                         $('#TechnicianName').append('<option id="class" value="' + value
                             .tech_id +
                             '">' + value.tech_name + '</option>');
@@ -309,10 +313,11 @@
                         $('#tranForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.updateTransactions === false) {
-                                scope.transactions.unshift(response.data);
+                                clerForm();
+                                scope.list.unshift(response.data);
                                 scope.dataLoader(true);
                             } else {
-                                scope.transactions[scope.updateTransactions] = response
+                                scope.list[scope.updateTransactions] = response
                                     .data;
                                 scope.dataLoader(true);
                             }
@@ -326,10 +331,8 @@
                 });
 
             })
-        });
 
-        // change status sub
-        $(function() {
+            // change status sub
             $('#changePerotus form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this),
@@ -355,9 +358,9 @@
                             if (scope.updateSubscription === false) {
                                 $scope.dataLoader(true);
                             } else {
-                                scope.transactions[scope.updateSubscription] = response
+                                scope.list[scope.updateSubscription] = response
                                     .data;
-                                $scope.dataLoader();
+                                $scope.dataLoader(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -369,6 +372,20 @@
                 });
 
             })
+
+            $('#searchForm').on('submit', function(e) {
+                e.preventDefault();
+                scope.$apply(() => scope.q = $(this).find('input').val());
+                scope.dataLoader(true);
+            });
+
+            function clerForm() {
+                var input_method = $('#method').val(' '),
+                    input_search = $('#search').val(' '),
+                    input_technician = $('#TechnicianName').val(' '),
+                    input_amount = $('#amount').val(' '),
+                    input_process = $('#process').val('-- SELECT PROCESS NAME --');
+            };
         });
     </script>
 @endsection

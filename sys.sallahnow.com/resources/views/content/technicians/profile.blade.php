@@ -14,10 +14,10 @@
                                     <div class="card-body">
                                         <form id="notForm" action="/technicians/add_note/" method="post">
                                             @csrf
-                                            <input type="text" hidden name="tech_id" ng-value="technician.tech_id">
+                                            <input type="text" hidden name="tech_id" ng-value="technician[0].tech_id">
                                             <div class="mb-3">
                                                 <label for="noteTehnc">Note<b class="text-danger">&ast;</b></label>
-                                                <textarea name="note" id="noteTehnc" cols="30" class="form-control" rows="10"><% technician.tech_notes %></textarea>
+                                                <textarea name="note" id="noteTehnc" cols="30" class="form-control" rows="10"><% technician[0].tech_notes %></textarea>
                                             </div>
                                             <div class="text-end">
                                                 <button type="submit"
@@ -92,19 +92,19 @@
                                                     :
                                                     <% technician.tech_code %></h5>
                                                 <h4 class="fw-bold text-center m-0 small  mb-2">Technician name :
-                                                    <% technician.tech_name %>
+                                                    <% technician[0].tech_name %>
                                                 </h4>
                                                 <h4 class="fw-bold text-center m-0 small  mb-2">Technician email :
-                                                    <% technician.tech_email %>
+                                                    <% technician[0].tech_email %>
                                                 </h4>
                                                 <h4 class="fw-bold text-center m-0 small  mb-2">Technician mobile :
-                                                    <% technician.tech_mobile %>
+                                                    <% technician[0].tech_mobile %>
                                                 </h4>
                                                 <h5 class="text-center text-secondary font-monospace small dir-ltr mb-3">
                                                     Technician
                                                     identification
                                                     :
-                                                    <span class="text-dark"><% technician.tech_identification %></span>
+                                                    <span class="text-dark"><% technician[0].tech_identification %></span>
                                                 </h5>
                                             </div>
                                             <div class="row m-5">
@@ -112,16 +112,16 @@
 
                                                     <h4 class="fw-bold  m-0 small  mb-3 ">Center name
                                                         :
-                                                        <span class=""> <% technician.tech_center %></span>
+                                                        <span class=""> <% technician[0].tech_center %></span>
                                                     </h4>
                                                     <h4 class="fw-bold  m-0 small  mb-3">Technician Telephone :
-                                                        <span class="text-left"> <% technician.tech_tel %></span>
+                                                        <span class="text-left"> <% technician[0].tech_tel %></span>
                                                     </h4>
                                                     <h4 class="fw-bold  m-0 small  mb-3">Technician Dirth Day :
-                                                        <% technician.tech_birth %>
+                                                        <% technician[0].tech_birth %>
                                                     </h4>
                                                     <h4 class="fw-boldr m-0 small  mb-2">Technician Bio :
-                                                        <% technician.tech_bio %>
+                                                        <% technician[0].tech_bio %>
                                                     </h4>
 
                                                 </div>
@@ -131,17 +131,17 @@
                                                         Technician
                                                         Point
                                                         :
-                                                        <span class="text-dark"><% technician.tech_points %></span>
+                                                        <span class="text-dark"><% technician[0].tech_points %></span>
                                                     </h5>
                                                     <h4 class="fw-bold  m-0 small  mb-3">Technician Rate :
                                                         {{-- <% technician.tech_rate %> --}}<i class="bi bi-star"></i> <i
                                                             class="bi bi-star"></i>
                                                     </h4>
                                                     <h4 class="fw-bold  m-0 small  mb-3">Technician Package :
-                                                        <% technician.tech_pkg %>
+                                                        <% technician[0].tech_pkg %>
                                                     </h4>
                                                     <h4 class="fw-bold  m-0 small  mb-2">Technician Address :
-                                                        <% technician.tech_address %>
+                                                        <% technician[0].tech_address %>
                                                     </h4>
                                                     <h4 class="fw-bold  m-0 small  mb-3">Technician Country :
 

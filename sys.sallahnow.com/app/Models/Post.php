@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
@@ -34,6 +36,56 @@ class Post extends Model
         'post_modify_user',
         'post_modify_time'
     ];
+
+    public static function fetch($id = 0, $params = null, $limit = null, $listId = null, $cost = null)
+    {
+        $posts = self::join('users', 'posts.post_create_user', '=', 'users.id')
+        ->where('post_deleted', '=', '0')
+        ->orderBy('post_create_time', 'desc')->limit($limit);
+
+        if($listId) $posts->where('post_id', '<', $listId);
+        
+        if (isset($params['q']))
+        {
+            $posts->where(function (Builder $query) use ($params) {
+                $query->where('post_body', 'like', '%' . $params['q'] . '%')
+                    ->orWhere('user_name', $params['q'])
+                    ->orWhere('post_title', $params['q']);
+            });
+            unset($params['q']);
+        }
+        
+        if ($params) $posts->where($params);
+        
+        return $id ? $posts->first() : $posts->get();
+        
+    }
+
+    public static function editor($code = null)
+    {
+        $data = $code ? self::join('users', 'posts.post_create_user', '=', 'users.id', 'left')
+            ->join('technicians', 'posts.post_create_tech', '=', 'technicians.tech_id', 'left')
+            ->where('post_code', $code)->first() : null;
+
+        $file = Storage::get('public/post/' . $code . '.txt');
+
+        return ['data' => $data, 'file' => $file];
+    }
+
+    public static function submit($param, $id)
+    {
+        if ($id) return  self::where('post_id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
+
+    public static function file($post, $context)
+    {
+        $code  = $post->post_code;
+        $status = Storage::disk('posts')->put($code . '.txt', $context);
+        return $status ? $status : false;
+    }
+    
 
     function get($column, $value)
     {

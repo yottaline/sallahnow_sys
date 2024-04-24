@@ -50,7 +50,7 @@
                         </div>
                         {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
                         </h5> --}}
-                        <div data-ng-if="users.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="user_table">
                                 <thead>
                                     <tr>
@@ -64,7 +64,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="u in users track by $index">
+                                    <tr data-ng-repeat="u in list track by $index">
                                         <td data-ng-bind="u.id"></td>
                                         <td data-ng-bind="u.user_name"></td>
                                         <td data-ng-bind="u.user_email"></td>
@@ -90,10 +90,7 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!users.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle  display-4"></i>
-                            <h5>No records</h5>
-                        </div>
+                        @include('layouts.loade')
                     </div>
                 </div>
             </div>
@@ -108,11 +105,11 @@
                             @csrf
                             <input data-ng-if="updateUser !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="user_id"
-                                data-ng-value="updateUser !== false ? users[updateUser].id : 0">
+                                data-ng-value="updateUser !== false ? list[updateUser].id : 0">
                             <div class="mb-3">
                                 <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="name" maxlength="120" id="fullName"
-                                    required data-ng-value="updateUser !== false ? users[updateUser].user_name : ''">
+                                    required data-ng-value="updateUser !== false ? list[updateUser].user_name : ''">
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6">
@@ -120,15 +117,14 @@
                                         <label for="mobiel">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="mobile" maxlength="24"
                                             id="mobiel"
-                                            data-ng-value="updateUser !== false ? users[updateUser].user_mobile : ''">
+                                            data-ng-value="updateUser !== false ? list[updateUser].user_mobile : ''">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1">Email</label>
-                                        <input type="email" class="form-control" name="email"
-                                            id="exampleInputEmail1"
-                                            data-ng-value="updateUser !== false ? users[updateUser].user_email : ''">
+                                        <input type="email" class="form-control" name="email" id="exampleInputEmail1"
+                                            data-ng-value="updateUser !== false ? list[updateUser].user_email : ''">
                                     </div>
                                 </div>
                             </div>
@@ -153,8 +149,8 @@
                                         <label for="role">Roles</label>
                                         <select name="role_id" class="form-control" id="role">
                                             <option
-                                                value=""data-ng-value="updateUser !== false ? users[updateUser].ugroup_name : ''"
-                                                data-ng-bind="updateUser !== false ? users[updateUser].ugroup_name : ''">
+                                                value=""data-ng-value="updateUser !== false ? list[updateUser].ugroup_name : ''"
+                                                data-ng-bind="updateUser !== false ? list[updateUser].ugroup_name : ''">
                                             </option>
                                             <option data-ng-repeat="role in roles" data-ng-value="role.ugroup_id"
                                                 data-ng-bind="role.ugroup_name"></option>
@@ -182,8 +178,8 @@
                     <div class="modal-body">
                         <form method="POST" action="/users/update/active/">
                             @csrf @method('PUT')
-                            <input hidden data-ng-value="users[userId].id" name="user_id">
-                            <input hidden data-ng-value="users[userId].user_active" name="user_active">
+                            <input hidden data-ng-value="list[userId].id" name="user_id">
+                            <input hidden data-ng-value="list[userId].user_active" name="user_active">
                             <p class="mb-2">Are you sure you want to change status the user?</p>
                             <div class="d-flex mt-3">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -197,7 +193,6 @@
         </div>
 
         <!-- end edit user active Modal -->
-
 
         <!-- start delete user  Modal -->
         <div class="modal fade" id="delete_user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -234,36 +229,41 @@
                 color: ['danger', 'success']
             };
             $scope.updateUser = false;
+            $scope.noMore = false;
+            $scope.loading = false;
             $scope.userId = 0;
-            $scope.users = [];
-            $scope.roles = [];
-            $scope.page = 1;
+            $scope.list = [];
+            $scope.roles = <?= json_encode($roles) ?>;
+            $scope.last_id = 1;
             $scope.q = ' ';
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+                $('.loading-spinner').show();
+
                 $.post("/users/load/", {
                     status: $('#filter-status').val(),
+                    last_id: $scope.last_id,
+                    limit: limit,
                     q: $scope.q,
-                    page: $scope.page,
-                    limit: 24,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.users = data;
-                        $scope.page++;
-                    });
-                }, 'json');
-
-                $.post("/roles/load/", {
-                    _token: '{{ csrf_token() }}'
-                }, function(data) {
-                    $('.loading-spinner').hide();
-                    $scope.$apply(() => {
-                        $scope.roles = data;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].id;
+                        };
                     });
                 }, 'json');
             }
@@ -272,11 +272,11 @@
                 $('#useForm').modal('show');
             };
             $scope.editActive = (index) => {
-                $scope.userId = index;
+                $scope.updateUser = index;
                 $('#edit_active').modal('show');
             };
             $scope.deleletUser = (index) => {
-                $scope.userId = index;
+                $scope.updateUser = index;
                 $('#delete_user').modal('show');
             };
             $scope.dataLoader();
@@ -307,10 +307,10 @@
                         $('#useForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.updateUser === false) {
-                                scope.users.unshift(response.data);
+                                scope.list.unshift(response.data);
                                 scope.dataLoader(true);
                             } else {
-                                scope.users[scope.updateUser] = response.data;
+                                scope.list[scope.updateUser] = response.data;
                                 scope.dataLoader(true);
                             }
                         });
@@ -351,10 +351,10 @@
                         $('#edit_active').modal('hide');
                         scope.$apply(() => {
                             if (scope.updateUser === false) {
-                                scope.users.unshift(response.data);
+                                scope.list.unshift(response.data);
                                 scope.dataLoader(true);
                             } else {
-                                scope.users[scope.updateUser] = response.data;
+                                scope.list[scope.updateUser] = response.data;
                                 scope.dataLoader(true);
                             }
                         });

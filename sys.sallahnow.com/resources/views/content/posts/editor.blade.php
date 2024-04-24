@@ -58,13 +58,13 @@
                                 data-ng-bind="sepNumber(data.post_likes)"></span></p>
                         <hr>
 
-                        <div ng-if="data.post_archived" class="form-check form-switch mb-3">
+                        <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" id="articleArchived" name="archived"
                                 ng-value="data.post_archived" data-ng-model="archived"
                                 data-ng-change="toggle('archived', archived)">
                             <label class="form-check-label" for="articleArchived">Archive the article</label>
                         </div>
-                        <div ng-if="data.post_allow_comments" class="form-check form-switch">
+                        <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="allowComments" name="allow_comment"
                                 ng-value="data.post_allow_comments" data-ng-model="allow_comment"
                                 data-ng-change="toggle('allow_comment', allow_comment)">
@@ -439,7 +439,6 @@
                         var response = JSON.parse(data);
                         if (response.status) {
                             toastr.success('Data processed successfully');
-
                             scope.$apply(() => {
                                 scope.data = response.data;
                                 scope.reset();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\User_group;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,8 @@ class UserController extends Controller
 
     public function index(): View
     {
-        return view('content.users.index',);
+        $roles = User_group::all();
+        return view('content.users.index', compact('roles'));
     }
 
     public function load(Request $request)
@@ -44,7 +46,6 @@ class UserController extends Controller
         $users->where('user_active', $request->status);
     }
         echo json_encode($users->get());
-
     }
 
     public function submit(Request $request)

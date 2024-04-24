@@ -13,40 +13,38 @@ class TransactionController extends Controller
         $this->middleware('auth');
     }
 
-    public function index() {
+    public function index() 
+    {
         return view('content.transactions.index');
     }
 
-    public function load() {
-        $transactions = DB::table('transactions')
-        ->join('technicians', 'transactions.trans_tech', '=', 'technicians.tech_id')->limit(15)->offset(0)->get();
-        echo json_encode($transactions);
+    public function load(Request $request)
+    {
+        $param  = $request->q ? ['q' => $request->q] : [];
+        $limit  = $request->limit;
+        $listId = $request->list_id;
+        echo json_encode(Transaction::fetch(0, $param, $limit, $listId));
     }
 
-    public function submit(Request $request) {
-
+    public function submit(Request $request)
+    {
         $id = $request->tran_id;
         $param = [
             'trans_method'    => $request->method,
             'trans_amount'    => $request->amount,
             'trans_process'   => $request->process,
             'trans_create_by' => auth()->user()->id,
-            'trans_tech' => 1,
+            'trans_tech'      => $request->technician_id,
         ];
 
         if(!$id) {
             $param['trans_ref'] = strtoupper($this->uniqidReal());
-            $status = Transaction::create($param);
-            $id = $status->trans_id;
         }
-        else {
-            $status = Transaction::where('trans_id', $id)->update($param);
-        }
-
-        $record = Transaction::where('trans_id', $id)->first();
+        
+        $result = Transaction::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Transaction::fetch($id) : [],
         ]);
     }
 
@@ -58,13 +56,17 @@ class TransactionController extends Controller
     //     echo json_encode($technician_name);
     // }
 
-    public function changeProcess(Request $request) {
-        return 1;
-    }
+    // public function changeProcess(Request $request) 
+    // {
+    //     return 1;
+    // }
 
-    public function profile($reference) {
-        $transactions = Transaction::where('trans_ref', $reference)->get();
-        return view('content.transactions.profile');
+    public function profile($reference) 
+    {
+        $param =  ['q' => $reference];
+        $transactions = Transaction::fetch(0, $param);
+
+        return view('content.transactions.profile', $transactions[0]);
     }
 
 

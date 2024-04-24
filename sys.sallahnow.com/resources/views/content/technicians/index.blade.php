@@ -80,7 +80,7 @@
                             </h5>
                             <div>
                                 <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setUser(false)"></button>
+                                    data-ng-click="setTechnician(false)"></button>
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
@@ -89,7 +89,7 @@
                         {{-- <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
                         </h5> --}}
 
-                        <div data-ng-if="technicians.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="example">
                                 <thead>
                                     <tr>
@@ -101,8 +101,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="technician in technicians track by $index">
-                                        <td data-ng-bind="technician.tech_id"
+                                    <tr data-ng-repeat="technician in list track by $index">
+                                        <td data-ng-bind="technician.tech_code"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
                                             <span data-ng-bind="technician.tech_name" class="fw-bold"></span><br>
@@ -129,26 +129,15 @@
                                                 href="/technicians/profile/<% technician.tech_code %>"
                                                 target="_blank"></a>
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
-                                                data-ng-click="setUser($index)"></button>
+                                                data-ng-click="setTechnician($index)"></button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div data-ng-if="loading" class="text-center">
-                            <span class="loading-spinner spinner-border spinner-border-sm text-secondary me-2"
-                                role="status"></span><span>Loading...</span>
-                        </div>
+                        @include('layouts.loade')
 
-                        <div data-ng-if="technicians.length && noMore" class="text-center">
-                            No more records
-                        </div>
-
-                        <div data-ng-if="!technicians.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-3"></i>
-                            <h5 class="">No records</h5>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -161,16 +150,14 @@
                         <form id="techForm" method="post" action="/technicians/submit">
                             @csrf
                             <input data-ng-if="updateTechnician !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="technician_id"
-                                data-ng-value="technicians[updateTechnician].tech_id">
+                            <input type="hidden" name="technician_id" data-ng-value="list[updateTechnician].tech_id">
                             <div class="row">
                                 {{-- name --}}
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="fullName">Full Name<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name" maxlength="120"
-                                            data-ng-value="technicians[updateTechnician].tech_name" required
-                                            id="fullName">
+                                            data-ng-value="list[updateTechnician].tech_name" required id="fullName">
                                     </div>
                                 </div>
                                 {{-- identification --}}
@@ -178,7 +165,7 @@
                                     <div class="mb-3">
                                         <label for="identificationT">Identification</label>
                                         <input class="form-control" name="identification" type="text"
-                                            data-ng-value="technicians[updateTechnician].tech_identification"
+                                            data-ng-value="list[updateTechnician].tech_identification"
                                             id="IdentificationT">
                                     </div>
                                 </div>
@@ -188,8 +175,7 @@
                                     <div class="mb-3">
                                         <label for="mobile">Mobile<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="mobile" maxlength="24"
-                                            data-ng-value="technicians[updateTechnician].tech_mobile" required
-                                            id="mobile" />
+                                            data-ng-value="list[updateTechnician].tech_mobile" required id="mobile" />
                                     </div>
                                 </div>
                                 {{-- email --}}
@@ -198,7 +184,7 @@
                                         <label for="exampleInputEmail1">Email</label>
                                         <input type="email" class="form-control" name="email"
                                             id="exampleInputEmail1"
-                                            data-ng-value="updateTechnician !== false ? technicians[updateTechnician].tech_email : ''">
+                                            data-ng-value="updateTechnician !== false ? list[updateTechnician].tech_email : ''">
                                     </div>
                                 </div>
 
@@ -207,7 +193,7 @@
                                     <div class="mb-3">
                                         <label for="phoneT">Phone</label>
                                         <input type="text" class="form-control" name="tel" maxlength="24"
-                                            data-ng-value="technicians[updateTechnician].tech_tel" id="phoneT" />
+                                            data-ng-value="list[updateTechnician].tech_tel" id="phoneT" />
                                     </div>
                                 </div>
                                 {{-- birthday --}}
@@ -216,7 +202,7 @@
                                         <label for="BirthdayT">Birthday</label>
                                         <input id="inputBirthdate" type="text" class="form-control text-center"
                                             name="birth" maxlength="10"
-                                            data-ng-value="technicians[updateTechnician].tech_birth" id="BirthdayT">
+                                            data-ng-value="list[updateTechnician].tech_birth" id="BirthdayT">
                                     </div>
                                 </div>
 
@@ -275,7 +261,7 @@
                                     <div class="mb-3">
                                         <label for="addressTechnician">Address</label>
                                         <input type="text" class="form-control" name="address" id="addressTechnician"
-                                            data-ng-value="updateTechnician !== false ? technicians[updateTechnician].tech_address : ''" />
+                                            data-ng-value="updateTechnician !== false ? list[updateTechnician].tech_address : ''" />
                                     </div>
                                 </div>
 
@@ -331,18 +317,18 @@
                                             $('#techModal').modal('hide');
                                             scope.$apply(() => {
                                                 if (scope.updateTechnician === false) {
-                                                    scope.technicians.unshift(response.data);
-                                                    scope.dataLoader();
+                                                    scope.list.unshift(response.data);
+                                                    scope.dataLoader(true);
                                                 } else {
-                                                    scope.technicians[scope.updateTechnician] = response.data;
-                                                    scope.dataLoader();
+                                                    scope.list[scope.updateTechnician] = response.data;
+                                                    scope.dataLoader(true);
                                                 }
                                             });
                                         } else toastr.error(response.message);
                                     }).fail(function(jqXHR, textStatus, errorThrown) {
                                         // console.log()
                                         toastr.error(jqXHR.responseJSON.message);
-                                        // $('#techModal').modal('hide');
+                                        $('#techModal').modal('hide');
                                     }).always(function() {
                                         $(form).find('button').prop('disabled', false);
                                     });
@@ -365,7 +351,7 @@
 
 @section('js')
     <script>
-        var scope, limit = 14,
+        var scope,
             app = angular.module('myApp', [], function($interpolateProvider) {
                 $interpolateProvider.startSymbol('<%');
                 $interpolateProvider.endSymbol('%>');
@@ -377,8 +363,7 @@
             $scope.loading = false;
             $scope.q = '';
             $scope.updateTechnician = false;
-            $scope.technicianId = 0;
-            $scope.technicians = [];
+            $scope.list = [];
             $scope.countries = <?= json_encode($countries) ?>;
             $scope.techModal = {
                 states: [],
@@ -395,7 +380,7 @@
             $scope.jsonParse = (str) => JSON.parse(str);
             $scope.dataLoader = function(reload = false) {
                 if (reload) {
-                    $scope.technicians = [];
+                    $scope.list = [];
                     $scope.last_id = 0;
                     $scope.noMore = false;
                 }
@@ -423,19 +408,20 @@
                         $scope.loading = false;
                         if (ln) {
                             $scope.noMore = ln < limit;
-                            $scope.technicians = data;
+                            $scope.list = data;
                             console.log(data)
                             $scope.last_id = data[ln - 1].tech_id;
                         }
                     });
                 }, 'json');
             }
-            $scope.setUser = (indx) => {
+
+            $scope.setTechnician = (indx) => {
                 $scope.updateTechnician = indx;
                 $('#techModal').modal('show');
             };
             $scope.editActive = (index) => {
-                $scope.technicianId = index;
+                $scope.updateTechnician = index;
                 $('#edit_active').modal('show');
             };
             $scope.dataLoader();
@@ -447,12 +433,6 @@
                 e.preventDefault();
                 scope.$apply(() => scope.q = $(this).find('input').val());
                 scope.dataLoader(true);
-            });
-
-            $(window).scroll(function() {
-                if ($(window).scrollTop() >= ($(document).height() - $(window).height() - 80) &&
-                    !scope
-                    .loading) scope.dataLoader();
             });
 
             $('#filter-country').on('change', function() {
