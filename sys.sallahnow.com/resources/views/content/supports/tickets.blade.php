@@ -37,7 +37,7 @@
                         <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
                         </h5>
 
-                        <div data-ng-if="tickets.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -53,7 +53,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="ticket in tickets track by $index">
+                                    <tr data-ng-repeat="ticket in list track by $index">
                                         <td data-ng-bind="ticket.ticket_code"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td class="text-center" data-ng-bind="ticket.brand_name"></td>
@@ -80,23 +80,20 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!tickets.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-3"></i>
-                            <h5 class="">No records</h5>
-                        </div>
+                        @include('layouts.loade')
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="centerForm" tabindex="-1" role="dialog" aria-labelledby="centerFormLabel">
+        <div class="modal fade" id="ReplyForm" tabindex="-1" role="dialog" aria-labelledby="ReplyFormLabel">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
                         <form id="cenForm" method="post" action="/tickets/add-replie/" enctype="multipart/form-data">
                             @csrf
                             <input data-ng-if="ticketUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="ticket_id" data-ng-value="tickets[ticketUpdate].ticket_id">
+                            <input type="hidden" name="ticket_id" data-ng-value="list[ticketUpdate].ticket_id">
                             <div class="row">
                                 <div class="col-12 col-md-12">
                                     <div class="mb-3">
@@ -109,8 +106,7 @@
                                     <div class="mb-3">
                                         <label for="replieAttachment">Replie Attachmet<b
                                                 class="text-danger">&ast;</b></label>
-                                        <input type="file" name="attachment" class="form-control"
-                                            id="replieAttachment">
+                                        <input type="file" name="attachment" class="form-control" id="replieAttachment">
                                     </div>
                                 </div>
                             </div>
@@ -148,14 +144,14 @@
                                         var response = JSON.parse(data);
                                         if (response.status) {
                                             toastr.success('Data processed successfully');
-                                            $('#centerForm').modal('hide');
+                                            $('#ReplyForm').modal('hide');
                                             scope.$apply(() => {
-                                                if (scope.centerUpdate === false) {
-                                                    scope.centers.unshift(response.data);
-                                                    scope.dataLoader();
+                                                if (scope.ticketUpdate === false) {
+                                                    // scope.list.unshift(response.data);
+                                                    // scope.dataLoader();
                                                 } else {
-                                                    scope.centers[scope.centerUpdate] = response.data;
-                                                    scope.dataLoader();
+                                                    // scope.list[scope.ticketUpdate] = response.data;
+                                                    // scope.dataLoader();
                                                 }
                                             });
                                         } else toastr.error(response.message);
@@ -180,7 +176,7 @@
                             @csrf
                             <input data-ng-if="ticketUpdate !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="ticket_id"
-                                data-ng-value="tickets !== false ? tickets[ticketUpdate].ticket_id : 0">
+                                data-ng-value="tickets !== false ? list[ticketUpdate].ticket_id : 0">
                             <div class="mb-3">
                                 <label for="status">Ticket Status <b class="text-danger">&ast;</b></label>
                                 <select name="status" id="status" class="form-control">
@@ -217,31 +213,46 @@
                 $('.loading-spinner').hide();
                 $scope.jsonParse = (str) => JSON.parse(str);
                 $scope.q = '';
+                $scope.noMore = false;
+                $scope.loading = false;
                 $scope.ticketUpdate = false;
-                $scope.tickets = [];
-                $scope.page = 1;
+                $scope.list = [];
+                $scope.last_id = 0;
                 $scope.dataLoader = function(reload = false) {
-                    $('.loading-spinner').show();
+
                     if (reload) {
-                        $scope.page = 1;
+                        $scope.list = [];
+                        $scope.last_id = 0;
+                        $scope.noMore = false;
                     }
+                    if ($scope.noMore) return;
+                    $scope.loading = true;
+
+                    $('.loading-spinner').show();
+
                     $.post("/tickets/load", {
-                        page: $scope.page,
-                        limit: 24,
+                        last_id: $scope.last_id,
+                        limit: limit,
+                        q: $scope.q,
                         _token: '{{ csrf_token() }}'
                     }, function(data) {
                         $('.loading-spinner').hide();
+                        var ln = data.length;
                         $scope.$apply(() => {
-                            $scope.tickets = data;
-                            console.log(data)
-                            $scope.page++;
+                            $scope.loading = false;
+                            if (ln) {
+                                $scope.noMore = ln < limit;
+                                $scope.list = data;
+                                console.log(data)
+                                $scope.last_id = data[ln - 1].ticket_id;
+                            };
                         });
                     }, 'json');
                 }
 
                 $scope.replie = (indx) => {
                     $scope.ticketUpdate = indx;
-                    $('#centerForm').modal('show');
+                    $('#ReplyForm').modal('show');
                 };
 
                 $scope.changeStatus = (index) => {
@@ -285,9 +296,10 @@
                             $('#changeStatus').modal('hide');
                             scope.$apply(() => {
                                 if (scope.ticketUpdate === false) {
-                                    $scope.dataLoader(true);
+                                    scope.list.unshift(response.data)
+                                    scope.dataLoader(true);
                                 } else {
-                                    scope.tickets[scope.ticketUpdate] = response
+                                    scope.list[scope.ticketUpdate] = response
                                         .data;
                                     $scope.dataLoader();
                                 }

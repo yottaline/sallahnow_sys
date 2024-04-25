@@ -926,10 +926,10 @@
                         scope.$apply(() => {
                             if (scope.updateModel === false) {
                                 scope.models.unshift(response.data);
-                                $scope.lodaModelsData();
+                                scope.lodaModelsData(true);
                             } else {
                                 scope.models[scope.updateModel] = response.data;
-                                $scope.lodaModelsData();
+                                scope.lodaModelsData(true);
                             }
                         });
                     } else toastr.error("Error");

@@ -34,7 +34,7 @@
                             </div>
 
                         </div>
-                        <div data-ng-if="ads.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="user_table">
                                 <thead>
                                     <tr>
@@ -49,7 +49,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="ad in ads track by $index">
+                                    <tr data-ng-repeat="ad in list track by $index">
                                         <td data-ng-bind="ad.ads_id"></td>
                                         <td data-ng-bind="ad.ads_title"></td>
                                         <td data-ng-bind="ad.ads_body"></td>
@@ -71,17 +71,14 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!ads.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle  display-4"></i>
-                            <h5>No records</h5>
-                        </div>
+                        @include('layouts.loade')
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- start add new ads  Modal -->
-        <div class="modal fade" id="useForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal fade" id="adsForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -89,11 +86,11 @@
                             @csrf
                             <input data-ng-if="adUpdate !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="ads_id"
-                                data-ng-value="adUpdate !== false ? ads[adUpdate].ads_id : 0">
+                                data-ng-value="adUpdate !== false ? list[adUpdate].ads_id : 0">
                             <div class="mb-3">
                                 <label for="Title">Title<b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="title" id="Title" required
-                                    data-ng-value="adUpdate !== false ? ads[adUpdate].ads_title : ''">
+                                    data-ng-value="adUpdate !== false ? list[adUpdate].ads_title : ''">
                             </div>
                             <div class="row">
                                 <div class="col-12 col-md-6">
@@ -106,7 +103,7 @@
                                     <div class="mb-3">
                                         <label for="URL">Url</label>
                                         <input type="text" class="form-control" name="url" id="URL"
-                                            data-ng-value="adUpdate !== false ? ads[adUpdate].ads_url : ''">
+                                            data-ng-value="adUpdate !== false ? list[adUpdate].ads_url : ''">
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +112,7 @@
                                     <div class="mb-3">
                                         <label>Ads Start<b class="text-danger">&ast;</b></label>
                                         <input id="subStart" type="text" class="form-control text-center" name="start"
-                                            maxlength="10" data-ng-value="ads[adUpdate].ads_start" />
+                                            maxlength="10" data-ng-value="list[adUpdate].ads_start" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -123,7 +120,7 @@
                                         <label>Ads End<b class="text-danger">&ast;</b></label>
                                         <input id="subEnd" type="text" class="form-control text-center"
                                             name="end" maxlength="10"
-                                            data-ng-value="adUpdate !== false ? ads[adUpdate].ads_end : ''">
+                                            data-ng-value="adUpdate !== false ? list[adUpdate].ads_end : ''">
                                     </div>
                                 </div>
 
@@ -131,7 +128,7 @@
                                     <div class="mb-3">
                                         <label>Body<b class="text-danger">&ast;</b></label>
                                         <textarea class="form-control" rows="7" cols="30"
-                                            data-ng-value="adUpdate !== false ? ads[adUpdate].ads_body : ''" name="body"></textarea>
+                                            data-ng-value="adUpdate !== false ? list[adUpdate].ads_body : ''" name="body"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -158,36 +155,53 @@
         });
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
+            $scope.q = '';
+            $scope.noMore = false;
+            $scope.loading = false;
             $scope.adUpdate = false;
-            $scope.ads = [];
-            $scope.page = 1;
+            $scope.list = [];
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+
+                $('.loading-spinner').show();
+
                 $.post("/ads/load/", {
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.ads = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].ads_id;
+                        };
                     });
                 }, 'json');
             }
             $scope.setUser = (indx) => {
                 $scope.adUpdate = indx;
-                $('#useForm').modal('show');
+                $('#adsForm').modal('show');
             };
             $scope.dataLoader();
             scope = $scope;
         });
 
         $(function() {
-            $('#useForm form').on('submit', function(e) {
+            $('#adsForm form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this),
                     formData = new FormData(this),
@@ -207,13 +221,13 @@
                     var response = JSON.parse(data);
                     if (response.status) {
                         toastr.success('Data processed successfully');
-                        $('#useForm').modal('hide');
+                        $('#adsForm').modal('hide');
                         scope.$apply(() => {
                             if (scope.adUpdate === false) {
-                                scope.ads.unshift(response.data);
-                                scope.dataLoader(true);
+                                scope.list.unshift(response.data);
+                                // scope.dataLoader(true);
                             } else {
-                                scope.ads[scope.adUpdate] = response.data;
+                                scope.list[scope.adUpdate] = response.data;
                                 scope.dataLoader(true);
                             }
                         });
@@ -221,7 +235,7 @@
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     toastr.error("error");
                     controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
+                    $('#adsForm').modal('hide');
                 }).always(function() {
                     spinner.hide();
                     controls.prop('disabled', false);
@@ -254,10 +268,10 @@
                         $('#edit_active').modal('hide');
                         scope.$apply(() => {
                             if (scope.adUpdate === false) {
-                                scope.ads.unshift(response.data);
+                                scope.list.unshift(response.data);
                                 scope.dataLoader(true);
                             } else {
-                                scope.ads[scope.adUpdate] = response.data;
+                                scope.list[scope.adUpdate] = response.data;
                                 scope.dataLoader(true);
                             }
                         });
@@ -265,7 +279,7 @@
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     toastr.error("error");
                     controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
+                    $('#adsForm').modal('hide');
                 }).always(function() {
                     spinner.hide();
                     controls.prop('disabled', false);

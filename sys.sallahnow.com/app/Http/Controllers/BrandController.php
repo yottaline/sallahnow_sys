@@ -20,7 +20,8 @@ class BrandController extends Controller
         return view('content.brands.index');
     }
 
-    public function load() {
+    public function load(Request $request)
+    {
         $brands = Brand::limit(10)->offset(0)->get();
         echo json_encode($brands);
     }

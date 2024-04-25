@@ -18,6 +18,13 @@ class Support_attachment extends Model
         'attach_time'
     ];
 
+    public static function submit($param, $id = null)
+    {
+        if ($id) return self::where('attach_id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
+
     public function supportTicket() {
         return $this->belongsTo(Support_ticket::class, 'attach_ticket', 'attach_id');
     }

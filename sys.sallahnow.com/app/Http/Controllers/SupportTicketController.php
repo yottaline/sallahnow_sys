@@ -11,60 +11,61 @@ use Illuminate\Support\Facades\DB;
 
 class SupportTicketController extends Controller
 {
-    public function index() {
+
+    public function index()
+    {
         return view('content.supports.tickets');
     }
 
-    public function load() {
-        $tickets = DB::table('support_tickets')
-        ->join('brands', 'support_tickets.ticket_brand', '=', 'brands.brand_id')
-        ->join('models', 'support_tickets.ticket_model', '=', 'models.model_id')
-        ->join('support_categories', 'support_tickets.ticket_category', '=', 'support_categories.category_id')
-        ->join('technicians', 'support_tickets.ticket_tech', '=', 'technicians.tech_id')
-        ->limit(15)->offset(0)->orderByDesc('ticket_create')->get();
+    public function load(Request $request)
+    {
+        $params = $request->q ? ['q' => $request->q] : [];
+        $limit  = $request->limit;
+        $lastId = $request->last_id;
 
-        echo json_encode($tickets);
+        echo json_encode(Support_ticket::fetch(0, $params, $limit, $lastId));
     }
 
-    public function changeStatus(Request $request) {
-        // return $request;
-        $ticket_id = $request->ticket_id;
-        $status   = Support_ticket::where('ticket_id', $ticket_id)->update([
-            'ticket_status'   => $request->status
-        ]);
+    public function changeStatus(Request $request)
+    {
+        $id = $request->ticket_id;
+        $params  = ['ticket_status' => $request->status];
 
-        $record = Support_ticket::where('ticket_id', $ticket_id)->first();
+        $result = Support_ticket::submit($params, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Support_ticket::fetch($id) : [],
         ]);
     }
 
 
     public function getReplie($ticket_id){
+        $param[] = ['reply_ticket', $ticket_id];
+        $replies = Support_replie::fetch(0,$param);
 
-        $replies = Support_replie::where('reply_ticket', $ticket_id)->orderBy('reply_create', 'DESC')->get();
         return view('content.supports.replies', compact('replies'));
     }
 
     public function replie(Request $request) {
-        // return $request;
+
         $request->validate([
             'replie'      => 'required | string',
             'ticket_id'   => 'required | numeric'
         ]);
 
-        Support_ticket::where('ticket_id', $request->ticket_id)->update(['ticket_status' => 2]);
-        if(!$request->attachment){
-            $status = Support_replie::create([
-                'reply_context'  => $request->replie,
-                'reply_ticket'   => $request->ticket_id,
-                'reply_user'     => auth()->user()->id,
-                'reply_create'   => Carbon::now()
-            ]);
+        $paramRely =
+        [
+            'reply_context'  => $request->replie,
+            'reply_ticket'   => $request->ticket_id,
+            'reply_user'     => auth()->user()->id,
+            'reply_create'   => Carbon::now()
+        ];
 
-            $reply_id = $status->id;
-            $record   = Support_replie::where('reply_id', $reply_id)->first();
+
+        // where('ticket_id', $request->ticket_id)->update()
+        Support_ticket::submit(['ticket_status' => 2], $request->ticket_id);
+        if(!$request->attachment){
+            $result = Support_replie::submit($paramRely);
         }
         else{
             $attachment = $request->file('attachment');
@@ -72,19 +73,18 @@ class SupportTicketController extends Controller
             $location = 'Image/supports/';
             $attachment->move($location , $attachmentName);
             $attachmentPath = url($location, $attachmentName);
-            $status = Support_attachment::create([
+            $paramAttachment =
+            [
                 'attach_file'       => $attachmentName,
                 'attach_ticket'     => $request->ticket_id,
                 'attach_time'       => Carbon::now()
-            ]);
+            ];
 
-            $attach_id = $status->id;
-            $record   = Support_attachment::where('attach_id', $attach_id)->first();
+            $result = Support_attachment::submit($paramAttachment);
         }
 
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
         ]);
     }
 }

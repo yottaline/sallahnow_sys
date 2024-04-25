@@ -11,26 +11,24 @@ use Illuminate\Support\Facades\Storage;
 class CourseController extends Controller
 {
     private $photosPath = '/photos';
-    public function index() {
+    public function index()
+    {
         return view('content.courses.index');
     }
 
-    public function load() {
-        $courses = DB::table('courses')
-        ->join('users', 'courses.course_create_user', '=', 'users.id')
-        ->where('course_deleted', 0)->orderByDesc('course_create_time')
-        ->limit(15)->offset(0)->get();
+    public function load(Request $request)
+    {
+        $params = $request->q ? ['q' => $request->q] : [];
+        $limit  = $request->limit;
+        $lastId = $request->last_id;
 
-        echo json_encode($courses);
+        echo json_encode(Course::fetch(0, $params, $limit, $lastId));
     }
 
     public function editor($code = null)
     {
-        $data = $code ? DB::table('courses')
-        ->join('users', 'courses.course_create_user', '=', 'users.id')
-        ->where('course_code', $code)->first() : null;
+        $data = $code ? Course::editor($code) : null;
         $file = Storage::get('public/courses/' . $code . '.txt');
-
         return view('content.courses.create', compact('data', 'file'));
     }
 
