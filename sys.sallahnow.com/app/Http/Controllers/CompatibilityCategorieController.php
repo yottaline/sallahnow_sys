@@ -13,31 +13,27 @@ class CompatibilityCategorieController extends Controller
         $this->middleware('auth');
     }
 
-    public function load() {
-        $categories = Compatibility_categorie::limit(15)->offset(0)->get();
-        echo json_encode($categories);
+    public function load(Request $request)
+    {
+        $limit  = $request->limit;
+        $lastId = $request->last_id;
+
+        echo json_encode(Compatibility_categorie::fetch(0,null, $limit, $lastId));
     }
 
-    public function submit(Request $request) {
+    public function submit(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);
 
         $id = $request->cate_id;
-        if(!$id){
-            $status = Compatibility_categorie::create([
-                'category_name' => $request->name
-            ]);
-        $id = $status->category_id;
-        }else{
-            $status = Compatibility_categorie::where('category_id', $id)->update([
-                'category_name' => $request->name
-            ]);
-        }
-        $record = Compatibility_categorie::where('category_id', $id)->first();
+        $param = [ 'category_name' => $request->name];
+
+        $result = Compatibility_categorie::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Compatibility_categorie::fetch($id) : [],
         ]);
     }
 }

@@ -9,12 +9,12 @@
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
-                        <div class="mb-3">
+                        <div class="mb-3" id="roleFomr">
                             Add Role
                             <form method="POST" action="{{ route('role_store') }}">
                                 @csrf
                                 <div class="input-group">
-                                    <input type="text" name="name" class="form-control">
+                                    <input type="text" name="name" class="form-control" id="role_name">
                                     <button class="input-group-text" id="basic-addon1" type="submit">
                                         <i class="bi bi-plus-circle-fill"></i>
                                     </button>
@@ -192,10 +192,10 @@
                                                 scope.$apply(() => {
                                                     if (scope.roleId === false) {
                                                         scope.roles.unshift(response.data);
-                                                        scope.dataLoader();
+                                                        scope.dataLoader(true);
                                                     } else {
                                                         scope.roles[scope.roleId] = response.data;
-                                                        scope.dataLoader();
+                                                        scope.dataLoader(true);
                                                     }
                                                 });
                                             } else toastr.error(response.message);
@@ -278,6 +278,55 @@
 
             $scope.dataLoader();
             scope = $scope;
+        });
+
+        $(function() {
+            $('#roleFomr form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#role_name').val(' ');
+                        scope.$apply(() => {
+                            if (scope.roleId === false) {
+                                scope.roles.unshift(response.data);
+                                scope.dataLoader(true);
+                            } else {
+                                scope.roles[scope.roleId] = response.data;
+                                scope.dataLoader(true);
+                            }
+                        });
+                    } else toastr.error(response.message);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    toastr.error("error");
+                    controls.log(jqXHR.responseJSON.message);
+                    $('#useForm').modal('hide');
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+            // $('#searchForm').on('submit', function(e) {
+            //     e.preventDefault();
+            //     scope.$apply(() => scope.q = $(this).find('input').val());
+            //     scope.dataLoader(true);
+            // });
         });
     </script>
 @endsection

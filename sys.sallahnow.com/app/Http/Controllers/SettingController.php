@@ -22,27 +22,28 @@ class SettingController extends Controller
     {
         $request->type;
         $request->parent;
-        $location = Location::where([
-            'location_type' => $request->type,
-            'location_parent' => $request->parent
-        ])->get();
-        echo json_encode($location);
+        $params = [['location_type', $request->type], ['location_parent', $request->parent]];
+
+        echo json_encode(Location::fetch(0,$params));
     }
 
     function locationSubmit(Request $request)
     {
-        $location = new Location;
-        $location->location_name = json_encode([
+        $names = json_encode([
             'en' => $request->name_en,
             'ar' => $request->name_ar,
         ]);
-        $location->location_type = intval($request->type);
-        $location->location_parent = intval($request->parent);
-        $status = $location->save();
 
+        $params = [
+            'location_type'   => intval($request->type),
+            'location_parent' => intval($request->parent),
+            'location_name'   => $names,
+        ];
+
+        $result = Location::submit($params);
         echo json_encode([
-            'status' => $status,
-            'data' => $location,
+            'status' => boolval($result),
+            'data' => $result ? Location::fetch($result) : [],
         ]);
     }
 }

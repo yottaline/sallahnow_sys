@@ -23,6 +23,17 @@ class Chat_Room_Members extends Model
         'member_add'
     ];
 
+    public static function fetch($id = 0, $params = null)
+    {
+        $chatRoomMembers = self::join('chat_rooms', 'chat_room_members.member_room', '=', 'chat_rooms.room_id')
+        ->where('chat_room_members.member_tech', '=', 'technicians.tech_id');
+
+        if ($params) $chatRoomMembers->where($params);
+        if ($id) $chatRoomMembers->where('member_id', $id);
+
+        return $id ? $chatRoomMembers->first() : $chatRoomMembers->get();
+    }
+
     public static function getChatMember($item)
     {
         return self::where('member_id', $item)->first();
