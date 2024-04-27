@@ -45,14 +45,16 @@ class Subscriptions extends Model
             unset($params['q']);
         }
 
+        if ($params) $subscriptions->where($params);
+
         if ($id) $subscriptions->where('sub_id', $id);
-        
+
         return $id ? $subscriptions->first() : $subscriptions->get();
     }
 
-    public static function submit($params, $id)
+    public static function submit($params, $id = null)
     {
-        if($id) return self::where('sub_id', $id)->update($params) ? $id : false;
+        if ($id) return self::where('sub_id', $id)->update($params) ? $id : false;
         $status = self::create($params);
         return $status ? $status->id : false;
     }

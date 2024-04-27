@@ -45,9 +45,7 @@ class TechnicianApiController extends Controller
 
         $code = strtoupper($this->uniqidReal());
         $devise_token = strtoupper($this->uniqidReal());
-
-
-        Technician::create([
+        $param = [
             'tech_name'              => $request->tech_name,
             'tech_email'             => $request->tech_email,
             'tech_mobile'            => $request->tech_mobile,
@@ -65,25 +63,22 @@ class TechnicianApiController extends Controller
             'tech_register_by'       => null,
             'tech_code'              => $code,
             'tech_register'          => Carbon::now()
-        ]);
+        ];
 
-        $technician = Technician::where('tech_mobile', $request->tech_mobile)->first();
-        if(!$technician) {
+        Technician::submit($param);
+        $params[] = ['tech_mobile', $request->tech_mobile];
+        $technician = Technician::fetch(0, $params);
+        if(!$technician[0]) {
             return response()->json(['error' => 'Unauthorized'], 104);
         }else {
-            $passwords = Hash::check(request('tech_password'), $technician->tech_password);
+            $passwords = Hash::check(request('tech_password'), $technician[0]->tech_password);
             if(!$passwords) {
                 return response()->json(['error' => 'Unauthorized'], 104);
             }else {
-                $token = auth()->guard('technician-api')->login($technician);
+                $token = auth()->guard('technician-api')->login($technician[0]);
                 return $this->respondWithToken($token);
             }
         }
-
-
-
-
-
 
         // $credentials = request(['tech_mobile', 'password']);
 
@@ -97,15 +92,16 @@ class TechnicianApiController extends Controller
 
     public function login()
     {
-        $technician = Technician::where('tech_mobile', request('tech_mobile'))->first();
-        if(!$technician) {
+        $params[] = ['tech_mobile', request('tech_mobile')];
+        $technician = Technician::fetch(0, $params);
+        if(!$technician[0]) {
             return response()->json(['error' => 'Unauthorized'], 104);
         }else {
-            $passwords = Hash::check(request('password'), $technician->tech_password);
+            $passwords = Hash::check(request('password'), $technician[0]->tech_password);
             if(!$passwords) {
                 return response()->json(['error' => 'The password is incorrect'], 102);
             }else {
-                $token = auth()->guard('technician-api')->login($technician);
+                $token = auth()->guard('technician-api')->login($technician[0]);
                 return $this->respondWithToken($token);
             }
         }
@@ -136,7 +132,8 @@ class TechnicianApiController extends Controller
 
 
         $code = Str::random(4);
-        Technician::where('id', $id)->update([
+        $param =
+        [
             'name'            => $request->name,
             'email'           => $request->email,
             'mobile'          => $request->mobile,
@@ -154,56 +151,65 @@ class TechnicianApiController extends Controller
             'devise_token'    => '03df25c845ds460bcdad7802d2vf6fc1dfde972',
             'user_id'         => 1,
             'code'            => $code
-        ]);
+        ];
+        Technician::submit($param, $id);
 
         return $this->returnSuccess('updated successfully');
     }
 
-    public function getCompatibilities() {
-        if (request('search')) {
-            $compatibilities  = Compatibility::where('part', 'like', '%' . request('search') . '%')->get();
-        } else {
-            $compatibilities  = Compatibility::all();
+    public function getCompatibilities()
+    {
+
+        if (request('search'))
+        {
+            $params[] = ['part', 'like', '%' . request('search') . '%'];
+            $compatibilities  = Compatibility::fetch(0, $params);
+        }
+        else {
+            $compatibilities  = Compatibility::fetch();
         }
 
         return $this->returnData('compatibilities', $compatibilities);
     }
 
-    public function addSuggestions(Request $request){
-        $status = Compatibilities_suggestions::create([
+    public function addSuggestions(Request $request)
+    {
+        $param =
+        [
             'status' => 0,
             'act_not' => '',
             'act_time' => now(),
             'category_id' => $request->cate_id,
             'technician_id'  => $request->technician_id,
             'user_id' => 1
-        ]);
+        ];
+        $status = Compatibilities_suggestions::submit($param);
         $status->models()->attach($request->models);
     }
 
-    public function getCategory() {
-        $categories  = Compatibility_categorie::all();
+    public function getCategory()
+    {
+        $categories  = Compatibility_categorie::fetch();
         return $this->returnData('categories', $categories);
     }
 
-    public function suggestions(){
-        $suggestions = Compatibilities_suggestions::all();
+    public function suggestions()
+    {
+        $suggestions = Compatibilities_suggestions::fetch();
         return $this->returnData('suggestions', $suggestions);
     }
 
     public function getModels()
     {
-        $models = Models::all();
+        $models = Models::fetch();
         return $this->returnData('models', $models);
     }
 
-    public function getPackages() {
-        $packages = Package::all();
+    public function getPackages()
+    {
+        $packages = Package::fetch();
         return $this->returnData('packages', $packages);
     }
-
-
-
 
 
 

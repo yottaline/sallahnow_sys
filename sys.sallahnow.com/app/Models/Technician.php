@@ -63,13 +63,13 @@ class Technician extends Authenticatable implements JWTSubject
             });
             unset($params['q']);
         }
-        
+
         if($params) $technicians->where($params);
 
         return $id ? $technicians->first() : $technicians->get();
     }
 
-    public static function submit($param, $id)
+    public static function submit($param, $id = null)
     {
         if ($id) return self::where('tech_id', $id)->update($param) ? $id : false;
         $status = self::create($param);

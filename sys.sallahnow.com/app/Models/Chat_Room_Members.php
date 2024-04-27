@@ -34,6 +34,13 @@ class Chat_Room_Members extends Model
         return $id ? $chatRoomMembers->first() : $chatRoomMembers->get();
     }
 
+    public static function getteh($id)
+    {
+        $chatRoomMembers = self::join('chat_rooms', 'chat_room_members.member_room', '=', 'chat_rooms.room_id')
+        ->where('chat_room_members.member_tech', '=', $id);
+        return $chatRoomMembers->get();
+    }
+
     public static function getChatMember($item)
     {
         return self::where('member_id', $item)->first();

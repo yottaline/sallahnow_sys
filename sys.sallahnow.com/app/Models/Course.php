@@ -59,6 +59,13 @@ class Course extends Model
         return $id ? $courses->first() : $courses->get();
     }
 
+    public static function submit($param, $id)
+    {
+        if ($id) return self::where('course_id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
+
     public static function editor($code)
     {
         return self::join('users', 'courses.course_create_user', '=', 'users.id')

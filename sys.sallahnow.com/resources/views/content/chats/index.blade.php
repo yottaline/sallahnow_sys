@@ -131,7 +131,7 @@
             // }
 
             $scope.getMassages = (room) => {
-                let id = room.member_id;
+                let id = room.room_id;
                 $.post("get-chat-msg/" + id, {
                     _token: '{{ csrf_token() }}'
                 }, function(data) {

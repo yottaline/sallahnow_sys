@@ -25,7 +25,7 @@ class ChatRoomController extends Controller
     public function getChatRoom($tech_id)
     {
         $params[] = ['chat_room_members.member_tech', $tech_id];
-        $chats = Chat_Room_Members::fetch(0, $params);
+        $chats = Chat_Room_Members::getteh($tech_id);
         if(count($chats)){
             echo json_encode($chats);
         }else{
@@ -68,9 +68,7 @@ class ChatRoomController extends Controller
 
     public function getMessage($room_id)
     {
-        $params[] = ['chat_room_messages.msg_room', $room_id];
-
-        echo json_encode(Chat_Room_Message::fetch(0, $params));
+        echo json_encode(Chat_Room_Message::msg_room($room_id));
     }
 
 

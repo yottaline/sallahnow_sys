@@ -35,7 +35,7 @@ class Post_Comment extends Model
         $status = Post_Comment::create($param);
 
         return $status ? $status->id : false;
-    } 
+    }
 
     public function posts() {
         return $this->belongsTo(Post::class, 'comment_post', 'comment_id');

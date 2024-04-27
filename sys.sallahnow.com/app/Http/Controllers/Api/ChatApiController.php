@@ -13,37 +13,43 @@ use Illuminate\Http\Request;
 class ChatApiController extends Controller
 {
     use ResponseApi;
+
     public function __construct()
     {
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function chat($tech_id) {
-        $chats = Chat_Room_Members::where('member_tech', $tech_id)->get();
+    public function chat($tech_id)
+    {
+        $params[] = ['member_tech', $tech_id];
+        $chats = Chat_Room_Members::fetch(0, $params);
 
         return $this->returnData('chats', $chats);
     }
 
-    public function createRoom(Request $request) {
+    public function createRoom(Request $request)
+    {
 
         $request->validate([
             'room_type' => 'required|numeric'
         ]);
 
         $code = strtoupper($this->uniqidReal());
-
-        $status = Chat_Room::create([
+        $param =
+        [
             'room_code' => $code,
             'room_type' => $request->room_type,
             'room_name' => $request->room_name
-        ]);
+        ];
+        $result = Chat_Room::submit($param, null);
 
-        $room = Chat_Room::where('room_id', $status->id)->first();
+        $room = $result ? Chat_Room::fetch($result) : [];
 
         return $this->returnData('room', $room);
     }
 
-    public function addMember(Request $request) {
+    public function addMember(Request $request)
+    {
 
         $request->validate([
             'member_room' => 'required|numeric',
@@ -57,7 +63,8 @@ class ChatApiController extends Controller
 
     }
 
-    public function createMessage(Request $request) {
+    public function createMessage(Request $request)
+    {
 
       $data = $request->validate([
             'msg_from'    => 'required |numeric',
@@ -66,10 +73,9 @@ class ChatApiController extends Controller
         ]);
 
         $data['msg_create'] = Carbon::now();
-        $status = Chat_Room_Message::create($data);
-        $msg_id = $status->id;
+        $result = Chat_Room_Message::submit($data, null);
 
-        $message = Chat_Room_Message::getFirstElementById($msg_id);
+        $message = $result ? Chat_Room_Message::getFirstElementById($result) : [];
         return $this->returnData('message', $message);
     }
 

@@ -29,7 +29,9 @@ class Compatibility extends Model
             });
             unset($params['q']);
         }
-        
+
+        if ($params) $compatibilities->where($params);
+
         if($listId) $compatibilities->where('compat_id', '<', $listId);
 
         return $id ? $compatibilities->first() : $compatibilities->get();

@@ -55,7 +55,7 @@ class Support_ticket extends Model
    {
     if ($id) return self::where('ticket_id', $id)->update($param) ? $id : false;
     $status = self::create($param);
-    return $status ? $status->ticket_id : false;
+    return $status ? $status->id : false;
    }
 
     public function brand() {
