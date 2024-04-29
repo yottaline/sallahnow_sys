@@ -14,37 +14,44 @@ class UserGroupController extends Controller
         return view('content.user_groups.roles.index');
     }
 
-    public function load() {
-        $roles = User_group::all();
-        echo json_encode($roles);
+    public function load()
+    {
+        echo json_encode(User_group::fetch());
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate(['name' => 'required']);
-        User_group::create([
+        $param = [
             'ugroup_name' => $request->name,
             'ugroup_privileges'  => 0
+        ];
+
+        $result = User_group::submit($param);
+        echo json_encode([
+            'status' => boolval($result),
+            'data' => $result ? User_group::fetch($result) : [],
         ]);
-        session()->flash('Add', 'Role data has been added successfully');
-        return back();
     }
-    public function addPermissions(Request $request) {
+    public function addPermissions(Request $request)
+    {
 
         $name = implode(" ,",$request->name);
         $request->validate(['ugroup_id' => 'required']);
-       $status = User_group::where('ugroup_id', $request->ugroup_id)->update([
-            'ugroup_privileges' =>$name
-        ]);
-        $record = User_group::where('ugroup_id', $request->ugroup_id)->first();
+        $id  = $request->ugroup_id;
+        $param = ['ugroup_privileges' =>$name];
+
+        $result = User_group::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? User_group::fetch($result) : [],
         ]);
     }
 
-    public function getPermissions($ugroup_id) {
-
-       $permissions = User_group::where('ugroup_id',$ugroup_id)->first();
+    public function getPermissions($ugroup_id)
+    {
+        $id = $ugroup_id;
+       $permissions = User_group::fetch($id);
        echo json_encode($permissions);
     }
 }

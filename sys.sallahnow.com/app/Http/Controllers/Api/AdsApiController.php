@@ -15,8 +15,9 @@ class AdsApiController extends Controller
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function ads() {
-        $ads = Technician_ads::all();
+    public function ads()
+    {
+        $ads = Technician_ads::fetch();
 
         return $this->returnData('ads', $ads);
     }

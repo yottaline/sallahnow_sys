@@ -21,59 +21,52 @@ class PostsApiController extends Controller
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function getPost(){
-        $posts = Post::all();
-        if(!$posts)
-        {
-            return $this->returnError('There are no posts', '108');
-        }
+    public function getPost()
+    {
+        $posts = Post::fetch();
+        if(!$posts) return $this->returnError('There are no posts', '108');
+
         return $this->returnData('posts', $posts);
     }
 
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'title'  => 'required',
             'body'   => 'required'
         ]);
-        $code = strtoupper($this->uniqidReal());
-        if($request->file('photo')){
 
+        $code = strtoupper($this->uniqidReal());
+
+        if($request->file('photo'))
+        {
             $photo = $request->file('photo');
             $photoName = $photo->getClientOriginalName();
             $photo->move('media/' , $photoName);
             $photoPath = url('media/', $photoName);
-
-            $status = Post::create([
-                'post_code'        => $code,
-                'post_title'       => $request->title,
-                'post_body'        => $request->body,
-                'post_photo'       => $photoName,
-                'post_create_tech' => auth()->user()->id,
-                'post_archive_time' => now(),
-                'post_delete_user' => 0,
-                'post_create_time' => now()
-            ]);
-            $post_id =  $status->id;
         }
-        else { # is not have a photo
 
-            $status = Post::create([
-                'post_code'        => $code,
-                'post_title'       => $request->title,
-                'post_body'        => $request->body,
-                'post_create_tech' => auth()->user()->id,
-                'post_archive_time' => now(),
-                'post_delete_user' => 0,
-                'post_create_time' => now()
-            ]);
-            $post_id =  $status->id;
-        }
-        $data = Post::where('post_id', $post_id)->first();
+        $param =
+        [
+            'post_code'        => $code,
+            'post_title'       => $request->title,
+            'post_body'        => $request->body,
+            'post_photo'       => $request->file('photo') ? $photoName : null,
+            'post_create_tech' => auth()->user()->id,
+            'post_archive_time' => now(),
+            'post_delete_user' => 0,
+            'post_create_time' => now()
+        ];
+
+
+        $result = Post::submit($param,null);
+        $data = $result ? Post::fetch($result) : false;
         return $this->returnData('post', $data, 'post has created successfully');
     }
 
-    public function cost(Request $request) {
+    public function cost(Request $request)
+    {
 
         $request->validate([
             'tech_id' => 'required | numeric',
@@ -82,26 +75,25 @@ class PostsApiController extends Controller
 
         $tech_id = $request->tech_id;
         $post_id = $request->post_id;
+        $technician = Technician::fetch($tech_id);
 
-        $technician = Technician::where('tech_id', $tech_id)->first();
-        if($technician->tech_points > 0){
-
-            $post  = Post::where('post_id', $post_id)->first();
-
-            PointTranaction::create([
+        if($technician->tech_points > 0)
+        {
+            $post  = Post::fetch($post_id);
+            $param =
+            [
                 'points_count'    =>   $post->post_cost,
                 'points_src'      =>   9,
                 'points_target'   =>   $post_id,
                 'points_process'  =>   1,
                 'points_tech'     =>   $tech_id,
                 'points_register' =>   Carbon::now()
-            ]);
+            ];
+            PointTranaction::submit($param, null);
 
             $point =  $technician->tech_points - $post->post_cost;
-            Technician::where('tech_id', $tech_id)->update([
-                'tech_points' => $point
-            ]);
-
+            $par = ['tech_points' => $point];
+            Technician::submit($par, $tech_id);
             return $this->returnSuccess('Points have been withdrawn successfully');
 
         }else {
@@ -110,65 +102,66 @@ class PostsApiController extends Controller
 
     }
 
-    public function addLike(Request $request) {
-        $request->validate([
+    public function addLike(Request $request)
+    {
+      $data =  $request->validate([
             'like_tech' => 'required|numeric',
             'like_post' => 'required|numeric'
         ]);
 
-        Post_Like::create([
-            'like_tech' => $request->like_tech,
-            'like_post' => $request->like_post
-        ]);
+        Post_Like::submit($data, null);
         return $this->returnSuccess('Like post successfully');
     }
 
-    public function comments($post_id) {
-        $comments = Post_Comment::where('comment_post', $post_id)->get();
+    public function comments($post_id)
+    {
+        $comments = Post_Comment::fetch(0, $post_id);
 
         return $this->returnData('comments', $comments);
     }
 
-    public function addComment(Request $request) {
+    public function addComment(Request $request)
+    {
 
-        $request->validate([
+     $data = $request->validate([
             'comment_post'  => 'required|numeric',
             'comment_context' => 'required',
         ]);
 
-     $status = Post_Comment::create([
-            'comment_post'      => $request->comment_post,
-            'comment_context'   => $request->comment_context,
-            'comment_tech'      => $request->comment_tech,
-            'comment_create'    => now()
-        ]);
+        $data['comment_tech']   = $request->comment_tech;
+        $data['comment_create'] = now();
 
-        $comment_id = $status->id;
-        $comment    = Post_Comment::where('comment_id', $comment_id)->first();
+        $result  = Post_Comment::submit($data, null);
+
+        $comment    = $result ? Post_Comment::fetch($result) : [];
 
         return $this->returnData('comment', $comment, 'Comment created successfully');
     }
 
-    public function postView($post_id) {
-        $views = Post_View::where('view_post', $post_id)->get();
+    public function postView($post_id)
+    {
+
+        $views = Post_View::fetch($post_id);
 
         return $this->returnData('post', $views);
     }
 
-    public function addView(Request $request) {
+    public function addView(Request $request)
+    {
 
         $request->validate([
             'tech_device'  => 'required',
             'view_tech'    => 'required|numeric',
             'view_post'    => 'required|numeric'
         ]);
-
-      $data = Post_View::create([
+        $param =
+        [
             'view_device'  => $request->view_device,
             'view_tech'    => $request->view_tech,
             'view_post'    => $request->view_post
-        ]);
-        return $this->returnData('view', $data, 'post has created successfully');
+        ];
+        Post_View::submit($param, null);
+        return $this->returnSuccess( 'post has created successfully');
     }
 
 

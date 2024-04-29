@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -55,6 +56,38 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
+    {
+        $users = self::join('user_groups', 'users.user_group', '=', 'user_groups.ugroup_id')
+        ->orderBy('users.user_create', 'desc')->limit($limit);
+
+        if($lastId) $users->where('id', '<', $lastId);
+
+        if (isset($params['q']))
+        {
+            $users->where(function (Builder $query) use ($params) {
+                $query->where('user_name', 'like', '%' . $params['q'] . '%')
+                    ->orWhere('user_mobile', $params['q'])
+                    ->orWhere('user_email', $params['q']);
+            });
+            unset($params['q']);
+        }
+
+        if($params) $users->where($params);
+
+        if ($id) $users->where('id', $id);
+
+        return $id ? $users->first() : $users->get();
+
+    }
+
+    public static function submit($param, $id)
+    {
+        if ($id) return self::where('id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
 
     public function technicians() {
         return $this->hasMany(Technician::class);

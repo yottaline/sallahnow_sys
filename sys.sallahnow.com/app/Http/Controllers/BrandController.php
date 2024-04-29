@@ -20,13 +20,16 @@ class BrandController extends Controller
         return view('content.brands.index');
     }
 
-    public function load() {
-        $brands = Brand::limit(10)->offset(0)->get();
-        echo json_encode($brands);
+    public function load(Request $request)
+    {
+        $limit  = $request->limit;
+        $lastId = $request->last_id;
+
+        echo json_encode(Brand::fetch(0,null,$limit, $lastId));
     }
 
     public function store(Request $request) {
-        // return $request;
+
         $request->validate([
             'name'   => 'required|max:250',
             'logo'   => 'required'
@@ -44,35 +47,30 @@ class BrandController extends Controller
         }
 
         $id = intval($request->brand_id);
-        if(!$id)
+        if($id)
         {
-            $status = Brand::create($param);
-            $id = $status->id;
-        }
-        else
-        {
-            $data = Brand::where('brand_id', $id)->first();
-
+            $data = Brand::fetch($id);
             if(!empty($data->brand_logo) && File::exists($this->location)){
                 File::delete($this->location . $data->brand_logo);
             }
-            $status = Brand::where('brand_id', $id)->update($param);
-
         }
-        $record = Brand::where('brand_id', $id)->first();
+        $result = Brand::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Brand::fetch($id) : [],
         ]);
     }
 
-    public function getUsersName(){
-        $userName = DB::table('users')
-        ->join('brands', 'users.id', '=', 'brands.user_id')
-        ->select('brands.brand_name','users.user_name')
-        ->get();
-        echo json_encode($userName);
-    }
+    // public function getUsersName()
+    // {
+    //     $userName = DB::table('users')
+    //     ->join('brands', 'users.id', '=', 'brands.user_id')
+    //     ->select('brands.brand_name','users.user_name')
+    //     ->get();
+    //     echo json_encode($userName);
+    // }
+
+
 
     private function uniqidReal($lenght = 12)
     {

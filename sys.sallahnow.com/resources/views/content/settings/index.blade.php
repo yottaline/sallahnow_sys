@@ -883,10 +883,10 @@
                         scope.$apply(() => {
                             if (scope.updateBrand === false) {
                                 scope.brands.unshift(response.data);
-                                $scope.loadBrandsData();
+                                $scope.loadBrandsData(true);
                             } else {
                                 scope.brands[scope.updateBrand] = response.data;
-                                $scope.loadBrandsData();
+                                $scope.loadBrandsData(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -926,10 +926,10 @@
                         scope.$apply(() => {
                             if (scope.updateModel === false) {
                                 scope.models.unshift(response.data);
-                                $scope.lodaModelsData();
+                                scope.lodaModelsData(true);
                             } else {
                                 scope.models[scope.updateModel] = response.data;
-                                $scope.lodaModelsData();
+                                scope.lodaModelsData(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -971,11 +971,11 @@
                             if (scope.updateCompCate === false) {
                                 scope.compatibility_categories.unshift(response
                                     .data);
-                                $scope.lodaCompatibilityCategoriessData();
+                                $scope.lodaCompatibilityCategoriessData(true);
                             } else {
                                 scope.compatibility_categories[scope
                                     .updateCompCate] = response.data;
-                                $scope.lodaCompatibilityCategoriessData();
+                                $scope.lodaCompatibilityCategoriessData(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -1016,11 +1016,11 @@
                         scope.$apply(() => {
                             if (scope.updatePackage === false) {
                                 scope.packages.unshift(response.data);
-                                $scope.loadPackageData();
+                                $scope.loadPackageData(true);
                             } else {
                                 scope.packages[scope.updatePackage] = response
                                     .data;
-                                $scope.loadPackageData();
+                                $scope.loadPackageData(true);
                             }
                         });
                     } else toastr.error("Error");

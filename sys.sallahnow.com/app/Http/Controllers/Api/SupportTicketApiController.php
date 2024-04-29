@@ -19,18 +19,15 @@ class SupportTicketApiController extends Controller
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function getTickets() {
-        $tickets = DB::table('support_tickets')
-        ->join('brands', 'support_tickets.ticket_brand', '=', 'brands.brand_id')
-        ->join('models', 'support_tickets.ticket_model', '=', 'models.model_id')
-        ->join('support_categories', 'support_tickets.ticket_category', '=', 'support_categories.category_id')
-        ->join('technicians', 'support_tickets.ticket_tech', '=', 'technicians.tech_id')
-        ->get();
+    public function getTickets()
+    {
+        $tickets = Support_ticket::fetch();
 
         return $this->returnData('tickets', $tickets);
     }
 
-    public function addTicket(Request $request) {
+    public function addTicket(Request $request)
+    {
 
         $data = $request->validate([
             'ticket_brand'       => 'required | numeric',
@@ -40,30 +37,30 @@ class SupportTicketApiController extends Controller
             'ticket_context'     => 'required | string',
         ]);
 
-        $cost = Support_category::where('category_id', $request->ticket_category)->first();
-        if(!$cost)
-        {
-            return $this->returnError('No category', 107);
-        }
+        $cate_id = $request->ticket_category;
+        $cost = Support_category::fetch($cate_id);
+        if(!$cost) return $this->returnError('No category', 107);
 
         $data['ticket_code']   = strtoupper($this->uniqidReal());
         $data['ticket_cost']   = $cost->category_cost;
         $data['ticket_create'] = Carbon::now();
 
-        $status = Support_ticket::create($data);
-        $ticket_id = $status->id;
+        $result = Support_ticket::submit($data, null);
 
-        $ticket = Support_ticket::where('ticket_id', $ticket_id)->first();
+        $ticket = $result ? Support_ticket::fetch($result) : [];
+
         return $this->returnData('ticket', $ticket);
     }
 
-    public function gtReplies($ticket_id) {
-
-        $replies = Support_replie::where('reply_ticket', $ticket_id)->get();
+    public function gtReplies($ticket_id)
+    {
+        $params[] = ['reply_ticket', $ticket_id];
+        $replies = Support_replie::fetch(0, $params);
         return $this->returnData('replies', $replies);
     }
 
-    public function addReplie(Request $request) {
+    public function addReplie(Request $request)
+    {
 
         $data = $request->validate([
             'reply_ticket'  => 'required | numeric',
@@ -72,14 +69,14 @@ class SupportTicketApiController extends Controller
         ]);
 
         $data['reply_create'] = Carbon::now();
+        $tickId = $request->reply_ticket;
+        $param = ['ticket_status' => 2];
+        Support_ticket::submit($param, $tickId);
 
-        Support_ticket::where('ticket_id', $request->reply_ticket)->update(['ticket_status' => 2]);
+        $result = Support_replie::submit($data);
 
-        $status = Support_replie::create($data);
 
-        $reply_id = $status->id;
-
-        $replie = Support_replie::where('reply_id', $reply_id)->first();
+        $replie = $result ? Support_replie::fetch($result) : [];
 
         return $this->returnData('replie', $replie);
     }

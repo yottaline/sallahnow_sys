@@ -17,6 +17,26 @@ class Brand extends Model
         'user_id'
     ];
 
+    public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
+    {
+        $brands = self::limit($limit)->orderBy('brand_id', 'DESC');
+
+        if ($lastId) $brands->where('brand_id', '<', $lastId);
+
+        if ($id) $brands->where('brand_id', $id);
+
+        return $id ? $brands->first() : $brands->get();
+    }
+
+    public static function submit($param, $id)
+    {
+        if ($id) return self::where('brand_id', $id)->update($param) ? $id : false;
+
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
+
+
     public function user() {
         return $this->belongsTo(User::class);
     }

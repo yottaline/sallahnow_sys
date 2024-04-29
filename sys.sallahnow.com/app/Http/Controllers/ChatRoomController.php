@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chat_Room;
 use App\Models\Chat_Room_Members;
+use App\Models\Chat_Room_Message;
 use App\Models\Technician;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,16 +16,17 @@ class ChatRoomController extends Controller
         return $this->middleware('auth');
     }
 
-    public function index() {
-        $technicians = Technician::all();
+    public function index()
+    {
+        $technicians = Technician::fetch();
         return view('content.chats.index', compact('technicians'));
     }
 
-    public function getChatRoom($tech_id) {
-        $chats = DB::table('chat_room_members')
-                 ->join('chat_rooms', 'chat_room_members.member_room', '=', 'chat_rooms.room_id')
-                 ->where('chat_room_members.member_tech', $tech_id)->get();
-        if(count($chats) > 0){
+    public function getChatRoom($tech_id)
+    {
+        $params[] = ['chat_room_members.member_tech', $tech_id];
+        $chats = Chat_Room_Members::getteh($tech_id);
+        if(count($chats)){
             echo json_encode($chats);
         }else{
             echo json_encode([
@@ -36,45 +38,37 @@ class ChatRoomController extends Controller
     }
 
 
-    public function submit(Request $request) {
+    public function submit(Request $request)
+    {
         $request->validate([
             'room_type' => 'required|numeric'
         ]);
         $code = strtoupper($this->uniqidReal());
-        $parma = [
+        $param = [
             'room_code' => $code,
             'room_type' => $request->room_type,
             'room_name' => $request->room_name
         ];
+        $id = $request->room_id;
 
-        $room_id = $request->room_id;
-        if(!$room_id){
-            $status = Chat_Room::create($parma);
 
-            $room_id = $status->room_id;
-        }
-        else {
-            $status = Chat_Room::where('room_id', $room_id)->update($parma);
-        }
-
-        $record =  Chat_Room::where('room_id', $room_id)->first();
+        $result =  Chat_Room::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Chat_Room::fetch($id) : [],
         ]);
     }
 
-    public function getTechnician($item) {
-        $technician_name = Technician::where('tech_code', 'like', '%' . $item . '%')->get();
+    public function getTechnician($item)
+    {
+        $param[] = ['tech_code', 'like', '%' . $item . '%'];
+        $technician_name = Technician::fetch(0, $param);
         echo json_encode($technician_name);
     }
 
-    public function getMessage($room_id) {
-        $chats = DB::table('chat_room_messages')
-        ->join('chat_rooms', 'chat_room_messages.msg_room', '=', 'chat_rooms.room_id')
-        ->join('technicians', 'chat_room_messages.msg_from', 'technicians.tech_id')
-        ->where('chat_room_messages.msg_room', $room_id)->get();
-        echo json_encode($chats);
+    public function getMessage($room_id)
+    {
+        echo json_encode(Chat_Room_Message::msg_room($room_id));
     }
 
 

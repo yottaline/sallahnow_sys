@@ -33,7 +33,7 @@
                             </h5>
                             <div>
                                 <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setCate(false)"></button>
+                                    data-ng-click="setSuppCate(false)"></button>
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
@@ -42,7 +42,7 @@
                         <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
                         </h5>
 
-                        <div data-ng-if="categories.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -54,7 +54,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="cate in categories track by $index">
+                                    <tr data-ng-repeat="cate in list track by $index">
                                         <td data-ng-bind="cate.category_id"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td class="text-center" data-ng-bind="jsonParse(cate.category_name)['en']"></td>
@@ -63,7 +63,7 @@
 
                                         <td class="col-fit">
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
-                                                data-ng-click="setCenter($index)"></button>
+                                                data-ng-click="setSuppCate($index)"></button>
                                             <button class="btn btn-outline-success btn-circle bi bi bi-coin"
                                                 data-ng-click="addCost($index)"></button>
                                         </td>
@@ -72,10 +72,7 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!categories.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-3"></i>
-                            <h5 class="">No records</h5>
-                        </div>
+                        @include('layouts.loade')
                     </div>
                 </div>
             </div>
@@ -88,13 +85,13 @@
                         <form id="cenForm" method="post" action="/supports/submit" enctype="multipart/form-data">
                             @csrf
                             <input data-ng-if="cateUpdate !== false" type="hidden" name="_method" value="put">
-                            <input type="hidden" name="cate_id" data-ng-value="categories[cateUpdate].center_id">
+                            <input type="hidden" name="cate_id" data-ng-value="list[cateUpdate].category_id">
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="NameEN">Category Name EN<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name_en"
-                                            data-ng-value="categories[cateUpdate].center_name" id="NameEN">
+                                            data-ng-value="jsonParse(list[cateUpdate].category_name)['en']" id="NameEN">
                                     </div>
                                 </div>
 
@@ -102,7 +99,7 @@
                                     <div class="mb-3">
                                         <label for="NameAR">Category Name AR<b class="text-danger">&ast;</b></label>
                                         <input type="text" class="form-control" name="name_ar"
-                                            data-ng-value="categories[cateUpdate].center_name" id="NameAR">
+                                            data-ng-value="jsonParse(list[cateUpdate].category_name)['ar']" id="NameAR">
                                     </div>
                                 </div>
                             </div>
@@ -142,12 +139,12 @@
                                             toastr.success('Data processed successfully');
                                             $('#centerForm').modal('hide');
                                             scope.$apply(() => {
-                                                if (scope.centerUpdate === false) {
-                                                    scope.centers.unshift(response.data);
-                                                    scope.dataLoader();
+                                                if (scope.cateUpdate === false) {
+                                                    scope.list.unshift(response.data);
+                                                    scope.dataLoader(true);
                                                 } else {
-                                                    scope.centers[scope.centerUpdate] = response.data;
-                                                    scope.dataLoader();
+                                                    scope.list[scope.cateUpdate] = response.data;
+                                                    // scope.dataLoader();
                                                 }
                                             });
                                         } else toastr.error(response.message);
@@ -168,15 +165,15 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <form method="POST" action="/supports/update-cost/">
+                        <form method="POST" action="/supports/update-cost">
                             @csrf
                             <input data-ng-if="cateUpdate !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="cate_id"
-                                data-ng-value="categories !== false ? categories[cateUpdate].category_id : 0">
+                                data-ng-value="categories !== false ? list[cateUpdate].category_id : 0">
                             <div class="mb-3">
                                 <label for="costCate">Cost <b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="cost" required id="costCate"
-                                    data-ng-value="categories !== false ? categories[cateUpdate].category_cost : 0" />
+                                    data-ng-value="categories !== false ? list[cateUpdate].category_cost : 0" />
                             </div>
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -200,30 +197,45 @@
                 $('.loading-spinner').hide();
                 $scope.jsonParse = (str) => JSON.parse(str);
                 $scope.q = '';
+                $scope.noMore = false;
+                $scope.loading = false;
                 $scope.cateUpdate = false;
-                $scope.categories = [];
-                $scope.page = 1;
+                $scope.list = [];
+                $scope.last_id = 0;
                 $scope.dataLoader = function(reload = false) {
-                    $('.loading-spinner').show();
+
                     if (reload) {
-                        $scope.page = 1;
+                        $scope.list = [];
+                        $scope.last_id = 0;
+                        $scope.noMore = false;
                     }
+                    if ($scope.noMore) return;
+                    $scope.loading = true;
+
+                    $('.loading-spinner').show();
+
                     $.post("/supports/load", {
-                        page: $scope.page,
-                        limit: 24,
+                        last_id: $scope.last_id,
+                        limit: limit,
+                        q: $scope.q,
                         _token: '{{ csrf_token() }}'
                     }, function(data) {
                         $('.loading-spinner').hide();
+                        var ln = data.length;
                         $scope.$apply(() => {
-                            $scope.categories = data;
-                            console.log(data)
-                            $scope.page++;
+                            $scope.loading = false;
+                            if (ln) {
+                                $scope.noMore = ln < limit;
+                                $scope.list = data;
+                                console.log(data)
+                                $scope.last_id = data[ln - 1].category_id;
+                            };
                         });
                     }, 'json');
                 }
 
-                $scope.setCate = (indx) => {
-                    $scope.cateUpdate = indx;
+                $scope.setSuppCate = (index) => {
+                    $scope.cateUpdate = index;
                     $('#centerForm').modal('show');
                 };
 
@@ -241,9 +253,7 @@
                     scope.$apply(() => scope.q = $(this).find('input').val());
                     scope.dataLoader(true);
                 });
-            });
 
-            $(function() {
                 $('#add_cost form').on('submit', function(e) {
                     e.preventDefault();
                     var form = $(this),
@@ -261,18 +271,18 @@
                         processData: false,
                         contentType: false,
                     }).done(function(data, textStatus, jqXHR) {
-                        console.log(data);
                         var response = JSON.parse(data);
                         if (response.status) {
                             toastr.success('Category Update cost successfully');
                             $('#add_cost').modal('hide');
                             scope.$apply(() => {
                                 if (scope.cateUpdate === false) {
-                                    $scope.dataLoader(true);
+                                    scope.list.unshift(response.data)
+                                    // scope.dataLoader(true);
                                 } else {
-                                    scope.categories[scope.cateUpdate] = response
+                                    scope.list[scope.cateUpdate] = response
                                         .data;
-                                    $scope.dataLoader();
+                                    // scope.dataLoader(true);
                                 }
                             });
                         } else toastr.error("Error");

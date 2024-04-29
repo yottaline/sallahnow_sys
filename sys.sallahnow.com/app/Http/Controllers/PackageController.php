@@ -12,13 +12,13 @@ class PackageController extends Controller
         $this->middleware('auth');
     }
 
-    public function load() {
-        // $packages = Package::orderBy('created_at', 'desc')->limit(15)->get();
-        $packages = Package::all();
-        echo json_encode($packages);
+    public function load()
+    {
+        echo json_encode(Package::fetch(0));
     }
 
-    public function submit(Request $request) {
+    public function submit(Request $request)
+    {
         $id = $request->package_id;
 
         $pam = [
@@ -29,18 +29,18 @@ class PackageController extends Controller
             'pkg_priv'     => ''
         ];
 
-        if(!$id) {
-            $status = Package::create($pam);
-            $id = $status->id;
-        }
-        else {
-            $status = Package::where('id', $id)->update($pam);
-        }
+        // if(!$id) {
+        //     $status = Package::create($pam);
+        //     $id = $status->id;
+        // }
+        // else {
+        //     $status = Package::where('id', $id)->update($pam);
+        // }
 
-        $record = Package::where('id', $id)->first();
+        $result = Package::submit($pam, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Package::fetch($id) : [],
         ]);
     }
 }

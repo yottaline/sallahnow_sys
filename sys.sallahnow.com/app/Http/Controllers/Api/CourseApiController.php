@@ -16,14 +16,11 @@ class CourseApiController extends Controller
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function courses() {
-        $courses = DB::table('courses')
-        ->join('users', 'courses.course_create_user', '=', 'users.id')
-        ->where('course_deleted', 0)->orderByDesc('course_create_time')->get();
-        if(!$courses)
-        {
-            return $this->returnError('No courses', 107);
-        }
+    public function courses()
+    {
+        $courses = Course::fetch();
+        if(!$courses) return $this->returnError('No courses', 107);
+
         return $this->returnData('courses', $courses);
     }
 
@@ -32,11 +29,12 @@ class CourseApiController extends Controller
         $request->validate([
             'course_id' => 'required | numeric'
         ]);
+        $id = $request->course_id;
+        $view   = Course::fetch($id);
+        $param = ['course_views' => $view->course_views +1];
+        $result = Course::submit($param, $id);
 
-        $view   = Course::where('course_id', $request->course_id)->first();
-        Course::where('course_id', $request->course_id)->update(['course_views' => $view->course_views +1]);
-
-        $course = Course::where('course_id', $request->course_id)->first();
+        $course = $result ? Course::fetch($result) : [];
 
         return $this->returnData('course', $course);
     }

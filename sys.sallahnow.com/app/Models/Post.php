@@ -39,12 +39,10 @@ class Post extends Model
 
     public static function fetch($id = 0, $params = null, $limit = null, $listId = null, $cost = null)
     {
-        $posts = self::join('users', 'posts.post_create_user', '=', 'users.id')
-        ->where('post_deleted', '=', '0')
-        ->orderBy('post_create_time', 'desc')->limit($limit);
+        $posts = self::orderBy('post_create_time', 'desc')->limit($limit);
 
         if($listId) $posts->where('post_id', '<', $listId);
-        
+
         if (isset($params['q']))
         {
             $posts->where(function (Builder $query) use ($params) {
@@ -54,11 +52,12 @@ class Post extends Model
             });
             unset($params['q']);
         }
-        
+
         if ($params) $posts->where($params);
-        
+        if ($id) $posts->where('post_id', $id);
+
         return $id ? $posts->first() : $posts->get();
-        
+
     }
 
     public static function editor($code = null)
@@ -85,7 +84,7 @@ class Post extends Model
         $status = Storage::disk('posts')->put($code . '.txt', $context);
         return $status ? $status : false;
     }
-    
+
 
     function get($column, $value)
     {

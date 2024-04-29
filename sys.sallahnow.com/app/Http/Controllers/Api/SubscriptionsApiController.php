@@ -19,7 +19,7 @@ class SubscriptionsApiController extends Controller
 
     public function getAll()
     {
-        $subscriptions = Subscriptions::all();
+        $subscriptions = Subscriptions::fetch();
         if(!$subscriptions)
         {
             return $this->returnError('There are no subscriptions', '108');
@@ -30,29 +30,26 @@ class SubscriptionsApiController extends Controller
 
     public function changeStatus($sub_id)
     {
-        $subscription = Subscriptions::where('sub_id', $sub_id)->first();
-        if(!$subscription)
-        {
-            return $this->returnError('There are no subscriptions', '108');
-        }
+        $subscription = Subscriptions::fetch($sub_id);
 
-        if($subscription->sub_status == 1){
-           $status = Subscriptions::where('sub_id', $sub_id)->update(['sub_status' => 0]);
-        }
-        else{
-            $status = Subscriptions::where('sub_id',  $sub_id)->update(['sub_status' => 1]);
-        }
-        if(!$status){
-            return $this->returnError('status not change', '103');
-        }
+        if(!$subscription) return $this->returnError('There are no subscriptions', '108');
+
+        $sub_status = 1;
+        if($subscription->sub_status) $sub_status = 0;
+        $param = ['sub_status' => $sub_status];
+        $status = Subscriptions::submit($param, $sub_id);
+
+        if(!$status) return $this->returnError('status not change', '103');
+
         return $this->returnSuccess('status change successfully');
     }
 
     public function subPackage(Request $request)
     {
-        $package = Package::where('pkg_id', $request->package_id)->first();
-        // return $package;
-        $pam = [
+        $package_id = $request->package_id;
+        $package = Package::fetch($package_id);
+
+        $parm = [
             'sub_pkg'        => $package->pkg_id,
             'sub_points'     => $package->pkg_period,
             'sub_cost'       => $package->pkg_cost,
@@ -62,14 +59,16 @@ class SubscriptionsApiController extends Controller
             'sub_start'      => $request->sub_start,
             'sub_register'   => Carbon::now()
         ];
+        $end = Subscriptions::parse($request->sub_start, $package->pkg_period);
+        $parm['sub_end'] = $end;
+        $params[] = ['sub_tech', $request->tech_id];
+        $technician = Subscriptions::fetch(0, $params);
 
-        $end = Carbon::parse($request->sub_start)->addMonth($package->pkg_period);
-        $pam['sub_end'] = $end;
-        $technician = Subscriptions::where('sub_tech', $request->tech_id)->first();
-            if($technician){
-                Subscriptions::where('sub_tech', $request->tech_id)->update(['sub_status' => 0]);
-                Subscriptions::create($pam);
-            }
+        if($technician[0])
+        {
+            Subscriptions::changeStatus($request->tech_id);
+            Subscriptions::submit($parm);
+        }
 
         return $this->returnSuccess('You have successfully subscribed');
     }

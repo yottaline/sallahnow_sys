@@ -29,28 +29,16 @@ class UserController extends Controller
     public function load(Request $request)
     {
 
-        $users = DB::table('users')
-        ->join('user_groups', 'users.user_group', '=', 'user_groups.ugroup_id')
-        ->orderBy('users.user_create', 'desc')
-        ->limit($request->limit);
+       $limit  = $request->limit;
+       $lastId = $request->last_id;
+       $params = $request->q ? ['q' => $request->q] : [];
+       if($request->status) $params[] = ['user_active', $request->status - 1];
 
-    if ($request->q) {
-        $users= User::where(function (Builder $query) {
-            $query->where('user_name', 'like', '%' .request('q') . '%')
-            ->orWhere('user_email', request('q'))
-            ->orWhere('user_mobile', request('q'));
-        });
-    }
-    if($request->status)
-    {
-        $users->where('user_active', $request->status);
-    }
-        echo json_encode($users->get());
+        echo json_encode(User::fetch(0, $params, $limit, $lastId));
     }
 
     public function submit(Request $request)
     {
-
         $request->validate([
             'name'     => 'required|string',
             'mobile'   => 'required|numeric',
@@ -59,29 +47,26 @@ class UserController extends Controller
 
 
         $id = intval($request->user_id);
-
         $mobile = $request->mobile;
         $email = $request->email;
 
-        if(User::where('id', '!=', $id)->where('user_mobile', '=', $mobile)->first())
-        {
+        if(count(User::fetch(0, [['id', '!=', $id],['user_mobile', $mobile]]))){
             echo json_encode([
                 'status' => false,
                 'message' =>  $this->validateMessage('number'),
             ]);
-            return ;
+            return;
         }
-        if($email && User::where('id', '!=', $id)->where('user_email', '=', $email)->first())
-        {
+
+        if($email && count(User::fetch(0, [['id', '!=', $id],['user_email', $email]]))){
             echo json_encode([
                 'status' => false,
                 'message' =>  $this->validateMessage('email'),
             ]);
-            return ;
+            return;
         }
 
-
-        $parma = [
+        $param = [
             'user_name'           => $request->name,
             'user_email'          => $request->email,
             'user_password'       => $request->password,
@@ -90,16 +75,10 @@ class UserController extends Controller
             'user_create'         => now()
         ];
 
-        if(!$id) {
-        $status = User::create($parma);
-        $id     = $status->id;
-        }else{
-        $status = User::where('id', $id)->update($parma);
-        }
-        $record = User::where('id', $id)->first();
+        $result = User::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? User::fetch($id) : [],
         ]);
     }
 
@@ -110,16 +89,16 @@ class UserController extends Controller
     public function updateActive(Request $request)
     {
         $id = $request->user_id;
-        if($request->user_active == 1) {
-            $status = User::where('id', $id)->update(['user_active' => 0]);
-        }else {
-            $status = User::where('id', $id)->update(['user_active' => 1]);
-        }
-       $record = User::where('id', $id)->first();
+        $active = 1;
+        if($request->active) $active = 0;
+
+        $param = ['user_active' => $active];
+        $result = User::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' =>  $result ? User::fetch($id) : [],
         ]);
+
     }
 
     public function addRole(Request $request, Permission $permission)
@@ -141,13 +120,13 @@ class UserController extends Controller
         return back();
     }
 
-    public function delete(Request $request)
-    {
-        $id = $request->user_id;
-        User::destroy($id);
-        session()->flash('Add', 'User data has been deleted successfully');
-        return back();
-    }
+    // public function delete(Request $request)
+    // {
+    //     $id = $request->user_id;
+    //     User::destroy($id);
+    //     session()->flash('Add', 'User data has been deleted successfully');
+    //     return back();
+    // }
 
     public function syncRoles(Request $request)
     {

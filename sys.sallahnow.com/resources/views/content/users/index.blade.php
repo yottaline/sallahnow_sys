@@ -25,8 +25,8 @@
                             <label for="roleFilter">Status</label>
                             <select id="filter-status" class="form-select">
                                 <option value="">-----</option>
-                                <option value="1">Active</option>
-                                <option value="0">Blocd</option>
+                                <option value="1">Blocd</option>
+                                <option value="2">Active</option>
                             </select>
                         </div>
                     </div>
@@ -55,24 +55,34 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Mobile</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
+                                        <th>User</th>
+                                        <th class="text-center">Role</th>
+                                        <th class="text-center">Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="u in list track by $index">
-                                        <td data-ng-bind="u.id"></td>
-                                        <td data-ng-bind="u.user_name"></td>
-                                        <td data-ng-bind="u.user_email"></td>
-                                        <td data-ng-bind="u.user_mobile"></td>
-                                        <td data-ng-bind="u.ugroup_name"></td>
+
+                                    <tr data-ng-repeat="user in list track by $index">
+                                        <td data-ng-bind="user.id" class="small font-monospace text-uppercase">
+                                        </td>
                                         <td>
+                                            <span data-ng-bind="user.user_name" class="fw-bold"></span><br>
+                                            <small data-ng-if="+user.user_mobile"
+                                                class="me-1 db-inline-block dir-ltr font-monospace badge bg-primary">
+                                                <i class="bi bi-phone me-1"></i>
+                                                <span data-ng-bind="user.user_mobile" class="fw-normal"></span>
+                                            </small>
+                                            <small data-ng-if="user.user_email"
+                                                class="db-inline-block dir-ltr font-monospace badge bg-primary">
+                                                <i class="bi bi-envelope-at me-1"></i>
+                                                <span data-ng-bind="user.user_email" class="fw-normal"></span>
+                                            </small>
+                                        </td>
+                                        <td class="text-center" data-ng-bind="user.ugroup_name"></td>
+                                        <td class="text-center">
                                             <span
-                                                class="badge bg-<%statusObject.color[u.user_active]%> rounded-pill font-monospace"><%statusObject.name[u.user_active]%></span>
+                                                class="badge bg-<%statusObject.color[user.user_active]%> rounded-pill font-monospace"><%statusObject.name[user.user_active]%></span>
 
                                         </td>
                                         <td class="col-fit">
@@ -123,7 +133,8 @@
                                 <div class="col-12 col-md-6">
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1">Email</label>
-                                        <input type="email" class="form-control" name="email" id="exampleInputEmail1"
+                                        <input type="email" class="form-control" name="email"
+                                            id="exampleInputEmail1"
                                             data-ng-value="updateUser !== false ? list[updateUser].user_email : ''">
                                     </div>
                                 </div>
@@ -178,8 +189,8 @@
                     <div class="modal-body">
                         <form method="POST" action="/users/update/active/">
                             @csrf @method('PUT')
-                            <input hidden data-ng-value="list[userId].id" name="user_id">
-                            <input hidden data-ng-value="list[userId].user_active" name="user_active">
+                            <input hidden data-ng-value="list[updateUser].id" name="user_id">
+                            <input hidden data-ng-value="list[updateUser].user_active" name="active">
                             <p class="mb-2">Are you sure you want to change status the user?</p>
                             <div class="d-flex mt-3">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -234,8 +245,8 @@
             $scope.userId = 0;
             $scope.list = [];
             $scope.roles = <?= json_encode($roles) ?>;
-            $scope.last_id = 1;
-            $scope.q = ' ';
+            $scope.last_id = 0;
+            $scope.q = '';
             $scope.dataLoader = function(reload = false) {
 
                 if (reload) {
@@ -275,10 +286,10 @@
                 $scope.updateUser = index;
                 $('#edit_active').modal('show');
             };
-            $scope.deleletUser = (index) => {
-                $scope.updateUser = index;
-                $('#delete_user').modal('show');
-            };
+            // $scope.deleletUser = (index) => {
+            //     $scope.updateUser = index;
+            //     $('#delete_user').modal('show');
+            // };
             $scope.dataLoader();
             scope = $scope;
         });
@@ -308,10 +319,10 @@
                         scope.$apply(() => {
                             if (scope.updateUser === false) {
                                 scope.list.unshift(response.data);
-                                scope.dataLoader(true);
+                                // scope.dataLoader(true);
                             } else {
                                 scope.list[scope.updateUser] = response.data;
-                                scope.dataLoader(true);
+                                // scope.dataLoader(true);
                             }
                         });
                     } else toastr.error(response.message);
@@ -325,9 +336,7 @@
                 });
 
             })
-        });
 
-        $(function() {
             $('#edit_active form').on('submit', function(e) {
                 e.preventDefault();
                 var form = $(this),
@@ -352,10 +361,10 @@
                         scope.$apply(() => {
                             if (scope.updateUser === false) {
                                 scope.list.unshift(response.data);
-                                scope.dataLoader(true);
+                                // scope.dataLoader(true);
                             } else {
                                 scope.list[scope.updateUser] = response.data;
-                                scope.dataLoader(true);
+                                // scope.dataLoader(true);
                             }
                         });
                     } else toastr.error(response.message);
@@ -369,14 +378,15 @@
                 });
 
             })
-        })
-        $(function() {
+
+
             $('#searchForm').on('submit', function(e) {
                 e.preventDefault();
                 scope.$apply(() => scope.q = $(this).find('input').val());
                 scope.dataLoader(true);
             });
         });
+
         $(document).ready(function() {
             $('.js-example-basic-single').select2();
         });

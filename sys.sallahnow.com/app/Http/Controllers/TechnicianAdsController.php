@@ -15,18 +15,22 @@ class TechnicianAdsController extends Controller
         return $this->middleware('auth');
     }
 
-    public function index() {
+    public function index()
+    {
         return view('content.ads.index');
     }
 
-    public function load() {
-        $ads = DB::table('technician_ads')
-        ->join('users', 'technician_ads.ads_create_user', '=', 'users.id')
-        ->orderByDesc('ads_create_time')->limit(15)->offset(0)->get();
-        echo json_encode($ads);
+    public function load(Request $request)
+    {
+        $params = $request->q ? ['q' => $request->q] : [];
+        $limit  = $request->limit;
+        $lastId = $request->last_id;
+
+        echo json_encode(Technician_ads::fetch(0, $params, $limit, $lastId));
     }
 
-    public function submit(Request $request) {
+    public function submit(Request $request)
+    {
         $request->validate([
             'title' => 'required',
             'body'  => 'required',
@@ -34,49 +38,51 @@ class TechnicianAdsController extends Controller
             'photo' => 'required'
         ]);
 
+        $params = [
+            'ads_title'        => $request->title,
+            // 'ads_photo'        => $photoName,
+            'ads_body'         => $request->body,
+            'ads_url'          => $request->url,
+            'ads_start'        => $request->start,
+            'ads_end'          => $request->end,
+            'ads_create_user'  => auth()->user()->id,
+            'ads_create_time'  => Carbon::now()
+        ];
+
         $photo = $request->file('photo');
-        $photoName = $photo->getClientOriginalName();
+        $photoName = $this->uniqidReal(rand(4, 18));
         $location = 'Image/Ads/';
+        $photo->move($location , $photoName);
 
         $ads_id = $request->ads_id;
         if(!$ads_id) {
-            $photo->move($location , $photoName);
-
-            $status = Technician_ads::create([
-                'ads_title'        => $request->title,
-                'ads_photo'        => $photoName,
-                'ads_body'         => $request->body,
-                'ads_url'          => $request->url,
-                'ads_start'        => $request->start,
-                'ads_end'          => $request->end,
-                'ads_create_user'  => auth()->user()->id,
-                'ads_create_time'  => Carbon::now()
-            ]);
-            $ads_id = $status->id;
+            $params['ads_photo'] = $photoName;
         }else {
-            // return $request;
-           $data = Technician_ads::where('ads_id', $ads_id)->first();
+           $data = Technician_ads::fetch($ads_id);
             if(!empty($data->ads_photo) && File::exists($location)){
                 File::delete($location . $data->ads_photo);
             }
 
-            $photo->move($location , $photoName);
-            $status = Technician_ads::where('ads_id', $ads_id)->update([
-                'ads_title'        => $request->title,
-                'ads_photo'        => $photoName,
-                'ads_body'         => $request->body,
-                'ads_url'          => $request->url,
-                'ads_start'        => $request->start,
-                'ads_end'          => $request->end,
-                'ads_create_user'  => auth()->user()->id,
-                'ads_create_time'  => Carbon::now()
-            ]);
+            $params['ads_photo'] = $photoName;
         }
 
-        $record = Technician_ads::where('ads_id', $ads_id)->first();
+        $result = Technician_ads::submit($params, $ads_id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Technician_ads::fetch($ads_id) : [],
         ]);
+    }
+
+
+    private function uniqidReal($lenght = 12)
+    {
+        if (function_exists("random_bytes")) {
+            $bytes = random_bytes(ceil($lenght / 2));
+        } elseif (function_exists("openssl_random_pseudo_bytes")) {
+            $bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
+        } else {
+            throw new \Exception("no cryptographically secure random function available");
+        }
+        return substr(bin2hex($bytes), 0, $lenght);
     }
 }

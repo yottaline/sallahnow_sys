@@ -21,11 +21,13 @@ class ModelController extends Controller
         return view('content.models.index');
     }
 
-    public function load()
+    public function load(Request $request)
     {
-        $models =  DB::table('models')
-        ->join('brands', 'models.model_brand', '=', 'brands.brand_id')->limit(15)->offset(0)->get();
-        echo json_encode($models);
+        $params = $request->q ? ['q' => $request->q] : [];
+        $limit  = $request->limit;
+        $lastId = $request->last_id;
+
+        echo json_encode(Models::fetch(0, $params, $limit, $lastId));
     }
 
     public function submit(Request $request)
@@ -53,22 +55,17 @@ class ModelController extends Controller
         }
 
         $id = $request->model_id;
-        if(!$id){
-            $status = Models::create($param);
-            $id = $status->id;
-        }
-        else
-        {
-            $record = Models::where('model_id', $id)->first();
+        if($id){
+            $record = Models::fetch($id);
             if ($photo && $record->model_photo) {
                 File::delete($this->location . $record->model_photo);
             }
-            $status = Models::where('model_id', $id)->update($param);
         }
-        $record = Models::where('model_id', $id)->first();
+
+        $result = Models::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Models::fetch($id) : [],
         ]);
     }
 

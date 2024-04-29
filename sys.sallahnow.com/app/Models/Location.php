@@ -22,11 +22,20 @@ class Location extends Model
 
         if($lastID) $locations->where('location_id', '<', $lastID);
 
-        
         if($params) $locations->where($params);
 
         return $id ? $locations->first() : $locations->get();
     }
+
+
+    public static function submit($param, $id = null)
+    {
+        if ($id) return self::where('location_id', $id)->update($param) ? $id : false;
+
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
+
 
     public function centers()
     {

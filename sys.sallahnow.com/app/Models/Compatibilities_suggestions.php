@@ -36,10 +36,18 @@ class Compatibilities_suggestions extends Model
             });
             unset($params['q']);
         }
-        
+
         if($listId) $suggestions->where('sugg_id', '<', $listId);
 
         return $id ? $suggestions->first() : $suggestions->get();
+    }
+
+    public static function submit($param, $id = null)
+    {
+        if ($id) return self::where('sugg_id', $id)->update($param) ? $id : false;
+
+        $status = self::create($param);
+        return $status ? $status->id : false;
     }
 
     public function category() {

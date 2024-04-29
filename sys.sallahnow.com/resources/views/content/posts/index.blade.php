@@ -421,11 +421,12 @@
                 });
 
             })
-        });
-        $('#searchForm').on('submit', function(e) {
-            e.preventDefault();
-            scope.$apply(() => scope.q = $(this).find('input').val());
-            scope.dataLoader(true);
+
+            $('#searchForm').on('submit', function(e) {
+                e.preventDefault();
+                scope.$apply(() => scope.q = $(this).find('input').val());
+                scope.dataLoader(true);
+            });
         });
     </script>
 @endsection

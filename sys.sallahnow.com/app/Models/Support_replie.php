@@ -19,6 +19,28 @@ class Support_replie extends Model
         'reply_create'
     ];
 
+
+    public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
+    {
+        $supportReplies = self::limit($limit)->orderBy('reply_create', 'DESC');
+
+        if ($lastId) $supportReplies->where('reply_id', '<', $lastId);
+
+        if ($params) $supportReplies->where($params);
+
+        if ($id) $supportReplies->where('reply_id', $id);
+
+        return $id ? $supportReplies->first() : $supportReplies->get();
+    }
+
+    public static function submit($param, $id = null)
+    {
+        if ($id) return self::where('reply_id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->id : false;
+    }
+
+
     public function ticket() {
         return $this->belongsTo(Support_ticket::class, 'reply_ticket', 'reply_id');
     }

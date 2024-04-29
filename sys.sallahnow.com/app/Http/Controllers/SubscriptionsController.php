@@ -17,17 +17,17 @@ class SubscriptionsController extends Controller
         $this->middleware('auth');
     }
 
-    public function index() 
+    public function index()
     {
         return view('content.subscriptions.index');
     }
 
-    public function load(Request $request) 
+    public function load(Request $request)
     {
         $params   = $request->q ? ['q' => $request->q] : [];
         $limit    = $request->limit;
         $listId   = $request->last_id;
-        
+
         echo json_encode(Subscriptions::fetch(0, $params, $limit, $listId));
     }
 
@@ -43,10 +43,10 @@ class SubscriptionsController extends Controller
 
 
     public function submit(Request $request)
-    {   
+    {
        $package = Package::fetch($request->package_id);
        $technician_id =  $request->technician_name;
-       
+
         $pam = [
             'sub_pkg'            => $request->package_id,
             'sub_points'         =>  $package->pkg_points,
@@ -66,9 +66,9 @@ class SubscriptionsController extends Controller
         // 0105060A4CA7
         $params[] = ['sub_tech', $technician_id];
         $technician = Subscriptions::fetch(0, $params);
-        
+
         $id = $request->sub_id;
-        
+
         if(!$id) {
            $pam['sub_end'] = $end;
             if($technician){
@@ -97,7 +97,8 @@ class SubscriptionsController extends Controller
     //     echo json_encode($technician_name);
     // }
 
-    public function changeStatus(Request $request) {
+    public function changeStatus(Request $request)
+    {
         $id = $request->sub_id;
         $subscription = Subscriptions::fetch($id);
         $status = $subscription->sub_status ? Subscriptions::submit(['sub_status' => 0], $id) : Subscriptions::submit(['sub_status' => 1], $id);

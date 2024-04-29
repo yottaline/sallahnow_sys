@@ -34,10 +34,10 @@
                             </div>
                         </div>
 
-                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5>
+                        {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5> --}}
 
-                        <div data-ng-if="courses.length" class="table-responsive">
+                        <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -49,7 +49,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="course in courses track by $index">
+                                    <tr data-ng-repeat="course in list track by $index">
                                         <td data-ng-bind="course.course_code"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td>
@@ -74,10 +74,7 @@
                             </table>
                         </div>
 
-                        <div data-ng-if="!courses.length" class="text-center text-secondary py-5">
-                            <i class="bi bi-exclamation-circle display-3"></i>
-                            <h5 class="">No records</h5>
-                        </div>
+                        @include('layouts.loade')
                     </div>
                 </div>
             </div>
@@ -91,7 +88,7 @@
                             @csrf
                             <input data-ng-if="courseUpdate !== false" type="hidden" name="_method" value="delete">
                             <input type="hidden" name="course_id"
-                                data-ng-value="courseUpdate !== false ? courses[courseUpdate].course_id : 0">
+                                data-ng-value="courseUpdate !== false ? list[courseUpdate].course_id : 0">
                             <p>are sure of the deleting process ?</p>
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -113,11 +110,11 @@
                             @csrf
                             <input data-ng-if="courseUpdate !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="course_id"
-                                data-ng-value="courseUpdate !== false ? courses[courseUpdate].course_id : 0">
+                                data-ng-value="courseUpdate !== false ? list[courseUpdate].course_id : 0">
                             <div class="mb-3">
                                 <label for="courseCost">Cost <b class="text-danger">&ast;</b></label>
                                 <input type="text" class="form-control" name="cost" required id="courseCost"
-                                    data-ng-value="courseUpdate !== false ? courses[courseUpdate].course_cost : 0" />
+                                    data-ng-value="courseUpdate !== false ? list[courseUpdate].course_cost : 0" />
                             </div>
                             <div class="d-flex">
                                 <button type="button" class="btn btn-outline-secondary me-auto"
@@ -139,7 +136,7 @@
                             @csrf
                             <input data-ng-if="courseUpdate !== false" type="hidden" name="_method" value="put">
                             <input type="hidden" name="course_id"
-                                data-ng-value="courseUpdate !== false ? courses[courseUpdate].course_id : 0">
+                                data-ng-value="courseUpdate !== false ? list[courseUpdate].course_id : 0">
                             <div class="mb-3">
                                 <label for="Coursefile">File <b class="text-danger">&ast;</b></label>
                                 <input type="file" class="form-control" name="course_file" required
@@ -166,23 +163,40 @@
 
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
-            $scope.courses = [];
+            $scope.noMore = false;
+            $scope.loading = false;
+            $scope.q = '';
+            $scope.list = [];
             $courseUpdate = false;
-            $scope.page = 1;
+            $scope.last_id = 0;
             $scope.dataLoader = function(reload = false) {
-                $('.loading-spinner').show();
+
                 if (reload) {
-                    $scope.page = 1;
+                    $scope.list = [];
+                    $scope.last_id = 0;
+                    $scope.noMore = false;
                 }
+                if ($scope.noMore) return;
+                $scope.loading = true;
+
+                $('.loading-spinner').show();
+
                 $.post("/courses/load/", {
-                    page: $scope.page,
-                    limit: 24,
+                    last_id: $scope.last_id,
+                    limit: limit,
+                    q: $scope.q,
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
+                    var ln = data.length;
                     $scope.$apply(() => {
-                        $scope.courses = data;
-                        $scope.page++;
+                        $scope.loading = false;
+                        if (ln) {
+                            $scope.noMore = ln < limit;
+                            $scope.list = data;
+                            console.log(data)
+                            $scope.last_id = data[ln - 1].course_id;
+                        };
                     });
                 }, 'json');
             }
@@ -239,11 +253,10 @@
                         $('#delete_course').modal('hide');
                         scope.$apply(() => {
                             if (scope.psot === false) {
-                                scope.courses[scope.courseUpdate] = response
-                                    .data;
+                                scope.list.unshift(response.data);
                                 $scope.dataLoader(true);
                             } else {
-                                scope.courses[scope.psot] = response
+                                scope.list[scope.psot] = response
                                     .data;
                                 $scope.dataLoader();
                             }
@@ -285,11 +298,11 @@
                         $('#add_cost').modal('hide');
                         scope.$apply(() => {
                             if (scope.courseUpdate === false) {
-                                $scope.dataLoader(true);
+                                scope.list.unshift(response.data);
                             } else {
-                                scope.courses[scope.courseUpdate] = response
+                                scope.list[scope.courseUpdate] = response
                                     .data;
-                                $scope.dataLoader();
+                                // $scope.dataLoader();
                             }
                         });
                     } else toastr.error("Error");
@@ -327,12 +340,12 @@
                         $('#add_file').modal('hide');
                         scope.$apply(() => {
                             if (scope.courseUpdate === false) {
-
-                                $scope.dataLoader(true);
+                                scope.list.unshift(response.data);
+                                // $scope.dataLoader(true);
                             } else {
-                                scope.courses[scope.courseUpdate] = response
+                                scope.list[scope.courseUpdate] = response
                                     .data;
-                                $scope.dataLoader();
+                                // $scope.dataLoader();
                             }
                         });
                     } else toastr.error("Error");
