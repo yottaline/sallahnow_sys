@@ -61,16 +61,6 @@ class BrandController extends Controller
         ]);
     }
 
-    // public function getUsersName()
-    // {
-    //     $userName = DB::table('users')
-    //     ->join('brands', 'users.id', '=', 'brands.user_id')
-    //     ->select('brands.brand_name','users.user_name')
-    //     ->get();
-    //     echo json_encode($userName);
-    // }
-
-
 
     private function uniqidReal($lenght = 12)
     {

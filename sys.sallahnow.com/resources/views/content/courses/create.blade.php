@@ -60,6 +60,13 @@
                                 data-ng-change="toggle('archived', archived)">
                             <label class="form-check-label" for="articleArchived">Archive the course</label>
                         </div>
+
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="cuorseDeleted" name="deleted"
+                                ng-value="data.course_deleted" data-ng-model="deleted"
+                                data-ng-change="toggle('deleted', deleted)">
+                            <label class="form-check-label" for="cuorseDeleted">Delete the course</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,38 +96,65 @@
                                             <div class="row">
                                                 <div class="col-12 col-md-12">
                                                     <div class="mb-3">
-                                                        <label for="titleAr-input">Title<b
+                                                        <label for="titleId">Title<b
                                                                 class="text-danger form-conter">&ast;</b></label>
-                                                        <input id="titleAr-input" name="title" type="text"
+                                                        <input id="titleId" name="title" type="text"
                                                             class="one-space form-control" maxlength="120"
                                                             data-ng-value="data.course_title" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <div class="mb-3">
-                                                        <label for="titleAr-input">Cost<b
+                                                        <label for="costId">Cost<b
                                                                 class="text-danger form-conter">&ast;</b></label>
-                                                        <input id="titleAr-input" name="cost" type="text"
+                                                        <input id="costId" name="cost" type="text"
                                                             class="one-space form-control" maxlength="120"
                                                             data-ng-value="data.course_cost" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <div class="mb-3">
-                                                        <label for="titleAr-input">Tyoe<b
+                                                        <label for="TypeId">Type<b
                                                                 class="text-danger form-conter">&ast;</b></label>
-                                                        <select name="type" class="form-select" id="">
-                                                            <option value="1">off</option>
-                                                            <option value="2">on</option>
+                                                        <select name="type" class="form-select" id="TypeId">
+                                                            <option value="1">Online</option>
+                                                            <option value="2">Offline</option>
                                                         </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="pack">Package<b
+                                                                class="text-danger form-conter">&ast;</b></label>
+                                                        <select name="package" class="form-select" id="pack">
+                                                            <option value="">-- SELECT PACKAGE NAME</option>
+                                                            <option value="1">Free</option>
+                                                            <option value="2">Silver | 1 Month</option>
+                                                            <option value="3">Silver | 6 Month</option>
+                                                            <option value="4">Silver | 1 Year</option>
+                                                            <option value="5">Gold | 6 Month</option>
+                                                            <option value="6">Gold | 1 Year</option>
+                                                            <option value="7">Diamond | 1 Year</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="dics">Discount<b
+                                                                class="text-danger form-conter">&ast;</b></label>
+                                                        <input id="disc" name="discount" type="text"
+                                                            class="one-space form-control" maxlength="120"
+                                                            data-ng-value="data.course_cost" required>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-12">
                                             <div class="mb-3">
-                                                <label for="briefAr-input">Body<b class="text-danger">&ast;</b></label>
-                                                <textarea id="briefAr-input" name="body" rows="5" class="one-space form-control" maxlength="500"
+                                                <label for="bodyId">Body<b class="text-danger">&ast;</b></label>
+                                                <textarea id="bodyId" name="body" rows="5" class="form-control" maxlength="500"
                                                     data-ng-bind="data.course_body" required></textarea>
                                             </div>
                                         </div>
@@ -296,6 +330,7 @@
 
             $scope.reset = () => {
                 $scope.archived = !!+$scope.data.course_archived;
+                $scope.deleted = !!+$scope.data.course_deleted;
             };
 
             $scope.toggle = function(target, val) {

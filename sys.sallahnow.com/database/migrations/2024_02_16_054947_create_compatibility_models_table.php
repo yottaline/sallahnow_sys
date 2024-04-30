@@ -16,9 +16,9 @@ return new class extends Migration
             $table->integer('compatible_src')->unsigned();
             $table->integer('compatible_model')->unsigned();
 
-            $table->foreign('compatible_src')->references('compat_id')->on('compatibilities');
-            $table->foreign('compatible_model')->references('model_id')->on('models');
-            $table->timestamps();
+            $table->foreign('compatible_src')->references('compat_id')->on('compatibilities')->cascadeOnDelete();
+            $table->foreign('compatible_model')->references('model_id')->on('models')->cascadeOnDelete();
+            // $table->timestamps();
         });
     }
 

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('compatibilities', function (Blueprint $table) {
             $table->integer('compat_id', true ,true);
+            $table->string('compat_code', 9);
             $table->string('compat_part',120);
             $table->integer('compat_category')->unsigned();
             // $table->timestamps();

@@ -64,11 +64,17 @@
                                 data-ng-change="toggle('archived', archived)">
                             <label class="form-check-label" for="articleArchived">Archive the article</label>
                         </div>
-                        <div class="form-check form-switch">
+                        <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" id="allowComments" name="allow_comment"
                                 ng-value="data.post_allow_comments" data-ng-model="allow_comment"
                                 data-ng-change="toggle('allow_comment', allow_comment)">
                             <label class="form-check-label" for="allowComments">Allow comments</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="postDelete" name="post_delete"
+                                ng-value="data.post_deleted" data-ng-model="post_delete"
+                                data-ng-change="toggle('post_delete', post_delete)">
+                            <label class="form-check-label" for="postDelete">Delete post</label>
                         </div>
                     </div>
                 </div>
@@ -95,7 +101,7 @@
 
                                 <div class="col-12 col-md-8">
                                     <div class="row">
-                                        <div class="col-12 col-md-12">
+                                        <div class="col-12 col-md-6">
                                             <div class="mb-3">
                                                 <label for="titleAr-input">Title<b
                                                         class="text-danger form-conter">&ast;</b></label>
@@ -104,6 +110,17 @@
                                                     data-ng-value="data.post_title" required>
                                             </div>
                                         </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <div class="mb-3">
+                                                <label for="costAr-input">cost<b
+                                                        class="text-danger form-conter">&ast;</b></label>
+                                                <input id="costAr-input" name="cost" type="text"
+                                                    class="one-space form-control" maxlength="120"
+                                                    data-ng-value="data.post_cost" required>
+                                            </div>
+                                        </div>
+
                                         <div class="col-12 col-md-12">
                                             <div class="mb-3">
                                                 <label for="briefAr-input">Body<b class="text-danger">&ast;</b></label>
@@ -266,16 +283,15 @@
                                         id="commentsReloadBtn"></button>
                                 </div>
                                 <div class="mb-3 border rounded-2 p-2">
-                                    <form id="addCommentForm" action="/posts/add-comment/" method="post">
+                                    <form id="addCommentForm" action="/posts/add_comment/" method="post">
                                         @csrf
                                         <input type="hidden" name="post_id" data-ng-value="data.post_id">
                                         <div class="mb-3">
-                                            {{-- <label for="addCommentContext">
+                                            <label for="addCommentContext">
                                                 <small
                                                     class="loading-spinner spinner-border spinner-border-sm text-warning me-3"
                                                     role="status"></small>
-                                                <span>add comment</span>
-                                            </label> --}}
+                                            </label>
                                             <textarea name="comment" id="addCommentContext" class="form-control border-0" rows="6" maxlength="2048"
                                                 required></textarea>
                                         </div>
@@ -362,7 +378,7 @@
 
                             spinner.show();
                             loadingBtn.prop('disabled', true);
-                            $.post('/posts/get-comment/', request, function(data) {
+                            $.post('/posts/get_comment/', request, function(data) {
                                 spinner.hide();
                                 var length = data.length;
                                 scope.$apply(() => {
@@ -370,25 +386,25 @@
 
                                     scope.comments.data = reload ? data : [].concat(scope.comments.data,
                                         data);
-                                    // scope.comments.lastId = length ? response.data[length - 1].comment_id : scope
-                                    //     .comments.lastId;
+                                    scope.comments.lastId = length ? response.data[length - 1].comment_id : scope
+                                        .comments.lastId;
                                 });
-                                // loadingBtn.prop('disabled', scope.comments.data.length == scope.comments.count);
-                                // if (response.status) {
-                                //     var length = response.data.length;
-                                //     console.log(data);
-                                //     scope.$apply(() => {
-                                //         scope.comments.count = response.count;
-                                //         scope.comments.data = reload ? response.data : [].concat(scope.comments.data,
-                                //             response.data);
-                                //         scope.comments.lastId = length ? response.data[length - 1].comment_id : scope
-                                //             .comments.lastId;
-                                //     });
-                                //     loadingBtn.prop('disabled', scope.comments.data.length == scope.comments.count);
-                                // } else {
-                                //     toastr.error(glob_errorMsg);
-                                //     loadingBtn.prop('disabled', false);
-                                // }
+                                loadingBtn.prop('disabled', scope.comments.data.length == scope.comments.count);
+                                if (response.status) {
+                                    var length = response.data.length;
+                                    console.log(data);
+                                    scope.$apply(() => {
+                                        scope.comments.count = response.count;
+                                        scope.comments.data = reload ? response.data : [].concat(scope.comments.data,
+                                            response.data);
+                                        scope.comments.lastId = length ? response.data[length - 1].comment_id : scope
+                                            .comments.lastId;
+                                    });
+                                    loadingBtn.prop('disabled', scope.comments.data.length == scope.comments.count);
+                                } else {
+                                    toastr.error(glob_errorMsg);
+                                    loadingBtn.prop('disabled', false);
+                                }
                             }, 'json');
                         };
                     </script>
@@ -473,7 +489,7 @@
             };
 
             $scope.reset = () => {
-                // $scope.visible = !!+$scope.data.article_visible;
+                $scope.post_delete = !!+$scope.data.post_deleted;
                 $scope.archived = !!+$scope.data.post_archived;
                 $scope.allow_comment = !!+$scope.data.post_allow_comments;
                 // $scope.cover = $scope.data.article_cover ? coversPath + $scope.data.article_cover : '';

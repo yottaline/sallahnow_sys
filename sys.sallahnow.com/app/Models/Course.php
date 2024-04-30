@@ -16,6 +16,7 @@ class Course extends Model
         'course_code',
         'course_title',
         'course_body',
+        'package_disc',
         'course_file',
         'course_photo',
         'course_type',

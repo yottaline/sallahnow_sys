@@ -74,14 +74,14 @@
                                         <td class="col-fit">
                                             <a href="/posts/editor/<% post.post_code %>"
                                                 class="btn btn-outline-primary btn-circle bi bi-pencil-square"></a>
-                                            <button type="button" class="btn btn-outline-success btn-circle bi bi-coin"
+                                            {{-- <button type="button" class="btn btn-outline-success btn-circle bi bi-coin"
                                                 data-ng-click="addCost($index)"></button>
                                             <button type="button"
                                                 class="btn btn-outline-dark btn-circle bi bi-chat-left-text"
                                                 data-ng-click="comment(post)" id="Comments"></button>
                                             <button type="button"
                                                 class="btn btn-outline-danger btn-circle bi bi-trash3-fill"
-                                                data-ng-click="deletePost($index)"></button>
+                                                data-ng-click="deletePost($index)"></button> --}}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -95,7 +95,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="delete_post" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        {{-- <div class="modal fade" id="delete_post" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -196,7 +196,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
     </div>
 @endsection

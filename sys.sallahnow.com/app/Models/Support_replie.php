@@ -22,7 +22,8 @@ class Support_replie extends Model
 
     public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
     {
-        $supportReplies = self::limit($limit)->orderBy('reply_create', 'DESC');
+        $supportReplies = self::join('support_tickets', 'reply_ticket', 'ticket_id')->
+        limit($limit)->orderBy('reply_create', 'DESC');
 
         if ($lastId) $supportReplies->where('reply_id', '<', $lastId);
 

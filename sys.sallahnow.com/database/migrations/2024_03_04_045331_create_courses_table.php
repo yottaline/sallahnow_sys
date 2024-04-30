@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('course_body', 2048);
             $table->string('course_file', 24)->nullable();
             $table->string('course_photo', 24)->nullable();
+            $table->string('package_disc', 100);
             $table->tinyInteger('course_type')->default('1')->unsigned();
             $table->decimal('course_cost', 12,2)->default('0');
             $table->boolean('course_archived')->default('0');

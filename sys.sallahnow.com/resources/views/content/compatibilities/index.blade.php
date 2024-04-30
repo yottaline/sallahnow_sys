@@ -60,16 +60,17 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Category Name</th>
-                                        <th>Name</th>
+                                        <th class="text-center">Category Name</th>
+                                        <th class="text-center">Name</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="comp in list track by $index">
-                                        <td data-ng-bind="comp.id"></td>
-                                        <td data-ng-bind="comp.category_name"></td>
-                                        <td data-ng-bind="jsonParse(comp.compat_part)['en']"></td>
+                                        <td data-ng-bind="comp.compat_code"></td>
+                                        <td class="text-center" data-ng-bind="comp.category_name"></td>
+                                        <td class="text-center" data-ng-bind="jsonParse(comp.compat_part)['en']"></td>
+                                        <td class="text-center" data-ng-bind="comp.model_name"></td>
                                         <td class="col-fit">
                                             <div>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
@@ -115,10 +116,11 @@
                                             data-ng-value="updateComp !== false ? jsonParse(list[updateComp].compat_part)['ar'] : ''">
                                     </div>
                                 </div>
+
                                 <div class="col-12">
                                     <div class="mb-3">
-                                        <label for="role">Categories</label>
-                                        <select name="cate_id" class="form-control" id="role">
+                                        <label for="CategoryId">Categories</label>
+                                        <select name="cate_id" class="form-control" id="CategoryId">
                                             <option value="">-- SELECT CATEGORY NAME</option>
                                             <option data-ng-repeat="category in categories"
                                                 data-ng-value="category.category_id" data-ng-bind="category.category_name">
@@ -126,14 +128,51 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <p class="text-secondary" style="margin-bottom:-2px">Models<b class="text-danger">&ast;</b>
-                                </p>
-                                <div class="col-12 col-md-4" data-ng-repeat="model in models">
+                                <div class="col-12">
+                                    <h5 class="text-primary">Models</h5>
+                                    <div ng-repeat="m in copmatsModels"></div>
+                                </div>
+                                <div class="col-12">
                                     <div class="mb-3">
-                                        <label data-ng-bind="model.model_name" class="m-1"></label><input type="checkbox"
-                                            data-ng-value="model.model_id" name="model_id">
+                                        <label for="branID">Brands</label>
+                                        <select class="form-control select2" id="branID">
+                                            @foreach ($brands as $brand)
+                                                <option value="{{ $brand->brand_id }}">
+                                                    {{ $brand->brand_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="modelId">Model</label>
+                                        <select class="form-control select2" id="modelId">
+                                            <option value="">-- SELECT MODEL NAME</option>
+                                            <option data-ng-repeat="model in models" data-ng-value="model.model_id"
+                                                data-ng-bind="model.model_name">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                {{-- <div class="col-12">
+                                    <div class="mb-3">
+                                        <input type="search" name="brand" class="form-control"
+                                            placeholder="secarch by brand name" id="brandId">
+                                    </div>
+                                </div> --}}
+                            </div>
+
+                            <div class="row">
+                                <p class="text-secondary" style="margin-bottom:-2px">Models<b
+                                        class="text-danger">&ast;</b>
+                                </p>
+                                <div class="col-12">
+                                    <div class="mb-3 row" id="models">
+
                                     </div>
                                 </div>
                                 <div class="d-flex">
@@ -159,8 +198,9 @@
             $scope.jsonParse = (str) => JSON.parse(str);
             $scope.updateComp = false;
             $scope.list = [];
-            $scope.categories = <?= json_encode($categories) ?>;;
-            $scope.models = <?= json_encode($models) ?>;
+            $scope.copmatsModels = [];
+            $scope.categories = <?= json_encode($categories) ?>;
+            $scope.models = [];
             $scope.q = '';
             $scope.noMore = false;
             $scope.loading = false;
@@ -198,12 +238,29 @@
                 }, 'json');
             }
             $scope.setCompatibility = (index) => {
+                $scope.copmatsModels = [];
                 $scope.updateComp = index;
+
                 console.log(index)
                 $('#compatibilityForm').modal('show');
             };
 
             $scope.dataLoader();
+
+            $('#branID').select2({
+                theme: 'bootstrap-5'
+            });
+
+            $('#modelId').select2(suggOption($('#compatibilityForm'), '/models/search/', function(data) {
+                return data.map(function(e) {
+                    return {
+                        id: e.model_id,
+                        text: e.model_name
+                    }
+                })
+            }, false, false, {
+                brand_id: () => $('#branID').val() // sallahnow.com/getbrandmodels?brand_id=12
+            }));
             scope = $scope;
         });
 
@@ -233,13 +290,13 @@
                         scope.$apply(() => {
                             if (scope.updateComp === false) {
                                 scope.list.unshift(response.data);
-                                $scope.dataLoader();
+                                $scope.dataLoader(true);
                             } else {
                                 scope.list[scope.updateComp] = response.data;
-                                $scope.dataLoader();
+                                $scope.dataLoader(true);
                             }
                         });
-                    } else toastr.error("Error");
+                    } else toastr.error(response.message);
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     // error msg
                 }).always(function() {
@@ -248,13 +305,56 @@
                 });
 
             })
-        });
-        $(function() {
+
             $('#searchForm').on('submit', function(e) {
                 e.preventDefault();
                 scope.$apply(() => scope.q = $(this).find('input').val());
                 scope.dataLoader(true);
             });
+
+            // $('#branID').on('change', function() {
+            //     var idState = this.value;
+            //     console.log(idState);
+            //     $('#models').html('');
+            //     $.ajax({
+            //         url: '/models/search/' + idState,
+            //         type: 'GET',
+            //         dataType: 'json',
+            //         success: function(res) {
+            //             $.each(res, function(key, value) {
+            //                 $('#models').append(
+            //                     '<div class="col-sm-4"> <label id="models" class="m-1">' +
+            //                     value
+            //                     .model_name +
+            //                     '</label> <input type="checkbox" value="' + value
+            //                     .model_id + '" name="model_id[]"></div>'
+            //                 );
+            //             });
+            //         }
+            //     });
+            // });
+
+            // $('#branID').on('change', function() {
+            //     var idState = this.value;
+            //     console.log(idState);
+            //     $('#modelId').html('');
+            //     $.ajax({
+            //         url: '/models/search/' + idState,
+            //         type: 'GET',
+            //         dataType: 'json',
+            //         success: function(res) {
+            //             $.each(res, function(key, value) {
+            //                 $('#models').append(
+            //                     '<div class="col-sm-4"> <label id="models" class="m-1">' +
+            //                     value
+            //                     .model_name +
+            //                     '</label> <input type="checkbox" value="' + value
+            //                     .model_id + '" name="model_id[]"></div>'
+            //                 );
+            //             });
+            //         }
+            //     });
+            // });
         });
     </script>
 @endsection

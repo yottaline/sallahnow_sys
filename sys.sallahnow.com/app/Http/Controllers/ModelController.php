@@ -69,6 +69,15 @@ class ModelController extends Controller
         ]);
     }
 
+
+    public function getBrandModels(Request $request)
+    {
+        $id = $request->brand_id;
+       $model = Models::fetch($id);
+
+       echo json_encode($model);
+    }
+
     private function uniqidReal($lenght = 12)
     {
         if (function_exists("random_bytes")) {
