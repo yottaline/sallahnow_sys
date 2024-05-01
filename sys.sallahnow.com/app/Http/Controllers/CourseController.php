@@ -36,10 +36,14 @@ class CourseController extends Controller
     public function submit(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'body'  => 'required',
-            'cost'  => 'required | numeric'
+            'title'     => 'required',
+            'body'      => 'required',
+            'cost'      => 'required | numeric',
+            'package'   => 'required | numeric',
+            'discount'  => 'required'
         ]);
+        $pak_disc = ['package_id' => $request->package, 'discount' => $request->discount];
+        $package_disc = json_encode($pak_disc);
 
         $photo = $request->file('photo');
         if ($photo) {
@@ -50,52 +54,47 @@ class CourseController extends Controller
             $param['post_photo'] = $photoName;
         }
 
-        $parma = [
+        $param = [
             'course_title'          => $request->title,
             'course_body'           => $request->body,
             'course_cost'           => $request->cost,
+            'package_disc'          => $package_disc,
         ];
 
-        $course_id = $request->id;
-        if(!$course_id){
-            $parma['course_create_user'] = auth()->user()->id;
-            $parma['course_code']        = strtoupper($this->uniqidReal());
-            $parma['course_create_time'] = Carbon::now();
-            $parma['course_delete_user'] = 1;
-
-            $status = Course::create($parma);
-            $course_id =  $status->id;
+        $id = $request->id;
+        if(!$id){
+            $param['course_create_user'] = auth()->user()->id;
+            $param['course_code']        = strtoupper($this->uniqidReal());
         }else {
-            $parma['course_modify_user'] = auth()->user()->id;
-            $parma['course_modify_time'] = Carbon::now();
-            $status = Course::where('course_id', $course_id)->update($parma);
+            $param['course_modify_user'] = auth()->user()->id;
+            $param['course_modify_time'] = Carbon::now();
         }
 
-        $record = Course::where('course_id', $course_id)->first();
+        $result = Course::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
-            'data' => $record,
+            'status' => boolval($result),
+            'data' => $result ? Course::fetch($result) : [],
         ]);
 
     }
 
-    public function cost(Request $request) {
-      $course_id = $request->course_id;
-      $request->validate(['cost' => 'required | numeric']);
-      $status = Course::where('course_id', $course_id)->update(['course_cost' => $request->cost]);
-      $record = Course::where('course_id', $course_id)->first();
-      echo json_encode([
-          'status' => boolval($status),
-          'data' => $record,
-      ]);
-    }
+    // public function cost(Request $request) {
+    //   $course_id = $request->course_id;
+    //   $request->validate(['cost' => 'required | numeric']);
+    //   $status = Course::where('course_id', $course_id)->update(['course_cost' => $request->cost]);
+    //   $record = Course::where('course_id', $course_id)->first();
+    //   echo json_encode([
+    //       'status' => boolval($status),
+    //       'data' => $record,
+    //   ]);
+    // }
 
     public function addFile(Request $request)
     {
-        $course_id = $request->course_id;
+        $id = $request->course_id;
         $context   = $request->context;
 
-        $course  = Course::where('course_id', $course_id)->first();
+        $course  = Course::fetch($id);
         $code   = $course->course_code;
         $status = Storage::disk('courses')->put($code . '.txt', $context);
         echo json_encode([
@@ -103,31 +102,30 @@ class CourseController extends Controller
         ]);
 
 
-
-
     }
 
     public function updateArchived(Request $request)
     {
-        $course_id = $request->id;
-        $status     = Course::where('course_id', $course_id)->update([
-            'course_archived'       => $request->val,
-            'course_archive_user'   => auth()->user()->id
-        ]);
+        $id = $request->id;
+        $time = Carbon::now();
+        $user = auth()->user()->id;
+        $request->key == 'post_deleted' ? $param = ['course_deleted' => $request->val, 'course_create_time' => $time, ['course_delete_user' => $user]] : $param = ['course_archived' => $request->val, 'course_archive_user' => $user];
+
+        $result = Course::submit($param, $id);
         echo json_encode([
-            'status' => boolval($status),
+            'status' => boolval($result),
         ]);
     }
 
-    public function delete(Request $request) {
-        $course_id = $request->course_id;
-        $status    = Course::where('course_id', $course_id)->update(['course_deleted' => 1]);
-        $record = Course::where('course_id', $course_id)->first();
-        echo json_encode([
-            'status' => boolval($status),
-            'data'   => $record,
-        ]);
-    }
+    // public function delete(Request $request) {
+    //     $course_id = $request->course_id;
+    //     $status    = Course::where('course_id', $course_id)->update(['course_deleted' => 1]);
+    //     $record = Course::where('course_id', $course_id)->first();
+    //     echo json_encode([
+    //         'status' => boolval($status),
+    //         'data'   => $record,
+    //     ]);
+    // }
 
     private function uniqidReal($lenght = 12)
     {

@@ -30,7 +30,6 @@ class SupportTicketController extends Controller
     {
         $id = $request->ticket_id;
         $params  = ['ticket_status' => $request->status];
-
         $result = Support_ticket::submit($params, $id);
         echo json_encode([
             'status' => boolval($result),
@@ -39,15 +38,20 @@ class SupportTicketController extends Controller
     }
 
 
-    public function getReplie($ticket_id){
+    public function getReplie($ticket_id)
+    {
         $param[] = ['reply_ticket', $ticket_id];
         $replies = Support_replie::fetch(0,$param);
+        $tick    = Support_ticket::fetch($ticket_id);
 
-        return view('content.supports.replies', compact('replies'));
+        $params  = ['ticket_status' => 2];
+        $result = Support_ticket::submit($params, $ticket_id);
+        // return $tick;
+        return view('content.supports.edit', compact('replies', 'tick'));
     }
 
-    public function replie(Request $request) {
-
+    public function reply(Request $request)
+    {
         $request->validate([
             'replie'      => 'required | string',
             'ticket_id'   => 'required | numeric'
@@ -63,7 +67,7 @@ class SupportTicketController extends Controller
 
 
         // where('ticket_id', $request->ticket_id)->update()
-        Support_ticket::submit(['ticket_status' => 2], $request->ticket_id);
+        // Support_ticket::submit(['ticket_status' => ], $request->ticket_id);
         if(!$request->attachment){
             $result = Support_replie::submit($paramRely);
         }
@@ -85,6 +89,18 @@ class SupportTicketController extends Controller
 
         echo json_encode([
             'status' => boolval($result),
+            'data' => $result ? Support_replie::fetch($result) : [],
+        ]);
+    }
+
+    public function replies(Request $request)
+    {
+        $id = $request->ticket_id;
+        $param[] = ['reply_ticket', $id];
+        $status = Support_replie::fetch(0,$param);
+        echo json_encode([
+            'status' => boolval($status),
+            'data' => $status
         ]);
     }
 }

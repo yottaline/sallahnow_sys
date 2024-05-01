@@ -38,7 +38,7 @@ class PostController extends Controller
 
        $data = $post['data'];
        $file = $post['file'];
-       
+
        return view('content.posts.editor', compact('data', 'file'));
     }
 
@@ -49,6 +49,7 @@ class PostController extends Controller
         $param = [
             'post_title'       => $request->title,
             'post_body'        => $request->body,
+            'post_cost'        => $request->cost
         ];
 
         $photo = $request->file('photo');
@@ -73,20 +74,21 @@ class PostController extends Controller
 
             $param['post_modify_user'] = auth()->user()->id;
             $param['post_modify_time'] = now();
-            
+
             $record = Post::fetch($id);
             if ($photo && $record->post_photo) {
                 File::delete($this->photosPath . $record->post_photo);
             }
 
         }
-        
+
         $result = Post::submit($param, $id);
+        $id = $result;
         echo json_encode([
             'status' => boolval($result),
             'data' => $result ? Post::fetch($id) : [],
         ]);
-        
+
     }
 
     function fileSubmit(Request $request)
@@ -94,40 +96,57 @@ class PostController extends Controller
         $post_id = $request->post_id;
         $context = $request->context;
         $post = Post::fetch($post_id);
-        
+
        $status = Post::file($post, $context);
         echo json_encode(['status' => boolval($status)]);
     }
 
-    function addCost(Request $request)
-    {
-        $request->validate(['cost' => 'required|numeric']);
-        
-        $id    = $request->post_id;
-        $params = ['post_cost' => $request->cost];
-        
-        $result = Post::submit($params, $id); 
-        echo json_encode([
-            'status' => boolval($result),
-            'data' => $result ? Post::fetch($id) : [],
-        ]);
-    }
+    // function addCost(Request $request)
+    // {
+    //     $request->validate(['cost' => 'required|numeric']);
+
+    //     $id    = $request->post_id;
+    //     $params = ['post_cost' => $request->cost];
+
+    //     $result = Post::submit($params, $id);
+    //     echo json_encode([
+    //         'status' => boolval($result),
+    //         'data' => $result ? Post::fetch($id) : [],
+    //     ]);
+    // }
 
     function updateData(Request $request)
     {
         $id    = $request->id;
         $key   = $request->key;
         $value = $request->val;
-        
+        $user  = auth()->user()->id;
+        $time  = Carbon::now();
+
+
         if ($key == 'post_allow_comment')
         {
-            $status =  Post::submit(['post_allow_comments' => $value], $id);
+            $params = ['post_allow_comments' => $value];
         }
         elseif ($key == 'post_archived')
         {
-           $status = Post::submit(['post_archived' => $value], $id);
+            $params = [
+                'post_archived' => $value,
+                'post_archive_user' => $user,
+                'post_archive_time' => $time,
+            ];
         }
-        echo json_encode(['status' => boolval($status)]);
+        elseif ($key == 'post_post_delete')
+        {
+            $params = [
+                'post_deleted' => $value,
+                'post_delete_user' => $user,
+                'post_delete_time' => $time
+            ];
+        }
+
+       $result = Post::submit($params, $id);
+        echo json_encode(['status' => boolval($result)]);
     }
 
     function delete(Request $request)
@@ -143,8 +162,8 @@ class PostController extends Controller
 
     function getComment(Request $request)
     {
-        $post_id = $request->id;
-        echo json_encode(Post_Comment::fetch(0, $post_id));
+        $id = $request->post_id;
+        echo json_encode($id ? Post_Comment::fetch(0, $id) : []);
     }
 
     function addComment(Request $request)
@@ -155,7 +174,7 @@ class PostController extends Controller
             'comment_create'   => Carbon::now(),
             'comment_user'     => auth()->user()->id
         ];
-        
+
         $result = Post_Comment::submit($params);
         $id = $result;
         echo json_encode([

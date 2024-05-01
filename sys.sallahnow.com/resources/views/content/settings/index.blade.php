@@ -333,12 +333,11 @@
                                 @csrf
                                 <input data-ng-if="updateModel !== false" type="hidden" name="_method" value="put">
                                 <input type="hidden" name="model_id"
-                                    data-ng-value="updateModel !== false ? models[updateModel].id : 0">
+                                    data-ng-value="updateModel !== false ? models[updateModel].model_id : 0">
                                 <div class="mb-3">
                                     <label for="Modelname">Model Name<b class="text-danger">&ast;</b></label>
                                     <input type="text" class="form-control" name="name" maxlength="120" required
-                                        data-ng-value="updateModel !== false ? models[updateModel].name : ''"
-                                        id="Modelname" />
+                                        data-ng-value=" models[updateModel].model_name" id="Modelname" />
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-md-6">
@@ -353,7 +352,7 @@
                                         <div class="mb-3">
                                             <label for="ModleUrl">URL</label>
                                             <input type="text" class="form-control" name="url" id="ModleUrl"
-                                                data-ng-value="updateModel !== false ? models[updateModel].url : ''">
+                                                data-ng-value="models[updateModel].model_url">
                                         </div>
                                     </div>
                                 </div>
@@ -739,18 +738,6 @@
                 }, 'json');
             }
 
-
-            // $scope.getBrandName = function() {
-            //     $.post("/models/getBrandsName/", {
-            //         _token: '{{ csrf_token() }}'
-            //     }, function(data) {
-            //         $('.loading-spinner').hide();
-            //         $scope.$apply(() => {
-            //             $scope.brandName = data;
-            //         });
-            //     }, 'json');
-            // }
-
             $scope.lodaCompatibilityCategoriessData = function(reload = false) {
                 $('.loading-spinner').show();
                 if (reload) {
@@ -971,11 +958,11 @@
                             if (scope.updateCompCate === false) {
                                 scope.compatibility_categories.unshift(response
                                     .data);
-                                $scope.lodaCompatibilityCategoriessData(true);
+                                scope.lodaCompatibilityCategoriessData(true);
                             } else {
                                 scope.compatibility_categories[scope
                                     .updateCompCate] = response.data;
-                                $scope.lodaCompatibilityCategoriessData(true);
+                                scope.lodaCompatibilityCategoriessData(true);
                             }
                         });
                     } else toastr.error("Error");
@@ -1016,11 +1003,11 @@
                         scope.$apply(() => {
                             if (scope.updatePackage === false) {
                                 scope.packages.unshift(response.data);
-                                $scope.loadPackageData(true);
+                                scope.loadPackageData(true);
                             } else {
                                 scope.packages[scope.updatePackage] = response
                                     .data;
-                                $scope.loadPackageData(true);
+                                scope.loadPackageData(true);
                             }
                         });
                     } else toastr.error("Error");

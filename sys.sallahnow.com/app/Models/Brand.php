@@ -23,6 +23,8 @@ class Brand extends Model
 
         if ($lastId) $brands->where('brand_id', '<', $lastId);
 
+        if ($params) $brands->where($params);
+
         if ($id) $brands->where('brand_id', $id);
 
         return $id ? $brands->first() : $brands->get();

@@ -32,6 +32,7 @@ class Models extends Model
             $models->where(function (Builder $query) use ($params) {
                 $query->where('model_name', 'like', '%' . $params['q'] . '%')
                     ->orWhere('model_visible', $params['q'])
+                    ->orWhere('brand_name', $params['q'])
                     ->orWhere('model_url', 'like', '%' . $params['q'] . '%');
             });
             unset($params['q']);
@@ -62,7 +63,7 @@ class Models extends Model
     }
 
     public function compatibilities(){
-        return $this->belongsToMany(Compatibility::class, 'compatibility_models', 'compatible_model');
+        return $this->belongsToMany(Compatibility::class, 'compatibility_models', 'compatible_model', 'compatible_src');
     }
 
     public function suggestions() {

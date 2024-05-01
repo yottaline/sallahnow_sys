@@ -70,6 +70,7 @@ Route::prefix('brands')->middleware('auth')->group(function () {
     Route::post('load', 'BrandController@load');
     Route::match(['post', 'put'], 'submit', 'BrandController@store');
     Route::post('getUserName', 'BrandController@getUsersName');
+    Route::get('search/{e}', 'BrandController@getBrandName');
 });
 
 Route::prefix('models')->middleware('auth')->group(function () {
@@ -77,6 +78,8 @@ Route::prefix('models')->middleware('auth')->group(function () {
     Route::match(['post', 'put'], 'submit', 'ModelController@submit');
     Route::post('getBrandsName', 'ModelController@getBrandsName');
     Route::post('getUserName', 'ModelController@getUsersName');
+    Route::get('search/{id}', 'ModelController@getBrandModels');
+    Route::get('get_name/{id}', 'ModelController@getName');
 });
 
 Route::prefix('CompatibilityCategories')->middleware('auth')->group(function () {
@@ -88,7 +91,7 @@ Route::prefix('compatibilities')->middleware('auth')->group(function () {
     Route::get('/', 'CompatibilityController@index');
     Route::post('load', 'CompatibilityController@load');
     Route::match(['post', 'put'], 'submit', 'CompatibilityController@submit');
-    Route::post('getCateName', 'CompatibilityController@getCateName');
+    Route::get('get_models/{id}', 'CompatibilityController@models');
 });
 
 Route::prefix('suggestions')->middleware('auth')->group(function () {
@@ -166,8 +169,9 @@ Route::prefix('tickets')->middleware('auth')->group(function () {
     Route::get('/', 'SupportTicketController@index');
     Route::post('load', 'SupportTicketController@load');
     Route::put('change-status', 'SupportTicketController@changeStatus');
-    Route::put('add-replie', 'SupportTicketController@replie');
+    Route::POST('add-replie', 'SupportTicketController@reply');
     Route::get('get-replie/{tcket_id}', 'SupportTicketController@getReplie');
+    Route::post('replies', 'SupportTicketController@replies');
 });
 
 

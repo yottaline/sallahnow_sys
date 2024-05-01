@@ -60,11 +60,11 @@
                                         <td class="col-fit">
                                             <a href="/courses/editor/<% course.course_code %>"
                                                 class="btn btn-outline-primary btn-circle bi bi-pencil-square"></a>
-                                            <button type="button" class="btn btn-outline-success btn-circle bi bi-coin"
-                                                data-ng-click="updCost($index)"></button>
-                                            <button type="button"
+                                            {{-- <button type="button" class="btn btn-outline-success btn-circle bi bi-coin"
+                                                data-ng-click="updCost($index)"></button> --}}
+                                            {{-- <button type="button"
                                                 class="btn btn-outline-dark btn-circle bi bi-cloud-arrow-up"
-                                                data-ng-click="addFile($index)"></button>
+                                                data-ng-click="addFile($index)"></button> --}}
                                             <button type="button"
                                                 class="btn btn-outline-danger btn-circle bi bi-trash3-fill"
                                                 data-ng-click="deletePost($index)"></button>

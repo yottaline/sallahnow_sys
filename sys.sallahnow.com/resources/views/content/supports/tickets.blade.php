@@ -46,8 +46,6 @@
                                         <th class="text-center">Model Name</th>
                                         <th class="text-center">Technician Name</th>
                                         <th class="text-center">Category Name</th>
-                                        <th class="text-center">Category Cost</th>
-                                        <th class="text-center">Context</th>
                                         <th class="text-center">Status</th>
                                         <th></th>
                                     </tr>
@@ -60,16 +58,14 @@
                                         <td class="text-center" data-ng-bind="ticket.model_name"></td>
                                         <td class="text-center" data-ng-bind="ticket.tech_name"></td>
                                         <td class="text-center" data-ng-bind="jsonParse(ticket.category_name)['en']"></td>
-                                        <td class="text-center" data-ng-bind="ticket.ticket_cost"></td>
-                                        <td class="text-center" data-ng-bind="ticket.ticket_context"></td>
                                         <td class="text-center">
                                             <span
                                                 class="badge bg-<%statusTicket.color[ticket.ticket_status]%> rounded-pill font-monospace p-2"><%statusTicket.name[ticket.ticket_status]%></span>
                                         </td>
 
                                         <td class="col-fit">
-                                            <button class="btn btn-outline-primary btn-circle bi bi-signal"
-                                                data-ng-click="replie($index)"></button>
+                                            {{-- <button class="btn btn-outline-primary btn-circle bi bi-signal"
+                                                data-ng-click="replie($index)"></button> --}}
                                             <button class="btn btn-outline-success btn-circle bi bi-check2-circle"
                                                 data-ng-click="changeStatus($index)"></button>
                                             <a href="/tickets/get-replie/<% ticket.ticket_id %>"
@@ -86,7 +82,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="ReplyForm" tabindex="-1" role="dialog" aria-labelledby="ReplyFormLabel">
+        {{-- <div class="modal fade" id="ReplyForm" tabindex="-1" role="dialog" aria-labelledby="ReplyFormLabel">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -166,7 +162,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="modal fade" id="changeStatus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
