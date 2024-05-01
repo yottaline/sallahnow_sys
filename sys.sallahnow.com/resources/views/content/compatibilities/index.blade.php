@@ -128,14 +128,23 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                {{-- <div class="col-12">
                                     <h5 class="text-primary">Models</h5>
                                     <div ng-repeat="m in copmatsModels"></div>
+                                </div> --}}
+                                {{-- <hr>
+                                <div class="col-12">
+                                    <h5 class="text-primary text-center">Models</h5>
+                                    <div class="mb-3 row" id="compModels">
+
+                                    </div>
                                 </div>
+                                <hr> --}}
                                 <div class="col-12">
                                     <div class="mb-3">
                                         <label for="branID">Brands</label>
                                         <select class="form-control select2" id="branID">
+                                            <option value="">SELECT BRAND NAME</option>
                                             @foreach ($brands as $brand)
                                                 <option value="{{ $brand->brand_id }}">
                                                     {{ $brand->brand_name }}
@@ -157,11 +166,10 @@
                                     </div>
                                 </div>
 
-
                                 {{-- <div class="col-12">
                                     <div class="mb-3">
                                         <input type="search" name="brand" class="form-control"
-                                            placeholder="secarch by brand name" id="brandId">
+                                            placeholder="secarch by brand name" id="brandId" >
                                     </div>
                                 </div> --}}
                             </div>
@@ -240,8 +248,22 @@
             $scope.setCompatibility = (index) => {
                 $scope.copmatsModels = [];
                 $scope.updateComp = index;
-
-                console.log(index)
+                // if ($scope.updateComp !== false) {
+                //     var id = scope.categories[index].category_id;
+                //     $.ajax({
+                //         url: '/compatibilities/get_models/' + id,
+                //         type: 'GET',
+                //         dataType: 'json',
+                //         success: function(res) {
+                //             $.each(res, function(key, value) {
+                //                 $('#compModels').append('<option class="col-3" value="' +
+                //                     value
+                //                     .model_id +
+                //                     '">' + value.model_name + '</option>');
+                //             });
+                //         }
+                //     });
+                // }
                 $('#compatibilityForm').modal('show');
             };
 
@@ -251,7 +273,12 @@
                 theme: 'bootstrap-5'
             });
 
+            $('#modelId').select2({
+                theme: 'bootstrap-5'
+            });
+
             $('#modelId').select2(suggOption($('#compatibilityForm'), '/models/search/', function(data) {
+                console.log(data)
                 return data.map(function(e) {
                     return {
                         id: e.model_id,
@@ -290,10 +317,10 @@
                         scope.$apply(() => {
                             if (scope.updateComp === false) {
                                 scope.list.unshift(response.data);
-                                $scope.dataLoader(true);
+                                scope.dataLoader(true);
                             } else {
                                 scope.list[scope.updateComp] = response.data;
-                                $scope.dataLoader(true);
+                                scope.dataLoader(true);
                             }
                         });
                     } else toastr.error(response.message);
@@ -314,25 +341,43 @@
 
             // $('#branID').on('change', function() {
             //     var idState = this.value;
-            //     console.log(idState);
-            //     $('#models').html('');
+            //     $('#modelId').html('');
             //     $.ajax({
             //         url: '/models/search/' + idState,
             //         type: 'GET',
             //         dataType: 'json',
             //         success: function(res) {
-            //             $.each(res, function(key, value) {
-            //                 $('#models').append(
-            //                     '<div class="col-sm-4"> <label id="models" class="m-1">' +
+            //             console.log(res.data)
+            //             $.each(res.data, function(key, value) {
+            //                 $('#modelId').append('<option id="class" value="' +
             //                     value
-            //                     .model_name +
-            //                     '</label> <input type="checkbox" value="' + value
-            //                     .model_id + '" name="model_id[]"></div>'
-            //                 );
+            //                     .model_id +
+            //                     '">' + value.model_name + '</option>');
             //             });
             //         }
             //     });
             // });
+
+            // $('#modelId').on('change', function() {
+            //     var id = this.value;
+            //     $.ajax({
+            //         url: '/models/get_name/' + id,
+            //         type: 'GET',
+            //         dataType: 'json',
+            //         success: function(res) {
+            //             console.log(res)
+            //             $('#models').append(
+            //                 '<div class="col-sm-4"> <label id="models" class="m-1">' +
+            //                 res
+            //                 .model_name +
+            //                 '</label> <input type="checkbox" checked id="ModId" value="' +
+            //                 res
+            //                 .model_id + '" name="model_id[]"></div>'
+            //             );
+            //         }
+            //     });
+            // })
+
 
             // $('#branID').on('change', function() {
             //     var idState = this.value;
@@ -355,6 +400,7 @@
             //         }
             //     });
             // });
+
         });
     </script>
 @endsection

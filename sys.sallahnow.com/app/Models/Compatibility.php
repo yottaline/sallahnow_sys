@@ -59,6 +59,17 @@ class Compatibility extends Model
     }
 
 
+    public static function getModels($id)
+    {
+        $models = self::join('compatibility_categories', 'compatibilities.compat_category', '=', 'compatibility_categories.category_id')
+        ->join('compatibility_models', 'compatibilities.compat_id', '=', 'compatibility_models.compatible_src')
+        ->join('models', 'models.model_id', '=', 'compatibility_models.compatible_model')
+        ->where('compat_id', $id)
+        ->get();
+
+        return $models;
+    }
+
     public function compatibility_categorie()
     {
         return $this->belongsTo(Compatibility_categorie::class, 'compat_category');

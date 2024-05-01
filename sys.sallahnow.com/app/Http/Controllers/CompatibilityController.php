@@ -41,11 +41,11 @@ class CompatibilityController extends Controller
         $model_id = $request->model_id;
         $code     = $this->uniqidReal(8);
 
-        if (count(Compatibility::fetch(0, [['compat_id', '!=', $id], ['compatible_model', $model_id]])))
-        {
-            echo json_encode(['status' => false, 'message' => 'Model Is Exts']);
-            return;
-        }
+        // if (count(Compatibility::fetch(0, [['compat_id', '!=', $id], ['compatible_model', $model_id]])))
+        // {
+        //     echo json_encode(['status' => false, 'message' => 'Model Is Exts']);
+        //     return;
+        // }
 
 
        $param =
@@ -62,6 +62,12 @@ class CompatibilityController extends Controller
             'status' => boolval($status),
             'data' => $status ? Compatibility::fetch($status) : [],
         ]);
+    }
+
+
+    public function models($id)
+    {
+        echo json_encode(Compatibility::getModels($id));
     }
 
     private function uniqidReal($lenght = 12)

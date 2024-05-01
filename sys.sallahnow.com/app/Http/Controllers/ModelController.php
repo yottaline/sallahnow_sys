@@ -44,7 +44,7 @@ class ModelController extends Controller
             'model_name'     => $request->name,
             'model_url'      => $request->url,
             'model_brand'    => $request->brand,
-            'visible'        => 1,
+            // 'model_visible'        => 1,
         ];
 
         $photo = $request->file('photo');
@@ -70,12 +70,17 @@ class ModelController extends Controller
     }
 
 
-    public function getBrandModels(Request $request)
+    public function getBrandModels($id)
     {
-        $id = $request->brand_id;
-       $model = Models::fetch($id);
+        $param[] = ['brand_id', $id];
+       $model = Models::fetch(0, $param);
 
-       echo json_encode($model);
+       echo json_encode(['data' => $model]);
+    }
+
+    public function getName($id)
+    {
+        echo json_encode(Models::fetch($id));
     }
 
     private function uniqidReal($lenght = 12)
