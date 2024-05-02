@@ -78,7 +78,13 @@ class ModelController extends Controller
        echo json_encode(['data' => $model]);
     }
 
-    public function getName($id)
+    public function getName(Request $request)
+    {
+        $params = ['q' => $request->keyword];
+        echo json_encode(Models::fetch(0, $params));
+    }
+
+    public function modelName($id)
     {
         echo json_encode(Models::fetch($id));
     }

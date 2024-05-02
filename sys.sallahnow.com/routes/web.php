@@ -79,12 +79,19 @@ Route::prefix('models')->middleware('auth')->group(function () {
     Route::post('getBrandsName', 'ModelController@getBrandsName');
     Route::post('getUserName', 'ModelController@getUsersName');
     Route::get('search/{id}', 'ModelController@getBrandModels');
-    Route::get('get_name/{id}', 'ModelController@getName');
+    Route::get('get_models', 'ModelController@getName');
+    Route::get('model_name/{id}', 'ModelController@modelName');
 });
 
 Route::prefix('CompatibilityCategories')->middleware('auth')->group(function () {
     Route::post('load', 'CompatibilityCategorieController@load');
     Route::match(['post', 'put'], 'submit', 'CompatibilityCategorieController@submit');
+});
+
+Route::prefix('compatibilityMotherBoard')->middleware('auth')->group(function()
+{
+    Route::post('load', 'CompatibliyBoardController@load');
+    Route::match(['post', 'put'], 'submit', 'CompatibliyBoardController@submit');
 });
 
 Route::prefix('compatibilities')->middleware('auth')->group(function () {
