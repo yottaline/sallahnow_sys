@@ -18,6 +18,8 @@ return [
 
     'name' => env('APP_NAME', 'Sallah Now'),
 
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
