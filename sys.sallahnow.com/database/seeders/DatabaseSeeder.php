@@ -22,10 +22,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call(PermissionsSeeder::class);
         \App\Models\User::create([
-            'user_name' => 'Test User',
-            'user_email' => 'test@example.com',
-            'user_password' => Hash::make('1234567'),
-            'user_mobile' => '0122356718',
+            'user_name' => 'Tech. Support',
+            'user_email' => 'support@yottaline.com',
+            'user_password' => Hash::make('Support@Yottaline'),
+            'user_mobile' => '01033306468',
             'user_group' => 1,
             'user_create' => now()
         ]);
