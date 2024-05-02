@@ -117,17 +117,58 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="CategoryId">Categories</label>
-                                        <select name="cate_id" class="form-control" id="CategoryId">
-                                            <option value="">-- SELECT CATEGORY NAME</option>
-                                            <option data-ng-repeat="category in categories"
-                                                data-ng-value="category.category_id" data-ng-bind="category.category_name">
-                                            </option>
-                                        </select>
+                                <div class="text-center" style="margin-left:150px">
+                                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="pills-cate-tab" data-bs-toggle="pill"
+                                                data-bs-target="#pills-cate" type="button" role="tab"
+                                                aria-controls="pills-cate" aria-selected="true">Categories</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="pills-board-tab" data-bs-toggle="pill"
+                                                data-bs-target="#pills-board" type="button" role="tab"
+                                                aria-controls="pills-board" aria-selected="false">IC</button>
+                                        </li>
+                                    </ul>
+
+                                </div>
+
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active" id="pills-cate" role="tabpanel"
+                                        aria-labelledby="pills-cate-tab">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="CategoryId">Categories</label>
+                                                <select name="cate_id" class="form-control" id="CategoryId">
+                                                    <option value="">-- SELECT CATEGORY NAME</option>
+                                                    <option data-ng-repeat="category in categories"
+                                                        data-ng-value="category.category_id"
+                                                        data-ng-bind="category.category_name">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="tab-pane fade" id="pills-board" role="tabpanel"
+                                        aria-labelledby="pills-board-tab">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="motherId">Mother Boards</label>
+                                                <select class="form-control select2" name="mother_board" id="motherId">
+                                                    <option value="">SELECT MOTHER BOARD NAME</option>
+                                                    @foreach ($mothers as $board)
+                                                        <option value="{{ $board->board_id }}">
+                                                            {{ $board->board_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+
                                 {{-- <div class="col-12">
                                     <h5 class="text-primary">Models</h5>
                                     <div ng-repeat="m in copmatsModels"></div>
@@ -248,22 +289,6 @@
             $scope.setCompatibility = (index) => {
                 $scope.copmatsModels = [];
                 $scope.updateComp = index;
-                // if ($scope.updateComp !== false) {
-                //     var id = scope.categories[index].category_id;
-                //     $.ajax({
-                //         url: '/compatibilities/get_models/' + id,
-                //         type: 'GET',
-                //         dataType: 'json',
-                //         success: function(res) {
-                //             $.each(res, function(key, value) {
-                //                 $('#compModels').append('<option class="col-3" value="' +
-                //                     value
-                //                     .model_id +
-                //                     '">' + value.model_name + '</option>');
-                //             });
-                //         }
-                //     });
-                // }
                 $('#compatibilityForm').modal('show');
             };
 
@@ -273,11 +298,7 @@
                 theme: 'bootstrap-5'
             });
 
-            $('#modelId').select2({
-                theme: 'bootstrap-5'
-            });
-
-            $('#modelId').select2(suggOption($('#compatibilityForm'), '/models/search/', function(data) {
+            $('#modelId').select2(suggOption($('#compatibilityForm'), '/models/get_models/', function(data) {
                 console.log(data)
                 return data.map(function(e) {
                     return {
@@ -358,25 +379,23 @@
             //     });
             // });
 
-            // $('#modelId').on('change', function() {
-            //     var id = this.value;
-            //     $.ajax({
-            //         url: '/models/get_name/' + id,
-            //         type: 'GET',
-            //         dataType: 'json',
-            //         success: function(res) {
-            //             console.log(res)
-            //             $('#models').append(
-            //                 '<div class="col-sm-4"> <label id="models" class="m-1">' +
-            //                 res
-            //                 .model_name +
-            //                 '</label> <input type="checkbox" checked id="ModId" value="' +
-            //                 res
-            //                 .model_id + '" name="model_id[]"></div>'
-            //             );
-            //         }
-            //     });
-            // })
+            $('#modelId').on('change', function() {
+                var id = this.value;
+                console.log(id)
+                $.ajax({
+                    url: '/models/model_name/' + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        $('#models').append(
+                            '<div class="col-sm-4"> <label id="models" class="m-1">' +
+                            res
+                            .model_name +
+                            '</label> <input type="checkbox" checked value="' + res
+                            .model_id + '" name="model_id[]"></div>');
+                    }
+                });
+            })
 
 
             // $('#branID').on('change', function() {

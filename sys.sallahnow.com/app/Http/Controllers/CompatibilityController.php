@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Compatibility;
 use App\Models\Compatibility_categorie;
+use App\Models\Compatibliy_board;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -19,8 +20,9 @@ class CompatibilityController extends Controller
     {
         $categories = Compatibility_categorie::fetch();
         $brands     = Brand::fetch();
+        $mothers    = Compatibliy_board::fetch();
 
-        return view('content.compatibilities.index', compact('categories', 'brands'));
+        return view('content.compatibilities.index', compact('categories', 'brands', 'mothers'));
     }
 
     public function load(Request $request)
@@ -51,7 +53,7 @@ class CompatibilityController extends Controller
        $param =
        [
         'compat_part'     => $part,
-        'compat_category' => $request->cate_id,
+        'compat_category' => $request->cate_id ? $request->cate_id : $request->mother_board,
         ];
 
         if (!$id) $param['compat_code'] = $code;
