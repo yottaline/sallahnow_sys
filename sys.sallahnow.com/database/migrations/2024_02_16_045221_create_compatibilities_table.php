@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('compat_code', 9);
             $table->string('compat_part',120);
             $table->integer('compat_category')->unsigned();
+            $table->integer('compat_board', false, true)->nullable();
             // $table->timestamps();
 
             $table->foreign('compat_category')->references('category_id')->on('compatibility_categories');
