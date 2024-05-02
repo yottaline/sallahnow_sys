@@ -384,7 +384,7 @@
         <div class="card card-box mt-5">
             <div class="card-body">
                 <div class="row">
-                    <div id="compatbiliyCategorieBox" class="col-12">
+                    <div id="compatbiliyCategorieBox" class="col-6">
                         <div class="list-box border p-3">
                             <div class="d-flex">
                                 <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
@@ -429,6 +429,52 @@
                             </div>
                         </div>
                     </div>
+
+                    <div id="motherBoard" class="col-6">
+                        <div class="list-box border p-3">
+                            <div class="d-flex">
+                                <h5 class="card-title fw-semibold pt-1 me-auto mb-3">
+                                    <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
+                                        role="status"></span><span>COMPATIBILITY MOTHER BOARD</span>
+                                </h5>
+                                <div>
+                                    <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                        data-ng-click="setMotherBoard(false)"></button>
+                                    <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
+                                        data-ng-click="loadMotherBoard(true)"></button>
+                                </div>
+
+                            </div>
+                            <div data-ng-if="compatibility_motherBoard.length" class="table-responsive">
+                                <table class="table table-hover" id="compatibility_motherBoard_table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="board in compatibility_motherBoard">
+                                            <td data-ng-bind="board.board_id"></td>
+                                            <td data-ng-bind="board.board_name"></td>
+                                            <td class="col-fit">
+                                                <div>
+                                                    <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                        data-ng-click="setMotherBoard($index)"></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div data-ng-if="!compatibility_motherBoard.length" class="text-center py-5 text-secondary">
+                                <i class="bi bi-exclamation-circle display-4"></i>
+                                <h5>No records</h5>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -462,6 +508,36 @@
                 </div>
             </div>
             <!-- end add new compatibility_categories  Modal -->
+
+            <!-- start add new compatibility_motherboard  Modal -->
+            <div class="modal fade" id="CompatibilityMotherBoardForm" tabindex="-1" role="dialog"
+                aria-labelledby="CompatibilityCategoriesFormLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form method="POST" action="/compatibilityMotherBoard/submit/"> @csrf
+                                <input data-ng-if="updateMotherBoard !== false" type="hidden" name="_method"
+                                    value="put">
+                                <input type="hidden" name="board_id"
+                                    data-ng-value="updateMotherBoard !== false ? compatibility_motherBoard[updateMotherBoard].board_id : 0">
+                                <div class="mb-3">
+                                    <label for="motherBoardName">Compatibility
+                                        Mother Board Name<b class="text-danger">&ast;</b></label>
+                                    <input type="text" class="form-control" name="board_name" maxlength="120"
+                                        required data-ng-value="compatibility_motherBoard[updateMotherBoard].board_name"
+                                        id="motherBoardName" />
+                                </div>
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-outline-secondary me-auto"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end add new compatibility_motherboard  Modal -->
         </div>
 
         {{-- start packages section  --}}
@@ -632,7 +708,9 @@
 
             // compatibility_categories
             $scope.updateCompCate = false;
+            $scope.updateMotherBoard = false;
             $scope.compatibility_categories = [];
+            $scope.compatibility_motherBoard = [];
             $scope.page = 1;
 
             // packages
@@ -703,17 +781,6 @@
                 $('#brandForm').modal('show');
             };
 
-            // $scope.getUserNameModel = function() {
-            //     $.post("/models/getUserName/", {
-            //         _token: '{{ csrf_token() }}'
-            //     }, function(data) {
-            //         $('.loading-spinner').hide();
-            //         $scope.$apply(() => {
-            //             $scope.userName = data;
-            //         });
-            //     }, 'json');
-            // }
-
             $scope.setModel = (indx) => {
                 $scope.updateModel = indx;
                 $('#modelForm').modal('show');
@@ -756,10 +823,31 @@
                 }, 'json');
             }
 
+            $scope.loadMotherBoard = function(reload = false) {
+                $('.loading-spinner').show();
+                if (reload) {
+                    $scope.page = 1;
+                }
+                $.post("/compatibilityMotherBoard/load/", {
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    $('.loading-spinner').hide();
+                    $scope.$apply(() => {
+                        $scope.compatibility_motherBoard = data;
+                        // $scope.page++;
+                    });
+                }, 'json');
+            }
+
             $scope.setCompatibilityCategories = (indx) => {
                 $scope.updateCompCate = indx;
                 $('#CompatibilityCategoriesForm').modal('show');
             };
+
+            $scope.setMotherBoard = (index) => {
+                $scope.updateMotherBoard = index;
+                $('#CompatibilityMotherBoardForm').modal('show');
+            }
 
             $scope.loadPackageData = function(reload = false) {
                 $('.loading-spinner').show();
@@ -786,9 +874,8 @@
 
             $scope.loadData(0, 'countries');
             $scope.loadBrandsData();
-            // $scope.getUserNameModel();
             $scope.lodaModelsData();
-            // $scope.getBrandName();
+            $scope.loadMotherBoard();
             $scope.lodaCompatibilityCategoriessData()
             $scope.loadPackageData();
             scope = $scope;
@@ -963,6 +1050,53 @@
                                 scope.compatibility_categories[scope
                                     .updateCompCate] = response.data;
                                 scope.lodaCompatibilityCategoriessData(true);
+                            }
+                        });
+                    } else toastr.error("Error");
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    // error msg
+                }).always(function() {
+                    spinner.hide();
+                    controls.prop('disabled', false);
+                });
+
+            })
+        })
+
+        // create and update Compatibility mother board
+        $(function() {
+            $('#CompatibilityMotherBoardForm form').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this),
+                    formData = new FormData(this),
+                    action = form.attr('action'),
+                    method = form.attr('method'),
+                    controls = form.find('button, input'),
+                    spinner = $('#locationModal .loading-spinner');
+                spinner.show();
+                controls.prop('disabled', true);
+                $.ajax({
+                    url: action,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                }).done(function(data, textStatus, jqXHR) {
+                    var response = JSON.parse(data);
+                    console.log(response
+                        .data)
+                    if (response.status) {
+                        toastr.success('Data processed successfully');
+                        $('#CompatibilityMotherBoardForm').modal('hide');
+                        scope.$apply(() => {
+                            if (scope.updateMotherBoard === false) {
+                                scope.compatibility_motherBoard.unshift(response
+                                    .data);
+                                scope.loadMotherBoard(true);
+                            } else {
+                                scope.compatibility_motherBoard[scope
+                                    .updateMotherBoard] = response.data;
+                                scope.loadMotherBoard(true);
                             }
                         });
                     } else toastr.error("Error");

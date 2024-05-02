@@ -216,6 +216,14 @@ CREATE TABLE IF NOT EXISTS `compats_categories` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `compats_board` (
+  `board_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `board_name` VARCHAR(1024) NOT NULL,
+  PRIMARY KEY (`board_id`);
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `compatible_models` (
   `compatible_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `compatible_src` INT UNSIGNED NOT NULL COMMENT 'compats.compat_id',

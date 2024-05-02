@@ -87,6 +87,12 @@ Route::prefix('CompatibilityCategories')->middleware('auth')->group(function () 
     Route::match(['post', 'put'], 'submit', 'CompatibilityCategorieController@submit');
 });
 
+Route::prefix('compatibilityMotherBoard')->middleware('auth')->group(function()
+{
+    Route::post('load', 'CompatibliyBoardController@load');
+    Route::match(['post', 'put'], 'submit', 'CompatibliyBoardController@submit');
+});
+
 Route::prefix('compatibilities')->middleware('auth')->group(function () {
     Route::get('/', 'CompatibilityController@index');
     Route::post('load', 'CompatibilityController@load');
