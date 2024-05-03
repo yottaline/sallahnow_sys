@@ -61,6 +61,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th class="text-center">Category Name</th>
+                                        <th class="text-center">Mother Board</th>
                                         <th class="text-center">Name</th>
                                         <th></th>
                                     </tr>
@@ -70,7 +71,7 @@
                                         <td data-ng-bind="comp.compat_code"></td>
                                         <td class="text-center" data-ng-bind="comp.category_name"></td>
                                         <td class="text-center" data-ng-bind="jsonParse(comp.compat_part)['en']"></td>
-                                        <td class="text-center" data-ng-bind="comp.model_name"></td>
+                                        <td class="text-center" data-ng-bind="comp.board_name"></td>
                                         <td class="col-fit">
                                             <div>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"

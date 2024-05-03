@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('compat_id', true ,true);
             $table->string('compat_code', 9);
             $table->string('compat_part',120);
-            $table->integer('compat_category')->unsigned();
+            $table->integer('compat_category', )->unsigned();
             $table->integer('compat_board', false, true)->nullable();
             // $table->timestamps();
 
