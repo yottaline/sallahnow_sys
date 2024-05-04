@@ -36,7 +36,8 @@ class SupportCategoryController extends Controller
         $category_name = json_encode($names);
 
         $params = [
-            'category_name' => $category_name
+            'category_name'  => $category_name,
+            'category_cost'  => $request->cost
         ];
 
         $id = $request->cate_id;

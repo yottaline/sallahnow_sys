@@ -53,7 +53,7 @@ class CompatibilityController extends Controller
        $param =
        [
         'compat_part'     => $part,
-        'compat_category' => $request?->cate_id,
+        'compat_category' => $request->cate_id ? $request->cate_id : $request->mother_board,
         'compat_board'    => $request->mother_board,
         ];
 
