@@ -34,12 +34,15 @@ class TechnicianApiController extends Controller
     {
         $request->validate([
             'tech_name'         => 'required',
+            'tech_email'        => 'required|unique:technicians,tech_email',
             'tech_mobile'       => 'required|numeric|unique:technicians,tech_mobile',
             'tech_password'     => 'required',
             'country_id'        => 'required',
             'state_id'          => 'required',
             'city_id'           => 'required',
             'area_id'           => 'required'
+        ],[
+            'tech_email.unique' => 'This email address is already registered'
         ]);
 
 
@@ -76,7 +79,8 @@ class TechnicianApiController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 104);
             }else {
                 $token = auth()->guard('technician-api')->login($technician[0]);
-                return $this->respondWithToken($token);
+                $technician[0]->token = $token;
+                return $this->respondWithToken($technician[0]);
             }
         }
 
@@ -94,15 +98,20 @@ class TechnicianApiController extends Controller
     {
         $params[] = ['tech_mobile', request('tech_mobile')];
         $technician = Technician::fetch(0, $params);
-        if(!$technician[0]) {
+
+        if(!$technician[0]){
             return response()->json(['error' => 'Unauthorized'], 104);
         }else {
             $passwords = Hash::check(request('password'), $technician[0]->tech_password);
+
             if(!$passwords) {
                 return response()->json(['error' => 'The password is incorrect'], 102);
+
             }else {
                 $token = auth()->guard('technician-api')->login($technician[0]);
-                return $this->respondWithToken($token);
+                $technician[0]->token = $token;
+                return $this->respondWithToken($technician[0]);
+
             }
         }
         // $credentials = request(['tech_mobile', 'password']);
