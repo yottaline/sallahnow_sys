@@ -109,7 +109,7 @@
 
                 $('.loading-spinner').show();
 
-                $.post("/compatibilities/load/", {
+                $.post("/compatibilities/load", {
                     last_id: $scope.last_id,
                     limit: limit,
                     q: $scope.q,
