@@ -23,7 +23,7 @@ class Compatibility extends Model
     public static function fetch($id = 0, $params = null, $limit = null, $listId = null)
     {
         $compatibilities = self::join('compatibility_categories', 'compatibilities.compat_category', '=', 'compatibility_categories.category_id')
-        // ->join('compatibliy_boards', 'compat_board', '=', 'board_id')
+        ->join('compatibliy_boards', 'compat_board', '=', 'board_id')
         // ->join('models', 'models.model_id', '=', 'compatibility_models.compatible_model')
         ->limit($limit);
 

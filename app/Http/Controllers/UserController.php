@@ -98,7 +98,6 @@ class UserController extends Controller
             'status' => boolval($result),
             'data' =>  $result ? User::fetch($id) : [],
         ]);
-
     }
 
     public function addRole(Request $request, Permission $permission)
