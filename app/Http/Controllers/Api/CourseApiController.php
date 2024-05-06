@@ -31,6 +31,9 @@ class CourseApiController extends Controller
         ]);
         $id = $request->course_id;
         $view   = Course::fetch($id);
+
+        if (!$view) return $this->returnError('not course', 102);
+
         $param = ['course_views' => $view->course_views +1];
         $result = Course::submit($param, $id);
 

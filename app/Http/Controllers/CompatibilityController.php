@@ -73,6 +73,11 @@ class CompatibilityController extends Controller
         echo json_encode(Compatibility::getModels($id));
     }
 
+
+    public function getCompatModels($id)
+    {
+        return $id;
+    }
     private function uniqidReal($lenght = 12)
     {
         if (function_exists("random_bytes")) {

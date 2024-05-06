@@ -98,6 +98,7 @@ Route::prefix('compatibilities')->middleware('auth')->group(function () {
     Route::get('/', 'CompatibilityController@index');
     Route::post('load', 'CompatibilityController@load');
     Route::match(['post', 'put'], 'submit', 'CompatibilityController@submit');
+    Route::get('fetch/{id}', 'CompatibilityController@getCompatModels');
     Route::get('get_models/{id}', 'CompatibilityController@models');
 });
 

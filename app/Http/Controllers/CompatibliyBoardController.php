@@ -27,7 +27,7 @@ class CompatibliyBoardController extends Controller
 
         echo json_encode([
             'status' => boolval($result),
-            'data'   => $result ? Compatibliy_board::fetch($result) : []
+            'data'   => $result ? Compatibliy_board::fetch($id) : []
         ]);
     }
 }

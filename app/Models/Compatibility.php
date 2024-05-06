@@ -23,16 +23,16 @@ class Compatibility extends Model
     public static function fetch($id = 0, $params = null, $limit = null, $listId = null)
     {
         $compatibilities = self::join('compatibility_categories', 'compatibilities.compat_category', '=', 'compatibility_categories.category_id')
-        ->join('compatibliy_boards', 'compat_board', '=', 'board_id')
+        // ->join('compatibliy_boards', 'compat_board', '=', 'board_id')
         // ->join('models', 'models.model_id', '=', 'compatibility_models.compatible_model')
         ->limit($limit);
 
         if (isset($params['q']))
         {
             $compatibilities->where(function (Builder $query) use ($params) {
-                $query->where('compatibilities.compat_part', 'like', '%' . $params['q'] . '%')
-                    ->orWhere('compatibilities.compat_code', $params['q'])
-                    ->orWhere('compatibility_categories.category_name', $params['q']);
+                $query->where('.compat_part', 'like', '%' . $params['q'] . '%')
+                    ->orWhere('.compat_code', $params['q']);
+                    // ->orWhere('compatibility_categories.category_name', $params['q']);
             });
             unset($params['q']);
         }

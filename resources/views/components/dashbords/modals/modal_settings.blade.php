@@ -6,7 +6,7 @@
                 <form method="POST" action="/brands/submit/" enctype="multipart/form-data">
                     @csrf
                     <input data-ng-if="updateBrand !== false" type="hidden" name="_method" value="put">
-                    <input type="hidden" name="brand_id"
+                    <input type="hidden" name="brand_id" id="brandId"
                         data-ng-value="updateBrand !== false ? brands[updateBrand].brand_id : 0">
                     <div class="mb-3">
                         <label for="brandName">Brand Name<b class="text-danger">&ast;</b></label>
@@ -55,11 +55,12 @@
                 $('#brandForm').modal('hide');
                 scope.$apply(() => {
                     if (scope.updateBrand === false) {
-                        scope.brands.unshift(response.data);
-                        scope.loadBrandsData(true);
+                        scope.brands = response.data;
+                        brandClsForm()
+                        // scope.loadBrandsData(true);
                     } else {
                         scope.brands[scope.updateBrand] = response.data;
-                        scope.loadBrandsData(true);
+                        // scope.loadBrandsData(true);
                     }
                 });
             } else toastr.error("Error");
@@ -69,7 +70,13 @@
             spinner.hide();
             controls.prop('disabled', false);
         });
-    })
+    });
+
+    function brandClsForm() {
+        $('#brandId').val('');
+        $('#brandName').val('');
+        $('#logoBrand').val('')
+    };
 </script>
 <!-- end add new brand  Modal -->
 
@@ -81,7 +88,7 @@
                 <form method="POST" action="/models/submit/" enctype="multipart/form-data">
                     @csrf
                     <input data-ng-if="updateModel !== false" type="hidden" name="_method" value="put">
-                    <input type="hidden" name="model_id"
+                    <input type="hidden" name="model_id" id="modelId"
                         data-ng-value="updateModel !== false ? models[updateModel].model_id : 0">
                     <div class="mb-3">
                         <label for="Modelname">Model Name<b class="text-danger">&ast;</b></label>
@@ -143,17 +150,17 @@
             contentType: false,
         }).done(function(data, textStatus, jqXHR) {
             var response = JSON.parse(data);
-            console.log(data)
             if (response.status) {
                 toastr.success('Data processed successfully');
                 $('#modelForm').modal('hide');
                 scope.$apply(() => {
                     if (scope.updateModel === false) {
-                        scope.models.unshift(response.data);
-                        scope.lodaModelsData(true);
+                        scope.models = response.data;
+                        modalsClsForm();
+                        // scope.lodaModelsData(true);
                     } else {
                         scope.models[scope.updateModel] = response.data;
-                        scope.lodaModelsData(true);
+                        // scope.lodaModelsData(true);
                     }
                 });
             } else toastr.error("Error");
@@ -163,8 +170,14 @@
             spinner.hide();
             controls.prop('disabled', false);
         });
+    });
 
-    })
+    function modalsClsForm() {
+        $('#modelId').val('');
+        $('#Modelname').val('');
+        $('#modelPhoto').val('');
+        $('#ModleUrl').val('');
+    }
 </script>
 <!-- end add new brand  Modal -->
 
@@ -177,7 +190,7 @@
             <div class="modal-body">
                 <form method="POST" action="/CompatibilityCategories/submit/"> @csrf
                     <input data-ng-if="updateCompCate !== false" type="hidden" name="_method" value="put">
-                    <input type="hidden" name="cate_id"
+                    <input type="hidden" name="cate_id" id="CateId"
                         data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_id : 0">
                     <div class="mb-3">
                         <label for="CompatibilityCategoriesName">Compatibility
@@ -215,19 +228,20 @@
             contentType: false,
         }).done(function(data, textStatus, jqXHR) {
             var response = JSON.parse(data);
-            console.log(data)
             if (response.status) {
                 toastr.success('Data processed successfully');
                 $('#CompatibilityCategoriesForm').modal('hide');
                 scope.$apply(() => {
                     if (scope.updateCompCate === false) {
-                        scope.compatibility_categories.unshift(response
-                            .data);
-                        scope.lodaCompatibilityCategoriessData(true);
+                        // scope.compatibility_categories.unshift(response
+                        //     .data);
+                        scope.compatibility_categories = response
+                            .data;
+                        compaCategoyreClsForm()
                     } else {
                         scope.compatibility_categories[scope
                             .updateCompCate] = response.data;
-                        scope.lodaCompatibilityCategoriessData(true);
+                        compaCategoyreClsForm()
                     }
                 });
             } else toastr.error("Error");
@@ -237,8 +251,12 @@
             spinner.hide();
             controls.prop('disabled', false);
         });
-
     })
+
+    function compaCategoyreClsForm() {
+        $('#CateId').val('');
+        $('#CompatibilityCategoriesName').val('');
+    }
 </script>
 <!-- end add new compatibility_categories  Modal -->
 
@@ -252,7 +270,7 @@
             <div class="modal-body">
                 <form method="POST" action="/compatibilityMotherBoard/submit/"> @csrf
                     <input data-ng-if="updateMotherBoard !== false" type="hidden" name="_method" value="put">
-                    <input type="hidden" name="board_id"
+                    <input type="hidden" name="board_id" id="boardId"
                         data-ng-value="updateMotherBoard !== false ? compatibility_motherBoard[updateMotherBoard].board_id : 0">
                     <div class="mb-3">
                         <label for="motherBoardName">Compatibility
@@ -290,20 +308,22 @@
             contentType: false,
         }).done(function(data, textStatus, jqXHR) {
             var response = JSON.parse(data);
-            console.log(response
-                .data)
             if (response.status) {
                 toastr.success('Data processed successfully');
                 $('#CompatibilityMotherBoardForm').modal('hide');
                 scope.$apply(() => {
                     if (scope.updateMotherBoard === false) {
-                        scope.compatibility_motherBoard.unshift(response
-                            .data);
-                        scope.loadMotherBoard(true);
+                        // scope.compatibility_motherBoard.unshift(response
+                        //     .data);
+                        console.log(response.data)
+                        scope.compatibility_motherBoard = response
+                            .data
+                        boardClsForm()
                     } else {
                         scope.compatibility_motherBoard[scope
                             .updateMotherBoard] = response.data;
-                        scope.loadMotherBoard(true);
+                        // scope.loadMotherBoard(true);
+                        boardClsForm()
                     }
                 });
             } else toastr.error("Error");
@@ -313,8 +333,12 @@
             spinner.hide();
             controls.prop('disabled', false);
         });
+    });
 
-    })
+    function boardClsForm() {
+        $('#boardId').val('');
+        $('#motherBoardName').val('');
+    };
 </script>
 <!-- end add new compatibility_motherboard  Modal -->
 

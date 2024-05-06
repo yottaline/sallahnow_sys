@@ -1,0 +1,1413 @@
+{
+	"info": {
+		"_postman_id": "18295ab1-85fa-4dca-8f11-d7f4038cb3af",
+		"name": "sallhnow technician app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21427392"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tech_name",
+									"value": "test name form protman2",
+									"type": "text"
+								},
+								{
+									"key": "tech_email",
+									"value": "test@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "tech_mobile",
+									"value": "09932212870",
+									"type": "text"
+								},
+								{
+									"key": "tech_tel",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "tech_password",
+									"value": "1234567",
+									"type": "text"
+								},
+								{
+									"key": "country_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "state_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "area_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "city_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}technicians/register",
+							"host": [
+								"{{locathost}}technicians"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tech_mobile",
+									"value": "09932212870",
+									"type": "text"
+								},
+								{
+									"key": " password",
+									"value": "1234567",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}technicians/login",
+							"host": [
+								"{{locathost}}technicians"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}technicians/profile",
+							"host": [
+								"{{locathost}}technicians"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Compatibilities",
+			"item": [
+				{
+					"name": "get compatibilities",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}technicians/getCompatibilities",
+							"host": [
+								"{{locathost}}technicians"
+							],
+							"path": [
+								"getCompatibilities"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "modals",
+			"item": [
+				{
+					"name": "get modals",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}technicians/get_models",
+							"host": [
+								"{{locathost}}technicians"
+							],
+							"path": [
+								"get_models"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "packages",
+			"item": [
+				{
+					"name": "get_packages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}technicians/get_packages",
+							"host": [
+								"{{locathost}}technicians"
+							],
+							"path": [
+								"get_packages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ads",
+			"item": [
+				{
+					"name": "get ads",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "6EA260FBA3D1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}ads/",
+							"host": [
+								"{{locathost}}ads"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subscriptions",
+			"item": [
+				{
+					"name": "get subscriptions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}subscriptions/",
+							"host": [
+								"{{locathost}}subscriptions"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change status subscription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}subscriptions/change_status/1",
+							"host": [
+								"{{locathost}}subscriptions"
+							],
+							"path": [
+								"change_status",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscripitions to package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "package_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "tech_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "sub_start",
+									"value": "2001/1/11",
+									"type": "text"
+								},
+								{
+									"key": "sub_end",
+									"value": "1-2-2005",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}subscriptions/sub_package",
+							"host": [
+								"{{locathost}}subscriptions"
+							],
+							"path": [
+								"sub_package"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "courses",
+			"item": [
+				{
+					"name": "get courses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}courses/",
+							"host": [
+								"{{locathost}}courses"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "view course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "course_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}courses/view",
+							"host": [
+								"{{locathost}}courses"
+							],
+							"path": [
+								"view"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "posts",
+			"item": [
+				{
+					"name": "get posts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}posts/",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add new post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "php course",
+									"type": "text"
+								},
+								{
+									"key": "body",
+									"value": "the is new php courses",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/C:/Users/Hp/Pictures/sony.webp"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}posts/store_post",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								"store_post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post coust",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tech_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "post_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}posts/post_cost",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								"post_cost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add like to post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "like_tech",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "like_post",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}posts/like",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get comments by post id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}posts/comments/1",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add comment to post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "comment_post",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "comment_context",
+									"value": "good coures",
+									"type": "text"
+								},
+								{
+									"key": "comment_tech",
+									"value": "4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}posts/add_comment",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								"add_comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "view post by post id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}posts/post_views/1",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								"post_views",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add view post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tech_device",
+									"value": "{{device_Token}}",
+									"type": "text"
+								},
+								{
+									"key": "view_tech",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "view_post",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}posts/add_post-view",
+							"host": [
+								"{{locathost}}posts"
+							],
+							"path": [
+								"add_post-view"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tickets",
+			"item": [
+				{
+					"name": "get tickets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}tickets/",
+							"host": [
+								"{{locathost}}tickets"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add new ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "ticket_brand",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "ticket_model",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "ticket_category",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "ticket_tech",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "ticket_context",
+									"value": "Can a Samsung A70 screen be added to samsung s12?",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}tickets/add",
+							"host": [
+								"{{locathost}}tickets"
+							],
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get replies ticket by ticket id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}tickets/replies/1",
+							"host": [
+								"{{locathost}}tickets"
+							],
+							"path": [
+								"replies",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add reply to ticket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "reply_ticket",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "reply_tech",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "reply_context",
+									"value": "Yes it can",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}tickets/add_reply",
+							"host": [
+								"{{locathost}}tickets"
+							],
+							"path": [
+								"add_reply"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "chats",
+			"item": [
+				{
+					"name": "get chat by technician id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{locathost}}chats/get_chats/4",
+							"host": [
+								"{{locathost}}chats"
+							],
+							"path": [
+								"get_chats",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new room",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "room_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "room_name",
+									"value": "BLVXB",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}chats/create_room",
+							"host": [
+								"{{locathost}}chats"
+							],
+							"path": [
+								"create_room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add member to chat room",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "member_room",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "member_tech",
+									"value": "4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}chats/add_member",
+							"host": [
+								"{{locathost}}chats"
+							],
+							"path": [
+								"add_member"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3RlY2huaWNpYW5zL2xvZ2luIiwiaWF0IjoxNzE0OTk4NTUzLCJuYmYiOjE3MTQ5OTg1NTMsImp0aSI6IlNMaDBrOXRqc3RhWFJ5TXkiLCJzdWIiOiI0IiwicHJ2IjoiMTNjNjVhNzEyNGZlMzk4MzE4ZTdiYTUwZGE4ZDNjNTUyNWM2YjQ1ZSIsIjAiOiJ0ZWNoX2lkIn0.CpZIk4ev8TiGDJ86LguODjGyU63I75wRg6UXFYhSrmM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "device_Token",
+								"value": "{{device_Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "msg_from",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "msg_room",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "msg_context",
+									"value": "hi",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{locathost}}chats/create_message",
+							"host": [
+								"{{locathost}}chats"
+							],
+							"path": [
+								"create_message"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "locathost",
+			"value": "http://127.0.0.1:8000/api/",
+			"type": "string"
+		},
+		{
+			"key": "servehost",
+			"value": "https://sallahnow.yottaline.com/api/",
+			"type": "string"
+		},
+		{
+			"key": "device_Token",
+			"value": "6EA260FBA3D1",
+			"type": "string"
+		}
+	]
+}

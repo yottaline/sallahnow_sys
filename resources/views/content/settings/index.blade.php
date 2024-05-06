@@ -19,7 +19,6 @@
 @endsection
 @section('content')
     <div class="container-fluid" data-ng-app="ngApp" data-ng-controller="ngCtrl">
-
         {{-- start location secton  --}}
         <div id="locationsSection" class="card card-box">
             <div class="card-body">
@@ -293,9 +292,9 @@
 
 
         </div>
+        {{-- end brand and model section  --}}
 
-
-
+        {{-- start compa section  --}}
         <div class="card card-box mt-5">
             <div class="card-body">
                 <div class="row">
@@ -394,6 +393,7 @@
             </div>
 
         </div>
+        {{-- end compa section  --}}
 
         {{-- start packages section  --}}
         <div class="card card-box mt-5">
@@ -704,6 +704,7 @@
                             switch (scope.modalObject.type) {
                                 case 1:
                                     scope.countries.unshift(response.data);
+                                    // clerForm()
                                     break;
                                 case 2:
                                     scope.states.unshift(response.data);
@@ -714,6 +715,7 @@
                                 case 4:
                                     scope.areas.unshift(response.data);
                             }
+                            locationClsForm()
                         });
                     } else toastr.error("Error");
                 }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -723,6 +725,13 @@
                     controls.prop('disabled', false);
                 });
             })
+
+
+            // location cls forms
+            function locationClsForm() {
+                $('#locationNameEn').val('');
+                $('#locationNameAr').val('');
+            };
         });
     </script>
 @endsection

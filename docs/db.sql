@@ -201,6 +201,7 @@ CREATE TABLE IF NOT EXISTS `compats` (
   `compat_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `compat_category` INT UNSIGNED NOT NULL,
   `compat_part` VARCHAR(120) NOT NULL,
+  `compat_board` INT UNSIGNED NULL,
   PRIMARY KEY (`compat_id`),
   KEY `compat_category`(`compat_category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
