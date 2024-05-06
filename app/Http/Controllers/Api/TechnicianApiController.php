@@ -102,6 +102,7 @@ class TechnicianApiController extends Controller
         if(!$technician[0]){
             return response()->json(['error' => 'Unauthorized'], 104);
         }else {
+
             $passwords = Hash::check(request('password'), $technician[0]->tech_password);
 
             if(!$passwords) {
@@ -114,7 +115,7 @@ class TechnicianApiController extends Controller
 
             }
         }
-        // $credentials = request(['tech_mobile', 'password']);
+        $credentials = request(['tech_mobile', 'password']);
         // if (! $token = auth('technician-api')->attempt($credentials)) {
         //     return response()->json(['error' => 'Unauthorized'], 401);
         // }

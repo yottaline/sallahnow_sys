@@ -27,7 +27,6 @@ Route::middleware('api')->group(function() {
         //
         Route::get('get_packages', 'TechnicianApiController@getPackages');
 
-
         // Route::post('post-cost', 'TechnicianApiController@postCost');
     });
 

@@ -28,6 +28,7 @@ class SubscriptionsApiController extends Controller
         return $this->returnData('subscriptions', $subscriptions);
     }
 
+
     public function changeStatus($sub_id)
     {
         $subscription = Subscriptions::fetch($sub_id);
@@ -63,6 +64,11 @@ class SubscriptionsApiController extends Controller
         $parm['sub_end'] = $end;
         $params[] = ['sub_tech', $request->tech_id];
         $technician = Subscriptions::fetch(0, $params);
+
+        if (!count($technician)){
+            Subscriptions::submit($parm);
+            return $this->returnSuccess('You have successfully subscribed');
+        }
 
         if($technician[0])
         {

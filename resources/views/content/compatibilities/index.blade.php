@@ -51,22 +51,24 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th class="text-center">Category Name</th>
-                                        <th class="text-center">Mother Board</th>
-                                        <th class="text-center">Name</th>
+                                        <th>Category Name</th>
+                                        {{-- <th class="text-center">Mother Board</th> --}}
+                                        {{-- <th class="text-center">Name</th> --}}
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="comp in list track by $index">
                                         <td data-ng-bind="comp.compat_code"></td>
-                                        <td class="text-center" data-ng-bind="comp.category_name"></td>
-                                        <td class="text-center" data-ng-bind="jsonParse(comp.compat_part)['en']"></td>
-                                        <td class="text-center" data-ng-bind="comp.board_name"></td>
+                                        <td data-ng-bind="jsonParse(comp.compat_part)['en']"></td>
+                                        {{-- <td class="text-center" data-ng-bind="comp.category_name"></td> --}}
+                                        {{-- <td class="text-center" data-ng-bind="comp.board_name"></td> --}}
                                         <td class="col-fit">
                                             <div>
                                                 <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
                                                     data-ng-click="setCompatibility($index)"></button>
+                                                {{-- <a href="/compatibilities/fetch/<%comp.compat_id%>"
+                                                    class="btn btn-outline-dark btn-circle bi bi-eye"></a> --}}
                                             </div>
                                         </td>
                                     </tr>
@@ -83,7 +85,10 @@
 @endsection
 @section('js')
     <script>
-        var scope, app = angular.module('myApp', []);
+        var scope, app = angular.module('myApp', [], function($interpolateProvider) {
+            $interpolateProvider.startSymbol('<%');
+            $interpolateProvider.endSymbol('%>');
+        });
         app.controller('myCtrl', function($scope) {
             $('.loading-spinner').hide();
             $scope.jsonParse = (str) => JSON.parse(str);
