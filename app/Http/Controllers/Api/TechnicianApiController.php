@@ -99,14 +99,17 @@ class TechnicianApiController extends Controller
         $params[] = ['tech_mobile', request('tech_mobile')];
         $technician = Technician::fetch(0, $params);
 
+        if (!count($technician)) return $this->returnError('Sorry, you don`t have an account', 104);
+
         if(!$technician[0]){
-            return response()->json(['error' => 'Unauthorized'], 104);
+            return $this->returnError('Sorry, you don`t have an account', 104);
         }else {
 
             $passwords = Hash::check(request('password'), $technician[0]->tech_password);
 
             if(!$passwords) {
-                return response()->json(['error' => 'The password is incorrect'], 102);
+
+                return $this->returnError('The password is incorrect', 102);
 
             }else {
                 $token = auth()->guard('technician-api')->login($technician[0]);
