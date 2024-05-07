@@ -120,11 +120,15 @@ class TechnicianApiController extends Controller
                 $param[] = ['sub_tech', $technician[0]->tech_id];
                 $param[] = ['sub_status', '=', 1];
                 $subscription = Subscriptions::fetch(0, $param);
+                if(!count($subscription))
+                {
+                    return $this->respondWithToken($technician[0]);
+                }
 
-                $subscription[0]->token = $token;
+                $technician[0]->subscription = $subscription[0];
 
-                return $this->returnData('data', $subscription[0], '');
-                // return $this->respondWithToken($technician[0]);
+                return $this->returnData('data', $technician[0], '');
+                return $this->respondWithToken($technician[0]);
 
             }
         }
@@ -244,13 +248,13 @@ class TechnicianApiController extends Controller
     public function getModels()
     {
         $models = Models::fetch();
-        return $this->returnData('models', $models);
+        return $this->returnData('data', $models);
     }
 
     public function getPackages()
     {
         $packages = Package::fetch();
-        return $this->returnData('packages', $packages);
+        return $this->returnData('data', $packages);
     }
 
 

@@ -36,7 +36,7 @@ Route::middleware('api')->group(function() {
 
     Route::prefix('subscriptions')->group( function()
     {
-        Route::get('/' , 'SubscriptionsApiController@getAll');
+        // Route::get('/' , 'SubscriptionsApiController@getAll');
         Route::put('change_status/{tech_id}', 'SubscriptionsApiController@changeStatus');
         Route::post('sub_package', 'SubscriptionsApiController@subPackage');
     });
