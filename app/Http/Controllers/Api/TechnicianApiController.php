@@ -122,13 +122,14 @@ class TechnicianApiController extends Controller
                 $subscription = Subscriptions::fetch(0, $param);
                 if(!count($subscription))
                 {
-                    return $this->respondWithToken($technician[0]);
+                    // return $this->respondWithToken($technician[0]);
+                    return $this->returnData('data', $technician[0], '');
                 }
 
                 $technician[0]->subscription = $subscription[0];
 
                 return $this->returnData('data', $technician[0], '');
-                return $this->respondWithToken($technician[0]);
+                // return $this->respondWithToken($technician[0]);
 
             }
         }
