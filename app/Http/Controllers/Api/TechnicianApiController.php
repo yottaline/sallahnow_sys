@@ -27,39 +27,39 @@ class TechnicianApiController extends Controller
     use ResponseApi;
     public function __construct()
     {
-        $this->middleware('auth:technician-api', ['except' => ['login', 'register']]);
+        $this->middleware(['auth:technician-api', 'check_device_token'], ['except' => ['login', 'register']]);
     }
 
     public function register(Request $request)
     {
         $request->validate([
-            'tech_name'         => 'required',
-            'tech_email'        => 'required|unique:technicians,tech_email',
-            'tech_mobile'       => 'required|numeric|unique:technicians,tech_mobile',
-            'tech_password'     => 'required',
-            'country_id'        => 'required',
-            'state_id'          => 'required',
-            'city_id'           => 'required',
-            'area_id'           => 'required'
+            'name'         => 'required',
+            'email'        => 'required|unique:technicians,tech_email',
+            'mobile'       => 'required|numeric|unique:technicians,tech_mobile',
+            'password'     => 'required',
+            'country'      => 'required',
+            'state'        => 'required',
+            'city'         => 'required',
+            'area'         => 'required'
         ],[
-            'tech_email.unique' => 'This email address is already registered'
+            'email.unique' => 'This email address is already registered'
         ]);
 
 
         $code = strtoupper($this->uniqidReal());
         $devise_token = strtoupper($this->uniqidReal());
         $param = [
-            'tech_name'              => $request->tech_name,
-            'tech_email'             => $request->tech_email,
-            'tech_mobile'            => $request->tech_mobile,
+            'tech_name'              => $request->name,
+            'tech_email'             => $request->email,
+            'tech_mobile'            => $request->mobile,
             'tech_tel'               => $request->tel,
-            'tech_password'          => Hash::make($request->tech_password),
+            'tech_password'          => Hash::make($request->password),
             'tech_identification'    => $request->identification,
             'tech_birth'             => $request->birth,
-            'tech_country'           => $request->country_id,
-            'tech_state'             => $request->state_id,
-            'tech_city'              => $request->city_id,
-            'tech_area'              => $request->area_id,
+            'tech_country'           => $request->country,
+            'tech_state'             => $request->state,
+            'tech_city'              => $request->city,
+            'tech_area'              => $request->area,
             'tech_address'           => $request->address,
             'tech_bio'               => $request->bio,
             'devise_token'           => $devise_token,
@@ -69,18 +69,19 @@ class TechnicianApiController extends Controller
         ];
 
         Technician::submit($param);
-        $params[] = ['tech_mobile', $request->tech_mobile];
+        $params[] = ['tech_mobile', $request->mobile];
         $technician = Technician::fetch(0, $params);
         if(!$technician[0]) {
             return response()->json(['error' => 'Unauthorized'], 104);
         }else {
-            $passwords = Hash::check(request('tech_password'), $technician[0]->tech_password);
+            $passwords = Hash::check(request('password'), $technician[0]->tech_password);
             if(!$passwords) {
                 return response()->json(['error' => 'Unauthorized'], 104);
             }else {
                 $token = auth()->guard('technician-api')->login($technician[0]);
                 $technician[0]->token = $token;
-                return $this->respondWithToken($technician[0]);
+                return $this->returnSuccess('');
+                // return $this->respondWithToken($technician[0]);
             }
         }
 
@@ -96,7 +97,7 @@ class TechnicianApiController extends Controller
 
     public function login()
     {
-        $params[] = ['tech_mobile', request('tech_mobile')];
+        $params[] = ['tech_mobile', request('mobile')];
         $technician = Technician::fetch(0, $params);
 
         if (!count($technician)) return $this->returnError('Sorry, you don`t have an account', 104);
@@ -113,12 +114,21 @@ class TechnicianApiController extends Controller
 
             }else {
                 $token = auth()->guard('technician-api')->login($technician[0]);
+
                 $technician[0]->token = $token;
-                return $this->respondWithToken($technician[0]);
+
+                $param[] = ['sub_tech', $technician[0]->tech_id];
+                $param[] = ['sub_status', '=', 1];
+                $subscription = Subscriptions::fetch(0, $param);
+
+                $subscription[0]->token = $token;
+
+                return $this->returnData('data', $subscription[0], '');
+                // return $this->respondWithToken($technician[0]);
 
             }
         }
-        $credentials = request(['tech_mobile', 'password']);
+        // $credentials = request(['tech_mobile', 'password']);
         // if (! $token = auth('technician-api')->attempt($credentials)) {
         //     return response()->json(['error' => 'Unauthorized'], 401);
         // }
@@ -128,21 +138,40 @@ class TechnicianApiController extends Controller
 
     public function profile()
     {
-        return $this->returnData('technician', auth('technician-api')->user());
+        return $this->returnData('data', auth('technician-api')->user());
     }
 
-    public function update($id, Request $request)
+    public function update(Request $request)
     {
         $request->validate([
             'name'         => 'required',
             'mobile'       => 'required|numeric',
             'password'     => 'required',
-            'country_id'   => 'required',
-            'state_id'     => 'required',
-            'city_id'      => 'required',
-            'area_id'      => 'required'
+            'country'   => 'required',
+            'state'     => 'required',
+            'city'      => 'required',
+            'area'      => 'required'
         ]);
 
+        $id = $request->id;
+        $mobile = $request->mobile;
+        $email  = $request->email;
+        $identification = $request->identification;
+
+        if (count(Technician::fetch(0, [['tech_id', '!=', $id], ['tech_mobile', '=', $mobile]])))
+        {
+            return $this->returnError('This  mobile number already exists', 108);
+        }
+
+        if ($email && count(Technician::fetch(0, [['tech_id', '!=', $id], ['tech_email', '=', $email]])))
+        {
+            return $this->returnError('This email already exists', 108);
+        }
+
+        if ($identification && count(Technician::fetch(0, [['tech_id', '!=', $id], ['tech_identification', '=', $identification]])))
+        {
+            return $this->returnError('This identification already exists', 108);
+        }
 
         $code = Str::random(4);
         $param =
@@ -154,10 +183,10 @@ class TechnicianApiController extends Controller
             'password'        => Hash::make($request->password),
             'identification'  => $request->identification,
             'birth'           => $request->birth,
-            'country_id'      => $request->country_id,
-            'state_id'        => $request->state_id,
-            'city_id'         => $request->city_id,
-            'area_id'         => $request->area_id,
+            'country_id'      => $request->country,
+            'state_id'        => $request->state,
+            'city_id'         => $request->city,
+            'area_id'         => $request->area,
             'address'         => $request->address,
             'bio'             => $request->bio,
             'login'           => $request->login,

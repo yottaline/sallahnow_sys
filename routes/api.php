@@ -16,11 +16,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('api')->group(function() {
+
+    Route::get('get_models', 'TechnicianApiController@getModels');
+
     Route::prefix('technicians')->group(function() {
         Route::post('register', 'TechnicianApiController@register');
         Route::post('login', 'TechnicianApiController@login');
         Route::post('profile', 'TechnicianApiController@profile');
-        Route::put('update/{id}', 'TechnicianApiController@Update');
+        // Route::put('update', 'TechnicianApiController@Update');
+        Route::post('update', 'TechnicianApiController@Update');
         //
         Route::get('get_models', 'TechnicianApiController@getModels');
         Route::get('getCompatibilities', 'TechnicianApiController@getCompatibilities');
