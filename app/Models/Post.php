@@ -82,6 +82,7 @@ class Post extends Model
     {
         $code  = $post->post_code;
         $status = Storage::disk('posts')->put($code . '.txt', $context);
+        self::where('post_id', $post->post_id)->update(['post_file' => $context]);
         return $status ? $status : false;
     }
 

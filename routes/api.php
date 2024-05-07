@@ -37,16 +37,18 @@ Route::middleware('api')->group(function() {
     Route::prefix('subscriptions')->group( function()
     {
         // Route::get('/' , 'SubscriptionsApiController@getAll');
-        Route::put('change_status/{tech_id}', 'SubscriptionsApiController@changeStatus');
+        // Route::put('change_status/{tech_id}', 'SubscriptionsApiController@changeStatus');
         Route::post('sub_package', 'SubscriptionsApiController@subPackage');
     });
 
 
     Route::prefix('posts')->group( function() {
         // posts
-        Route::get('/', 'PostsApiController@getPost');
+        Route::get('load', 'PostsApiController@getPosts');
+        Route::get('post', 'PostsApiController@getPost');
         Route::post('store_post', 'PostsApiController@store');
-        Route::post('post_cost', 'PostsApiController@cost');
+        Route::post('file', 'PostsApiController@file');
+        // Route::post('post_cost', 'PostsApiController@cost');
         Route::post('like', 'PostsApiController@addLike');
         // comments
         Route::get('comments/{post_id}', 'PostsApiController@comments');

@@ -77,6 +77,7 @@ class SubscriptionsApiController extends Controller
         }
 
         // return $this->returnSuccess('You have successfully subscribed');
-        return $this->returnData('data', $data,'You have successfully subscribed');
+
+        return $this->returnData('data', $data ? Subscriptions::fetch($data) : [] ,'You have successfully subscribed');
     }
 }

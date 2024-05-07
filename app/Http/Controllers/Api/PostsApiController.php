@@ -21,12 +21,54 @@ class PostsApiController extends Controller
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function getPost()
+    public function getPosts(Request $request)
     {
-        $posts = Post::fetch();
+        $limit  = $request->limit;
+        $listId = $request->list_id;
+        $posts = Post::fetch(0, null, $limit, $listId);
+
         if(!$posts) return $this->returnError('There are no posts', '108');
 
-        return $this->returnData('posts', $posts);
+        return $this->returnData('data', $posts);
+    }
+
+    public function getPost(Request $request)
+    {
+        $id = $request->id;
+        $post = Post::fetch($id);
+        return $this->returnData('data', $post[0]);
+    }
+
+    public function file(Request $request)
+    {
+        $tech_id = $request->tech_id;
+        $post_id = $request->post_id;
+
+        $technician = Technician::fetch($tech_id);
+
+        if($technician->tech_points > 0)
+        {
+            $post  = Post::fetch($post_id);
+            $param =
+            [
+                'points_count'    =>   $post->post_cost,
+                'points_src'      =>   9,
+                'points_target'   =>   $post_id,
+                'points_process'  =>   1,
+                'points_tech'     =>   $tech_id,
+                'points_register' =>   Carbon::now()
+            ];
+            PointTranaction::submit($param, null);
+
+            $point =  $technician->tech_points - $post->post_cost;
+            $par = ['tech_points' => $point];
+            Technician::submit($par, $tech_id);
+            return $post->post_file;
+            return $this->returnData('data', 'posts/'. $post->post_file);
+
+        }else {
+            return $this->returnError("You don't have enough points", 104);
+        }
     }
 
 
