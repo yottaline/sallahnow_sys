@@ -62,7 +62,7 @@ class TechnicianApiController extends Controller
             'tech_area'              => $request->area,
             'tech_address'           => $request->address,
             'tech_bio'               => $request->bio,
-            'devise_token'           => $devise_token,
+            'devise_token'           => $request->deviceId,
             'tech_register_by'       => null,
             'tech_code'              => $code,
             'tech_register'          => Carbon::now()
