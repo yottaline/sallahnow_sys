@@ -31,35 +31,38 @@ class ChatApiController extends Controller
     {
 
         $request->validate([
-            'room_type' => 'required|numeric'
+            'type' => 'required|numeric',
+            'name' => 'required'
         ]);
 
         $code = strtoupper($this->uniqidReal());
+        $id = $request->id;
         $param =
         [
             'room_code' => $code,
-            'room_type' => $request->room_type,
-            'room_name' => $request->room_name
+            'room_type' => $request->type,
+            'room_name' => $request->name
         ];
-        $result = Chat_Room::submit($param, null);
+
+        $result = Chat_Room::submit($param, $id);
 
         $room = $result ? Chat_Room::fetch($result) : [];
 
-        return $this->returnData('room', $room);
+        return $this->returnData('data', $room);
     }
 
     public function addMember(Request $request)
     {
 
         $request->validate([
-            'member_room' => 'required|numeric',
-            'member_tech' => 'required|numeric',
+            'room' => 'required|numeric',
+            'tech' => 'required|numeric',
         ]);
         $status = Chat_Room_Members::submit($request->member_room, $request->member_tech);
 
         $member = Chat_Room_Members::getChatMember($status->id);
 
-        return $this->returnData('member', $member);
+        return $this->returnData('data', $member);
 
     }
 

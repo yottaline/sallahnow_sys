@@ -175,7 +175,7 @@ class PostController extends Controller
             'comment_user'     => auth()->user()->id
         ];
 
-        $result = Post_Comment::submit($params);
+        $result = Post_Comment::submit($params, null);
         $id = $result;
         echo json_encode([
             'status' => boolval($result),

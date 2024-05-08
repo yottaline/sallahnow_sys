@@ -46,16 +46,16 @@ Route::middleware('api')->group(function() {
         // posts
         Route::get('load', 'PostsApiController@getPosts');
         Route::get('post', 'PostsApiController@getPost');
-        Route::post('store_post', 'PostsApiController@store');
+        Route::post('submit_post', 'PostsApiController@store');
         Route::post('file', 'PostsApiController@file');
-        // Route::post('post_cost', 'PostsApiController@cost');
+        Route::post('post_cost', 'PostsApiController@cost');
         Route::post('like', 'PostsApiController@addLike');
         // comments
-        Route::get('comments/{post_id}', 'PostsApiController@comments');
-        Route::post('add_comment', 'PostsApiController@addComment');
+        Route::post('load_comments', 'PostsApiController@comments');
+        Route::post('submit_comment', 'PostsApiController@addComment');
         // post view
-        Route::get('post_views/{post_id}', 'PostsApiController@postView');
-        Route::post('add_post-view', 'PostsApiController@addView');
+        Route::post('post_views', 'PostsApiController@postView');
+        Route::post('add_post_view', 'PostsApiController@addView');
 
     });
 

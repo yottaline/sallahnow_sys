@@ -22,16 +22,21 @@ class Post_Comment extends Model
         'comment_create'
     ];
 
-    public static function fetch($id = 0, $post_id = null)
+    public static function fetch($id = 0, $post_id = null, $limit = null, $lastId = null)
     {
-        $comments = Post_Comment::orderBy('comment_create', 'desc');
+        $comments = Post_Comment::orderBy('comment_create', 'desc')->limit($limit);
         if($id) $comments->where('comment_id', $id);
+
         if($post_id) $comments->where('comment_post', $post_id);
+
+        if($lastId) $comments->where('comment_id', '<', $lastId);
+
         return $id ? $comments->first() : $comments->get();
     }
 
-    public static function submit($param)
+    public static function submit($param, $id)
     {
+        if ($id) return self::where('comment_id', $id)->update($param) ? $id : false;
         $status = Post_Comment::create($param);
 
         return $status ? $status->id : false;
