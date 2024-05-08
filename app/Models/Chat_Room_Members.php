@@ -41,19 +41,17 @@ class Chat_Room_Members extends Model
         return $chatRoomMembers->get();
     }
 
+    // I use it in api to get alone member by id
     public static function getChatMember($item)
     {
         return self::where('member_id', $item)->first();
     }
 
-   public static function submit($room, $tech)
+   public static function submit($param, $id)
     {
-        $time = Carbon::now();
-         return self::create([
-            'member_room' => $room,
-            'member_tech' => $tech,
-            'member_add'  =>$time
-         ]);
+        if ($id) return self::where('member_id', $id)->update($param) ? $id : false;
+        $status = self::create($param);
+        return $status ? $status->id : false;
     }
 
 

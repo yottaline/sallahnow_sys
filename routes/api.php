@@ -61,15 +61,15 @@ Route::middleware('api')->group(function() {
 
     Route::prefix('chats')->group( function()
     {
-        Route::get('get_chats/{tech_id}', 'ChatApiController@chat');
+        Route::get('get_chats', 'ChatApiController@chat');
         Route::post('create_room', 'ChatApiController@createRoom');
         Route::post('add_member', 'ChatApiController@addMember');
-        Route::post('create_message', 'ChatApiController@createMessage');
+        Route::post('submit_message', 'ChatApiController@createMessage');
     });
 
     Route::prefix('tickets')->group( function()
     {
-        Route::get('/', 'SupportTicketApiController@getTickets');
+        Route::post('load_ticket', 'SupportTicketApiController@getTickets');
         Route::post('add', 'SupportTicketApiController@addTicket');
         Route::get('replies/{ticket_id}', 'SupportTicketApiController@gtReplies');
         Route::post('add_reply', 'SupportTicketApiController@addReplie');
