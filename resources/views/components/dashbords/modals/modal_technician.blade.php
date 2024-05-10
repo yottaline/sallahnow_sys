@@ -32,6 +32,7 @@
                                     data-ng-value="list[updateTechnician].tech_mobile" required id="mobile" />
                             </div>
                         </div>
+
                         {{-- email --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
@@ -49,6 +50,7 @@
                                     data-ng-value="list[updateTechnician].tech_tel" id="phoneT" />
                             </div>
                         </div>
+
                         {{-- birthday --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
@@ -70,6 +72,7 @@
                                 </select>
                             </div>
                         </div>
+
                         {{-- state --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
@@ -110,7 +113,7 @@
                             <div class="mb-3">
                                 <label for="addressTechnician">Address</label>
                                 <input type="text" class="form-control" name="address" id="addressTechnician"
-                                    data-ng-value="updateTechnician !== false ? list[updateTechnician].tech_address : ''" />
+                                    data-ng-value="list[updateTechnician].tech_address" />
                             </div>
                         </div>
 
@@ -166,11 +169,13 @@
                                     $('#techModal').modal('hide');
                                     scope.$apply(() => {
                                         if (scope.updateTechnician === false) {
-                                            scope.list.unshift(response.data);
-                                            scope.dataLoader(true);
+                                            // scope.list.unshift(response.data);
+                                            scope.list = response.data;
+                                            clsForm();
+                                            // scope.dataLoader(true);
                                         } else {
                                             scope.list[scope.updateTechnician] = response.data;
-                                            scope.dataLoader(true);
+                                            // scope.dataLoader(true);
                                         }
                                     });
                                 } else toastr.error(response.message);
@@ -190,6 +195,16 @@
                             format: "YYYY-MM-DD",
                         }));
                     });
+
+                    function clsForm() {
+                        $('#fullName').val('');
+                        $('#IdentificationT').val('');
+                        $('#mobile').val('');
+                        $('#exampleInputEmail1').val('');
+                        $('#phoneT').val('');
+                        $('#BirthdayT').val('');
+                        $('#addressTechnician').val('');
+                    }
                 </script>
             </div>
         </div>

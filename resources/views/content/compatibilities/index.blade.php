@@ -1,7 +1,5 @@
 @extends('index')
-@section('title')
-    Compatibilities
-@endsection
+@section('title', 'Compatibilities')
 @section('search')
     <form id="searchForm" role="search">
         <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" placeholder="Search...">
