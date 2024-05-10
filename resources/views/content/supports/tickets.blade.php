@@ -176,11 +176,19 @@
                             <div class="mb-3">
                                 <label for="status">Ticket Status <b class="text-danger">&ast;</b></label>
                                 <select name="status" id="status" class="form-control">
-                                    <option value="">-- SELECT STATUS --</option>
-                                    <option value="2">Opened</option>
-                                    <option value="3">Closed</option>
-                                    <option value="4">Solved</option>
-                                    <option value="5">Canceled</option>
+                                    <option>-- SELECT STATUS --</option>
+                                    <option data-ng-if="list[ticketUpdate].ticket_status == 1" value="2">Opened
+                                    </option>
+                                    <option
+                                        data-ng-if="list[ticketUpdate].ticket_status !== 3  && list[ticketUpdate].ticket_status == 4 "
+                                        value="3">Closed
+                                    </option>
+                                    <option
+                                        data-ng-if="list[ticketUpdate].ticket_status !== 4 && list[ticketUpdate].ticket_status == 2"
+                                        value="4">Solved
+                                    </option>
+                                    <option data-ng-if="list[ticketUpdate].ticket_status !== 5" value="5">Canceled
+                                    </option>
                                 </select>
                             </div>
                             <div class="d-flex">

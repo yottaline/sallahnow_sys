@@ -24,6 +24,7 @@
                                     data-ng-value="list[centerUpdate].center_mobile" id="mobile" required />
                             </div>
                         </div>
+
                         {{-- Whatsapp --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
@@ -32,13 +33,13 @@
                                     data-ng-value="list[centerUpdate].center_whatsapp" id="Whatsapp" required />
                             </div>
                         </div>
+
                         {{-- email --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
                                 <label for="exampleInputEmail1">Email</label>
                                 <input type="email" class="form-control" name="email" id="exampleInputEmail1"
-                                    data-ng-value="centerUpdate !== false ? list[centerUpdate].center_email : ''"
-                                    required />
+                                    data-ng-value="list[centerUpdate].center_email" required />
                             </div>
                         </div>
 
@@ -88,6 +89,7 @@
                                 </select>
                             </div>
                         </div>
+
                         {{-- state --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
@@ -112,6 +114,7 @@
                                 </select>
                             </div>
                         </div>
+
                         {{-- area --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
@@ -123,13 +126,13 @@
                                 </select>
                             </div>
                         </div>
+
                         {{-- address --}}
                         <div class="col-12">
                             <div class="mb-3">
                                 <label for="addressCenter">Address</label>
                                 <input type="text" class="form-control" name="address" id="addressCenter"
-                                    data-ng-value="centerUpdate !== false ? list[centerUpdate].center_address : ''"
-                                    required />
+                                    data-ng-value="list[centerUpdate].center_address" required />
                             </div>
                         </div>
 
@@ -139,6 +142,7 @@
                                     id="search">
                             </div>
                         </div>
+
                         <div class="col-12 col-md-12">
                             <div class="mb-3">
                                 <label for="TechnicianName">Technician Name<b class="text-danger">&ast;</b></label>
@@ -194,11 +198,13 @@
                                     $('#centerForm').modal('hide');
                                     scope.$apply(() => {
                                         if (scope.centerUpdate === false) {
-                                            scope.list.unshift(response.data);
-                                            scope.dataLoader(true);
+                                            // scope.list.unshift(response.data);
+                                            scope.list = response.data
+                                            clsForm();
+                                            // scope.dataLoader(true);
                                         } else {
                                             scope.list[scope.centerUpdate] = response.data;
-                                            scope.dataLoader(true);
+                                            // scope.dataLoader(true);
                                         }
                                     });
                                 } else toastr.error(response.message);
@@ -209,6 +215,20 @@
                             });
                         }
                     });
+
+                    function clsForm() {
+                        $('#fullName').val('');
+                        $('#mobile').val('');
+                        $('#Whatsapp').val('');
+                        $('#exampleInputEmail1').val('');
+                        $('#phoneT').val('');
+                        $('#TaxNumber').val('');
+                        $('#CrNumber').val('');
+                        $('#Logo').val('');
+                        $('#addressCenter').val('');
+                        // $('#search').val('');
+                        // $('#TechnicianName')
+                    };
                 </script>
             </div>
         </div>

@@ -3,36 +3,36 @@ namespace App;
 
 trait ResponseApi {
 
-    // return error msg
-    public function returnError($msg, $number){
+    // return error message
+    public function returnError($message, $number){
         return response() -> json(
             [
-                'status' => false,
-                'status_number'    => $number,
-                'msg'    => $msg
+                'status_bool' => false,
+                'status'    => $number,
+                'message'    => $message
             ]
         );
     }
 
-    // return success msg
-    public function returnSuccess($msg) {
+    // return success message
+    public function returnSuccess($message) {
         return response() -> json(
             [
-                'status'  => true,
-                'status_number' => '100',
-                'msg'     => $msg
+                'status_bool'  => true,
+                'status' => '100',
+                'message'     => $message
             ]
             );
     }
 
-    // return data and msg
-    public function returnData($key , $value , $msg = ''){
+    // return data and message
+    public function returnData($key , $value , $message = ''){
         return response() -> json(
             [
-                'status' => true,
-                'status_number'   => '100',
-                'msg'    => $msg,
-                $key     => $value
+                'status_bool' => true,
+                'status'      => '100',
+                'message'     => $message,
+                $key          => $value
             ]
             );
     }

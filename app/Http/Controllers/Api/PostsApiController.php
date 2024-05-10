@@ -21,12 +21,54 @@ class PostsApiController extends Controller
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function getPost()
+    public function getPosts(Request $request)
     {
-        $posts = Post::fetch();
+        $limit  = $request->limit;
+        $listId = $request->list_id;
+        $posts = Post::fetch(0, null, $limit, $listId);
+
         if(!$posts) return $this->returnError('There are no posts', '108');
 
-        return $this->returnData('posts', $posts);
+        return $this->returnData('data', $posts);
+    }
+
+    public function getPost(Request $request)
+    {
+        $id = $request->id;
+        $post = Post::fetch($id);
+        return $this->returnData('data', $post[0]);
+    }
+
+    public function file(Request $request)
+    {
+        $tech_id = $request->tech_id;
+        $post_id = $request->post_id;
+
+        $technician = Technician::fetch($tech_id);
+
+        if($technician->tech_points > 0)
+        {
+            $post  = Post::fetch($post_id);
+            $param =
+            [
+                'points_count'    =>   $post->post_cost,
+                'points_src'      =>   9,
+                'points_target'   =>   $post_id,
+                'points_process'  =>   1,
+                'points_tech'     =>   $tech_id,
+                'points_register' =>   Carbon::now()
+            ];
+            PointTranaction::submit($param, null);
+
+            $point =  $technician->tech_points - $post->post_cost;
+            $par = ['tech_points' => $point];
+            Technician::submit($par, $tech_id);
+
+            return $this->returnData('data', 'storage/app/public/post/' . $post->post_file);
+
+        }else {
+            return $this->returnError("You don't have enough points", 104);
+        }
     }
 
 
@@ -36,6 +78,8 @@ class PostsApiController extends Controller
             'title'  => 'required',
             'body'   => 'required'
         ]);
+
+        $id = $request->id;
 
         $code = strtoupper($this->uniqidReal());
 
@@ -59,8 +103,7 @@ class PostsApiController extends Controller
             'post_create_time' => now()
         ];
 
-
-        $result = Post::submit($param,null);
+        $result = Post::submit($param, $id);
         $data = $result ? Post::fetch($result) : false;
         return $this->returnData('post', $data, 'post has created successfully');
     }
@@ -69,12 +112,12 @@ class PostsApiController extends Controller
     {
 
         $request->validate([
-            'tech_id' => 'required | numeric',
-            'post_id' => 'required | numeric'
+            'tech' => 'required | numeric',
+            'post' => 'required | numeric'
         ]);
 
-        $tech_id = $request->tech_id;
-        $post_id = $request->post_id;
+        $tech_id = $request->tech;
+        $post_id = $request->post;
         $technician = Technician::fetch($tech_id);
 
         if($technician->tech_points > 0)
@@ -104,64 +147,77 @@ class PostsApiController extends Controller
 
     public function addLike(Request $request)
     {
-      $data =  $request->validate([
-            'like_tech' => 'required|numeric',
-            'like_post' => 'required|numeric'
+        $id = $request->id;
+        $request->validate([
+            'tech' => 'required|numeric',
+            'post' => 'required|numeric'
         ]);
 
-        Post_Like::submit($data, null);
+        $param = [
+            'like_tech'  => $request->tech,
+            'like_post'  => $request->post
+        ];
+
+        Post_Like::submit($param, $id);
         return $this->returnSuccess('Like post successfully');
     }
 
-    public function comments($post_id)
+    public function comments(Request $request)
     {
-        $comments = Post_Comment::fetch(0, $post_id);
+        $limit  = $request->limit;
+        $listId = $request->list_id;
+        $post_id = $request->post;
 
-        return $this->returnData('comments', $comments);
+        $comments = Post_Comment::fetch(0, $post_id, $limit, $listId);
+
+        return $this->returnData('data', $comments);
     }
 
     public function addComment(Request $request)
     {
-
-     $data = $request->validate([
-            'comment_post'  => 'required|numeric',
-            'comment_context' => 'required',
+       $request->validate([
+            'post'  => 'required|numeric',
+            'text' => 'required',
         ]);
+        $id = $request->id;
+        $param = [
+            'comment_post'    => $request->post,
+            'comment_context' => $request->text,
+            'comment_tech'    => $request->tech,
+            'comment_create'  => Carbon::now()
+        ];
 
-        $data['comment_tech']   = $request->comment_tech;
-        $data['comment_create'] = now();
-
-        $result  = Post_Comment::submit($data, null);
+        $result  = Post_Comment::submit($param, $id);
 
         $comment    = $result ? Post_Comment::fetch($result) : [];
 
-        return $this->returnData('comment', $comment, 'Comment created successfully');
+        return $this->returnData('data', $comment, 'Comment created successfully');
     }
 
-    public function postView($post_id)
+    public function postView(Request $request)
     {
-
+        $post_id = $request->post;
         $views = Post_View::fetch($post_id);
 
-        return $this->returnData('post', $views);
+        return $this->returnData('data', $views);
     }
 
     public function addView(Request $request)
     {
 
         $request->validate([
-            'tech_device'  => 'required',
-            'view_tech'    => 'required|numeric',
-            'view_post'    => 'required|numeric'
+            'deviceId'  => 'required',
+            'tech'      => 'required|numeric',
+            'post'      => 'required|numeric'
         ]);
         $param =
         [
-            'view_device'  => $request->view_device,
-            'view_tech'    => $request->view_tech,
-            'view_post'    => $request->view_post
+            'view_device'  => $request->deviceId,
+            'view_tech'    => $request->tech,
+            'view_post'    => $request->post
         ];
         Post_View::submit($param, null);
-        return $this->returnSuccess( 'post has created successfully');
+        return $this->returnSuccess( 'view post successfully');
     }
 
 

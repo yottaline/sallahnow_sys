@@ -19,64 +19,79 @@ class ChatApiController extends Controller
         return $this->middleware(['auth:technician-api', 'check_device_token']);
     }
 
-    public function chat($tech_id)
+    public function chat(Request $request)
     {
+        $tech_id = $request->tech;
         $params[] = ['member_tech', $tech_id];
         $chats = Chat_Room_Members::fetch(0, $params);
 
-        return $this->returnData('chats', $chats);
+        return $this->returnData('data', $chats);
     }
 
     public function createRoom(Request $request)
     {
 
         $request->validate([
-            'room_type' => 'required|numeric'
+            'type' => 'required|numeric',
+            'name' => 'required'
         ]);
 
         $code = strtoupper($this->uniqidReal());
+        $id = $request->id;
         $param =
         [
             'room_code' => $code,
-            'room_type' => $request->room_type,
-            'room_name' => $request->room_name
+            'room_type' => $request->type,
+            'room_name' => $request->name
         ];
-        $result = Chat_Room::submit($param, null);
+
+        $result = Chat_Room::submit($param, $id);
 
         $room = $result ? Chat_Room::fetch($result) : [];
 
-        return $this->returnData('room', $room);
+        return $this->returnData('data', $room);
     }
 
     public function addMember(Request $request)
     {
-
         $request->validate([
-            'member_room' => 'required|numeric',
-            'member_tech' => 'required|numeric',
+            'room' => 'required|numeric',
+            'tech' => 'required|numeric',
         ]);
-        $status = Chat_Room_Members::submit($request->member_room, $request->member_tech);
 
-        $member = Chat_Room_Members::getChatMember($status->id);
+        $param = [
+            'member_room' => $request->room,
+            'member_tech' => $request->tech,
+            'member_add'  => Carbon::now()
+        ];
 
-        return $this->returnData('member', $member);
+        $result = Chat_Room_Members::submit($param, null);
+        $member = Chat_Room_Members::getChatMember($result);
+
+        return $this->returnData('data', $member);
 
     }
 
     public function createMessage(Request $request)
     {
 
-      $data = $request->validate([
-            'msg_from'    => 'required |numeric',
-            'msg_room'    => 'required |numeric',
-            'msg_context' => 'required |string'
+      $request->validate([
+            'tech'    => 'required |numeric',
+            'room'    => 'required |numeric',
+            'text'    => 'required |string'
         ]);
 
-        $data['msg_create'] = Carbon::now();
-        $result = Chat_Room_Message::submit($data, null);
+        $id = $request->id;
+        $param = [
+            'msg_room'    => $request->room,
+            'msg_from'    => $request->tech,
+            'msg_context' => $request->text,
+            'msg_create'  => Carbon::now()
+        ];
 
+        $result = Chat_Room_Message::submit($param, $id);
         $message = $result ? Chat_Room_Message::getFirstElementById($result) : [];
-        return $this->returnData('message', $message);
+        return $this->returnData('data', $message);
     }
 
 

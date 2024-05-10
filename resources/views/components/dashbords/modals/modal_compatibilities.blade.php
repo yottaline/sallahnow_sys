@@ -166,11 +166,13 @@
                 $('#compatibilityForm').modal('hide');
                 scope.$apply(() => {
                     if (scope.updateComp === false) {
-                        scope.list.unshift(response.data);
-                        scope.dataLoader(true);
+                        // scope.list.unshift(response.data);
+                        scope.list = response.data;
+                        clsForm();
+                        // scope.dataLoader(true);
                     } else {
                         scope.list[scope.updateComp] = response.data;
-                        scope.dataLoader(true);
+                        // scope.dataLoader(true);
                     }
                 });
             } else toastr.error(response.message);
@@ -180,7 +182,11 @@
             spinner.hide();
             controls.prop('disabled', false);
         });
-
     })
+
+    function clsForm() {
+        $('#NamEN').val('');
+        $('#NamAR').val('');
+    }
 </script>
 <!-- end add new compatibiliy  Modal -->

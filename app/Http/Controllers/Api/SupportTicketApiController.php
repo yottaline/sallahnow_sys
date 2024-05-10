@@ -23,7 +23,7 @@ class SupportTicketApiController extends Controller
     {
         $tickets = Support_ticket::fetch();
 
-        return $this->returnData('tickets', $tickets);
+        return $this->returnData('data', $tickets);
     }
 
     public function addTicket(Request $request)
