@@ -17,5 +17,6 @@ Homestead.yaml
 Homestead.json
 auth.json
 
+.ftpquota
 .env
 .env.*
