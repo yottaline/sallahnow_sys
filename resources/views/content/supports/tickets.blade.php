@@ -177,9 +177,7 @@
                                 <label for="status">Ticket Status <b class="text-danger">&ast;</b></label>
                                 <select name="status" id="status" class="form-control">
                                     <option>-- SELECT STATUS --</option>
-                                    <option
-                                        data-ng-if="list[ticketUpdate].ticket_status !== 2 && list[ticketUpdate].ticket_status !== 4 && list[ticketUpdate].ticket_status !== 5 && list[ticketUpdate].ticket_status !== 3"
-                                        value="2">Opened
+                                    <option data-ng-if="list[ticketUpdate].ticket_status == 1" value="2">Opened
                                     </option>
                                     <option
                                         data-ng-if="list[ticketUpdate].ticket_status !== 3  && list[ticketUpdate].ticket_status == 4 "
