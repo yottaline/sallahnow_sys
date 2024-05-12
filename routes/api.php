@@ -70,8 +70,8 @@ Route::middleware('api')->group(function() {
     Route::prefix('tickets')->group( function()
     {
         Route::post('load_ticket', 'SupportTicketApiController@getTickets');
-        Route::post('add', 'SupportTicketApiController@addTicket');
-        Route::get('replies/{ticket_id}', 'SupportTicketApiController@gtReplies');
+        Route::post('add_ticket', 'SupportTicketApiController@addTicket');
+        Route::post('replies', 'SupportTicketApiController@gtReplies');
         Route::post('add_reply', 'SupportTicketApiController@addReplie');
     });
 
