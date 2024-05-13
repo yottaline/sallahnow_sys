@@ -164,6 +164,54 @@
              </li>
 
 
+             <li class="list-group-item">
+                 <a class="link-dark d-block" data-bs-toggle="collapse" href="#marketsItme" role="button"
+                     aria-expanded="false" aria-controls="marketsItme">
+                     <i class="bi bi-shop text-secondary me-2"></i><b>Markets</b>
+                 </a>
+                 <div class="collapse" id="marketsItme">
+                     <ul class="list-group list-group-flush">
+                         <li class="list-group-item nav-subsc">
+                             <a class="link-dark d-block" href="/subscriptions/">
+                                 <i class="bi bi-person-vcard-fill text-secondary me-2"></i><b>Retailers</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/stores/">
+                                 <i class="bi bi-shop-window text-secondary me-2"></i><b>Stores</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/points/">
+                                 <i class="bi bi-ticket-perforated text-secondary me-2"></i><b>Points</b>
+                             </a>
+                         </li>
+
+                         {{-- <li class="list-group-item nav-refunds">
+                            <a class="link-dark d-block" href="">
+                                <i class="bi bi-arrow-left-right text-secondary me-2"></i><b>Refund Requests</b>
+                            </a>
+                        </li>
+
+                        <li class="list-group-item nav-promos">
+                            <a class="link-dark d-block" href="#">
+                                <i class="bi bi-ticket-perforated text-secondary me-2"></i><b>Promocodes</b>
+                            </a>
+                        </li> --}}
+                     </ul>
+                 </div>
+                 <script>
+                     const marketsItme = new bootstrap.Collapse('#marketsItme', {
+                         toggle: false
+                     });
+                     if (['subsc', 'trans', 'refunds', 'promos'].includes(navTarget))
+                         marketsItme.show();
+                 </script>
+             </li>
+
+
 
              {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#reportsCollapse" role="button"
