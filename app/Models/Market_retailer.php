@@ -26,7 +26,7 @@ class Market_retailer extends Model
 
     public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
     {
-        $retailers = self::limit($limit);
+        $retailers = self::join('market_stores', 'retailer_store', 'store_id')->limit($limit);
 
         if($lastId) $retailers->where('retailer_id', '<', $lastId);
 
@@ -34,6 +34,7 @@ class Market_retailer extends Model
         {
             $retailers->where(function (Builder $query) use ($params) {
                 $query->where('retailer_phone', 'like', '%' . $params['q'] . '%')
+                ->orWhere('store_name', $params['q'])
                     ->orWhere('retailer_name', $params['q'])
                     ->orWhere('retailer_email', $params['q']);
             });
@@ -42,7 +43,7 @@ class Market_retailer extends Model
 
         if($params) $retailers->where($params);
 
-        if($id) $retailers->where('retailer_id', $lastId);
+        if($id) $retailers->where('retailer_id', $id);
 
         return $id ? $retailers->first() : $retailers->get();
     }

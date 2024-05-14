@@ -21,8 +21,8 @@ return new class extends Migration
             $table->integer('retailer_store', false, true);
             $table->boolean('retailer_admin')->default('0');
             $table->boolean('retailer_active')->default('1');
-            $table->boolean('retailer_approved')->default('0');
-            $table->integer('retailer_approved_by', false, true);
+            $table->dateTime('retailer_approved')->nullable();
+            $table->integer('retailer_approved_by', false, true)->nullable();
             $table->dateTime('retailer_register');
             // $table->timestamps();
         });

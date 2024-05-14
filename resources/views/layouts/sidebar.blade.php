@@ -172,7 +172,7 @@
                  <div class="collapse" id="marketsItme">
                      <ul class="list-group list-group-flush">
                          <li class="list-group-item nav-subsc">
-                             <a class="link-dark d-block" href="/subscriptions/">
+                             <a class="link-dark d-block" href="/markets/retailers/">
                                  <i class="bi bi-person-vcard-fill text-secondary me-2"></i><b>Retailers</b>
                              </a>
                          </li>

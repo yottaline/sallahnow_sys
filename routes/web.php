@@ -220,7 +220,10 @@ Route::prefix('settings')->middleware('auth')->group(function () {
 Route::prefix('markets')->middleware('auth')->group(function(){
     // retailers route
     Route::prefix('retailers')->group(function() {
-
+        Route::get('/', 'MarketRetailerController@index');
+        Route::post('load', 'MarketRetailerController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketRetailerController@submit');
+        Route::put('change', 'MarketRetailerController@change');
     });
 
     // stores route

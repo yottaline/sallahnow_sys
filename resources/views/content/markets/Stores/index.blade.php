@@ -101,11 +101,6 @@
                                                 <i class="bi bi-telephone me-1"></i>
                                                 <span data-ng-bind="store.store_phone" class="fw-normal"></span>
                                             </small>
-                                            <small data-ng-if="store.store_email"
-                                                class="db-inline-block dir-ltr font-monospace badge bg-primary">
-                                                <i class="bi bi-envelope-at me-1"></i>
-                                                <span data-ng-bind="store.store_email" class="fw-normal"></span>
-                                            </small>
                                         </td>
                                         <td class="text-center" data-ng-bind="store.store_official_name"></td>
                                         <td class="text-center" data-ng-bind="store.store_address"></td>

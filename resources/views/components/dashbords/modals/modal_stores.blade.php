@@ -15,7 +15,7 @@
                                     data-ng-value="list[updateStore].store_name" required id="StoreName" required>
                             </div>
                         </div>
-                        {{-- identification --}}
+                        {{-- official_name --}}
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
                                 <label for="OfficialName">Official Name</label>
@@ -154,7 +154,7 @@
                                 notEqual: 'default',
                                 required: true
                             },
-                            // identification: {
+                            // official_name: {
                             //     digits: true
                             // },
                             phone: {
