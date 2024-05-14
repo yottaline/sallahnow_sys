@@ -50,6 +50,12 @@ return [
             'driver' => 'jwt',
             'provider' => 'customers',
         ],
+
+
+        'retailer-api' => [
+            'driver' => 'jwt',
+            'provider' => 'retailers',
+        ],
     ],
 
     /*
@@ -83,6 +89,11 @@ return [
         'customers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Customer::class,
+        ],
+
+        'retailers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Market_retailer::class,
         ]
 
         // 'users' => [

@@ -93,4 +93,13 @@ Route::middleware('api')->group(function() {
     });
 
 
+    // markets api route
+    // stores route
+    Route::prefix('stores')->group(function(){
+        Route::get('get_stores','MarketStoreApiController@getStores');
+        Route::match(['put', 'post'], 'submit', 'MarketStoreApiController@submit');
+    });
+    // retailer route
+
+
 });
