@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <form id="techForm" method="post" action="/markets/retailers/submit">
+                <form id="retailerFrom" method="post" action="/markets/retailers/submit">
                     @csrf
                     <input data-ng-if="updateRetailer !== false" type="hidden" name="_method" value="put">
                     <input type="hidden" name="retailer_id" data-ng-value="list[updateRetailer].retailer_id">
@@ -86,7 +86,7 @@
                     </div>
                 </form>
                 <script>
-                    $('#techForm').on('submit', e => e.preventDefault()).validate({
+                    $('#retailerFrom').on('submit', e => e.preventDefault()).validate({
                         rules: {
                             store: {
                                 notEqual: 'default',
