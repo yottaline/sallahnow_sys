@@ -225,13 +225,18 @@ Route::prefix('markets')->middleware('auth')->group(function(){
         Route::match(['post', 'put'], 'submit', 'MarketRetailerController@submit');
         Route::put('change', 'MarketRetailerController@change');
     });
-
     // stores route
     Route::prefix('stores')->group(function(){
         Route::get('/', 'MarketStoreController@index');
         Route::post('load', 'MarketStoreController@load');
         Route::match(['post', 'put'], 'submit', 'MarketStoreController@submit');
         Route::put('change_status', 'MarketStoreController@ChangeStatus');
+    });
+    // categories
+    Route::prefix('categories')->group(function(){
+        Route::get('/', 'MarketCategoryController@index');
+        Route::post('load', 'MarketCategoryController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketCategoryController@submit');
     });
 });
 

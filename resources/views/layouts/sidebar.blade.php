@@ -184,8 +184,14 @@
                          </li>
 
                          <li class="list-group-item nav-trans">
-                             <a class="link-dark d-block" href="/points/">
-                                 <i class="bi bi-ticket-perforated text-secondary me-2"></i><b>Points</b>
+                             <a class="link-dark d-block" href="/markets/categories/">
+                                 <i class="bi bi-grid text-secondary me-2"></i><b>Categories</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/categories/">
+                                 <i class="bi bi-grid-3x3-gap text-secondary me-2"></i><b>Sub Categories</b>
                              </a>
                          </li>
 

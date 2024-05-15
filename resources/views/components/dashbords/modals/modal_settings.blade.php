@@ -3,7 +3,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form method="POST" action="/brands/submit/" enctype="multipart/form-data">
+                <form method="POST" action="/brands/submit" enctype="multipart/form-data">
                     @csrf
                     <input data-ng-if="updateBrand !== false" type="hidden" name="_method" value="put">
                     <input type="hidden" name="brand_id" id="brandId"
@@ -85,7 +85,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form method="POST" action="/models/submit/" enctype="multipart/form-data">
+                <form method="POST" action="/models/submit" enctype="multipart/form-data">
                     @csrf
                     <input data-ng-if="updateModel !== false" type="hidden" name="_method" value="put">
                     <input type="hidden" name="model_id" id="modelId"
@@ -188,7 +188,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form method="POST" action="/CompatibilityCategories/submit/"> @csrf
+                <form method="POST" action="/CompatibilityCategories/submit"> @csrf
                     <input data-ng-if="updateCompCate !== false" type="hidden" name="_method" value="put">
                     <input type="hidden" name="cate_id" id="CateId"
                         data-ng-value="updateCompCate !== false ? compatibility_categories[updateCompCate].category_id : 0">
@@ -268,7 +268,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form method="POST" action="/compatibilityMotherBoard/submit/"> @csrf
+                <form method="POST" action="/compatibilityMotherBoard/submit"> @csrf
                     <input data-ng-if="updateMotherBoard !== false" type="hidden" name="_method" value="put">
                     <input type="hidden" name="board_id" id="boardId"
                         data-ng-value="updateMotherBoard !== false ? compatibility_motherBoard[updateMotherBoard].board_id : 0">
@@ -348,7 +348,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form method="POST" action="/packages/submit/" enctype="multipart/form-data">
+                <form method="POST" action="/packages/submit" enctype="multipart/form-data">
                     @csrf
                     <input data-ng-if="updatePackage !== false" type="hidden" name="_method" value="put">
                     <input type="hidden" name="package_id"
