@@ -96,10 +96,19 @@ Route::middleware('api')->group(function() {
     // markets api route
     // stores route
     Route::prefix('stores')->group(function(){
-        Route::get('get_stores','MarketStoreApiController@getStores');
+        Route::post('get_stores','MarketStoreApiController@getStores');
         Route::match(['put', 'post'], 'submit', 'MarketStoreApiController@submit');
+        Route::post('locations', 'MarketStoreApiController@loadLocation');
     });
     // retailer route
+    Route::prefix('retailers')->group(function(){
+        Route::post('register', 'MarketRetailerApiController@register');
+        Route::post('login', 'MarketRetailerApiController@login');
+    });
 
 
+    // locations rouets
+    Route::prefix('locations')->group(function () {
+        Route::post('load', 'LocationApiController@load');
+    });
 });

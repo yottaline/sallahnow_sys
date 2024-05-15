@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Location;
 use App\Models\Market_store;
+use App\ResponseApi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MarketStoreApiController extends Controller
 {
+    use ResponseApi;
     public function __construct()
     {
         // $this->middlewer('api')
@@ -16,7 +19,8 @@ class MarketStoreApiController extends Controller
 
     public function getStores()
     {
-        echo json_encode(Market_store::fetch());
+        $stores = Market_store::fetch();
+        echo json_encode($stores);
     }
 
     public function submit(Request $request)
@@ -24,37 +28,19 @@ class MarketStoreApiController extends Controller
         $request->validate([
             'name'          => 'required',
             'official_name' => 'required',
-            'mobile'        => 'required',
+            'mobile'        => 'required|unique:market_stores,store_mobile',
             'phone'         => 'required',
             'country_id'    => 'required',
             'state_id'      => 'required',
             'city_id'       => 'required',
             'area_id'       => 'required',
             'address'       => 'required',
+            'tax_store'     => 'required|unique:market_stores,store_tax'
         ]);
 
-        $id = $request->store_id;
         $phone  = $request->phone;
         $mobile = $request->mobile;
         $tax    = $request->tax_store;
-
-        if (count(Market_store::fetch(0, [['store_id', '!=', $id], ['store_mobile', '=', $mobile]])))
-        {
-            echo json_encode(['status' => false,'message' =>  $this->validateMessage('mobile')]);
-            return;
-        }
-
-        if ($phone && count(Market_store::fetch(0, [['store_id', '!=', $id], ['store_phone', '=', $phone]])))
-        {
-            echo json_encode(['status' => false,'message' =>  $this->validateMessage('phone')]);
-            return;
-        }
-
-        if ($tax && count(Market_store::fetch(0, [['store_id', '!=', $id], ['store_tax', '=', $tax]])))
-        {
-            echo json_encode(['status' => false,'message' =>  $this->validateMessage('Tax Number')]);
-            return;
-        }
 
 
         $params = [
@@ -82,7 +68,7 @@ class MarketStoreApiController extends Controller
             $param['store_cr_photo'] = $photoName;
         }
 
-        $result = Market_store::submit($params, $id);
+        $result = Market_store::submit($params, null);
 
         echo json_encode([
             'status' => boolval($result),
@@ -91,7 +77,15 @@ class MarketStoreApiController extends Controller
 
     }
 
-
+    public function loadLocation(Request $request)
+    {
+        $params[] = ['location_type', '1'];
+        $countries = Location::fetch(0, $params);
+        echo json_encode(
+           [ 'status' => true,
+            'data'   => $countries]
+        );
+    }
     private function uniqidReal($lenght = 12)
     {
         if (function_exists("random_bytes")) {

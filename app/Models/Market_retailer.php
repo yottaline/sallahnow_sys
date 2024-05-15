@@ -11,6 +11,7 @@ class Market_retailer  extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     public $timestamps = false;
+    protected $primaryKey = 'retailer_id';
 
     protected $fillable = [
         'retailer_name',
