@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Market_category;
+use App\Models\Market_subcategory;
 use Illuminate\Http\Request;
 
-class MarketCategoryController extends Controller
+class MarketSubcategoryController extends Controller
 {
     public function __construct()
     {
@@ -14,7 +15,8 @@ class MarketCategoryController extends Controller
 
     public function index()
     {
-        return view('content.markets.categories.index');
+        $categories = Market_category::fetch();
+        return view('content.markets.subcategories.index', compact('categories'));
     }
 
     public function load(Request $request)
@@ -23,31 +25,33 @@ class MarketCategoryController extends Controller
         $limit    = $request->limit;
         $listId   = $request->last_id;
 
-        echo json_encode(Market_category::fetch(0, $params, $limit, $listId));
+        echo json_encode(Market_subcategory::fetch(0, $params, $limit, $listId));
     }
 
     public function submit(Request $request)
     {
         $request->validate([
-            'name_ar' => 'required',
-            'name_en' => 'required'
+            'name_ar'  => 'required',
+            'name_en'  => 'required',
+            'category' => 'required'
         ]);
 
-        $id = $request->cate_id;
+        $id = $request->subcate_id;
         $names = json_encode([
             'en' => $request->name_en,
             'ar' => $request->name_ar,
         ]);
 
         $param = [
-            'category_name' => $names
+            'subcategory_name' => $names,
+            'subcategory_cat'  => $request->category
         ];
 
-        $result = Market_category::submit($param, $id);
-
+        $result = Market_subcategory::submit($param, $id);
         echo json_encode([
             'status' => boolval($result),
-            'data'    => $result ? Market_category::fetch($result) : []
+            'data'   => $result ? Market_subcategory::fetch($result) : []
         ]);
     }
+
 }

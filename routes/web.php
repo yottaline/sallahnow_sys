@@ -238,6 +238,12 @@ Route::prefix('markets')->middleware('auth')->group(function(){
         Route::post('load', 'MarketCategoryController@load');
         Route::match(['post', 'put'], 'submit', 'MarketCategoryController@submit');
     });
+    // subcategories
+    Route::prefix('subcategories')->group(function(){
+        Route::get('/', 'MarketSubcategoryController@index');
+        Route::post('load', 'MarketSubcategoryController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketSubcategoryController@submit');
+    });
 });
 
 

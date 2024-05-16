@@ -190,7 +190,7 @@
                          </li>
 
                          <li class="list-group-item nav-trans">
-                             <a class="link-dark d-block" href="/markets/categories/">
+                             <a class="link-dark d-block" href="/markets/subcategories/">
                                  <i class="bi bi-grid-3x3-gap text-secondary me-2"></i><b>Sub Categories</b>
                              </a>
                          </li>
