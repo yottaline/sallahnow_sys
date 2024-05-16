@@ -105,7 +105,11 @@ Route::middleware('api')->group(function() {
         Route::post('register', 'MarketRetailerApiController@register');
         Route::post('login', 'MarketRetailerApiController@login');
     });
-
+    //categories
+    Route::prefix('categories')->group(function(){
+        Route::post('load_categories', 'MarketCategoryApiController@load');
+        Route::match(['post', 'put'], 'add_category', 'MarketCategoryApiController@submit');
+    });
 
     // locations rouets
     Route::prefix('locations')->group(function () {
