@@ -1,5 +1,5 @@
 @extends('index')
-@section('title', 'Retailers')
+@section('title', 'Products')
 @section('search')
     <form id="nvSearch" role="search">
         <input type="search" name="q" class="form-control my-3 my-md-0 rounded-pill" placeholder="Search...">
@@ -11,15 +11,35 @@
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
-                        {{-- country --}}
-                        {{-- <div class="mb-3">
-                            <label>Country<b class="text-danger">&ast;</b></label>
-                            <select id="filter-country" class="form-select">
-                                <option value="0">-- select country --</option>
-                                <option data-ng-repeat="country in countries" data-ng-value="country.location_id"
-                                    data-ng-bind="jsonParse(country.location_name)['en']"></option>
+                        {{-- store --}}
+                        <div class="mb-3">
+                            <label>Stores<b class="text-danger">&ast;</b></label>
+                            <select id="filter-store" class="form-select">
+                                <option value="0">-- SELECT STORE NAME --</option>
+                                <option data-ng-repeat="s in stores" data-ng-value="s.store_id" data-ng-bind="s.store_name">
+                                </option>
                             </select>
-                        </div> --}}
+                        </div>
+                        {{-- store --}}
+                        <div class="mb-3">
+                            <label>Categories<b class="text-danger">&ast;</b></label>
+                            <select id="filter-caetgories" class="form-select">
+                                <option value="0">-- SELECT CATEEGOY NAME --</option>
+                                <option data-ng-repeat="categoy in categories" data-ng-value="categoy.category_id"
+                                    data-ng-bind="jsonParse(categoy.category_name)['en']">
+                                </option>
+                            </select>
+                        </div>
+                        {{-- store --}}
+                        <div class="mb-3">
+                            <label>Sub categories<b class="text-danger">&ast;</b></label>
+                            <select id="filter-store" class="form-select">
+                                <option value="0">-- SELECT SUB CATEGORY NAME --</option>
+                                <option data-ng-repeat="sub in subcategories" data-ng-value="sub.subcategory_id"
+                                    data-ng-bind="jsonParse(sub.subcategory_name)['en']">
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -30,70 +50,62 @@
                         <div class="d-flex">
                             <h5 class="card-title fw-semibold pt-1 me-auto mb-3 text-uppercase">
                                 <span class="loading-spinner spinner-border spinner-border-sm text-warning me-2"
-                                    role="status"></span><span>RETAILERS</span>
+                                    role="status"></span><span>PRODUCTS</span>
                             </h5>
                             <div>
                                 <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setReyailer(false)"></button>
+                                    data-ng-click="setProduct(false)"></button>
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
                         </div>
 
-                        {{-- <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5> --}}
+                        <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5>
 
                         <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="example">
                                 <thead>
                                     <tr>
                                         <th class="text-center">#</th>
-                                        <th>Retailer Name</th>
+                                        <th>Product Name</th>
                                         <th class="text-center">Store Name</th>
-                                        <th class="text-center">Position</th>
-                                        <th class="text-center">Approved Date</th>
+                                        <th class="text-center">Category Name</th>
+                                        <th class="text-center">SubCategory Name</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Discount</th>
                                         <th class="text-center">Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-ng-repeat="retailer in list track by $index">
-                                        <td data-ng-bind="retailer.retailer_id"
+                                    <tr data-ng-repeat="product in list track by $index">
+                                        <td data-ng-bind="product.product_code"
                                             class="text-center small font-monospace text-uppercase"></td>
-                                        <td>
-                                            <span data-ng-bind="retailer.retailer_name" class="fw-bold"></span><br>
-                                            <small data-ng-if="retailer.retailer_phone"
-                                                class="me-1 db-inline-block dir-ltr font-monospace badge bg-primary">
-                                                <i class="bi bi-phone me-1"></i>
-                                                <span data-ng-bind="retailer.retailer_phone" class="fw-normal"></span>
-                                            </small>
-                                            <small data-ng-if="retailer.retailer_email"
-                                                class="db-inline-block dir-ltr font-monospace badge bg-primary">
-                                                <i class="bi bi-envelope-at me-1"></i>
-                                                <span data-ng-bind="retailer.retailer_email" class="fw-normal"></span>
-                                            </small>
-                                        </td>
-                                        <td class="text-center" data-ng-bind="retailer.store_name"></td>
+                                        <td class="text-center" data-ng-bind="product.store_name"></td>
+                                        <td class="text-center" data-ng-bind="product.store_name"></td>
+                                        <td class="text-center" data-ng-bind="product.store_name"></td>
+                                        <td class="text-center" data-ng-bind="product.store_name"></td>
                                         <td class="text-center">
                                             <span
-                                                class="badge bg-<%positionObj.color[retailer.retailer_admin]%> rounded-pill font-monospace p-2"><%positionObj.name[retailer.retailer_admin]%></span>
+                                                class="badge bg-<%positionObj.color[product.product_admin]%> rounded-pill font-monospace p-2"><%positionObj.name[product.product_admin]%></span>
 
                                         </td>
                                         <td class="text-center">
-                                            <span data-ng-if="!retailer.retailer_approved">Not Approved</span>
+                                            <span data-ng-if="!product.product_approved">Not Approved</span>
                                             <span
-                                                data-ng-if="retailer.retailer_approved"data-ng-bind="retailer.retailer_approved"></span>
+                                                data-ng-if="product.product_approved"data-ng-bind="product.product_approved"></span>
                                         </td>
                                         <td class="text-center">
                                             <span
-                                                class="badge bg-<%statusObject.color[retailer.retailer_active]%> rounded-pill font-monospace"><%statusObject.name[retailer.retailer_active]%></span>
+                                                class="badge bg-<%statusObject.color[product.product_active]%> rounded-pill font-monospace"><%statusObject.name[product.product_active]%></span>
 
                                         </td>
                                         <td class="col-fit">
                                             <button class="btn btn-outline-success btn-circle bi bi-toggles"
                                                 data-ng-click="editActive($index)"></button>
                                             <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
-                                                data-ng-click="setReyailer($index)"></button>
+                                                data-ng-click="setProduct($index)"></button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -107,7 +119,7 @@
             </div>
         </div>
 
-        @include('components.dashbords.modals.modal_retailer')
+        {{-- @include('components.dashbords.modals.modal_product') --}}
 
     </div>
 @endsection
@@ -133,12 +145,14 @@
             $scope.noMore = false;
             $scope.loading = false;
             $scope.q = '';
-            $scope.updateRetailer = false;
+            $scope.updateProduct = false;
             $scope.list = [];
 
             $scope.last_id = 0;
             $scope.jsonParse = (str) => JSON.parse(str);
             $scope.stores = <?= json_encode($stores) ?>;
+            $scope.categories = <?= json_encode($categories) ?>;
+            $scope.subcategories = <?= json_encode($subcategories) ?>;
             $scope.dataLoader = function(reload = false) {
                 if (reload) {
                     $scope.list = [];
@@ -157,7 +171,7 @@
                     _token: '{{ csrf_token() }}'
                 };
 
-                $.post("/markets/retailers/load", request, function(data) {
+                $.post("/markets/products/load", request, function(data) {
                     $('.loading-spinner').hide();
                     var ln = data.length;
                     $scope.$apply(() => {
@@ -166,18 +180,18 @@
                             $scope.noMore = ln < limit;
                             $scope.list = data;
                             console.log(data)
-                            $scope.last_id = data[ln - 1].retailer_id;
+                            $scope.last_id = data[ln - 1].product_id;
                         }
                     });
                 }, 'json');
             }
 
-            $scope.setReyailer = (indx) => {
-                $scope.updateRetailer = indx;
+            $scope.setProduct = (indx) => {
+                $scope.updateProduct = indx;
                 $('#storeModal').modal('show');
             };
             $scope.editActive = (index) => {
-                $scope.updateRetailer = index;
+                $scope.updateProduct = index;
                 $('#edit_active').modal('show');
             };
             $scope.dataLoader();

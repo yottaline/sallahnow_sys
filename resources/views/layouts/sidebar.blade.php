@@ -195,17 +195,12 @@
                              </a>
                          </li>
 
-                         {{-- <li class="list-group-item nav-refunds">
-                            <a class="link-dark d-block" href="">
-                                <i class="bi bi-arrow-left-right text-secondary me-2"></i><b>Refund Requests</b>
-                            </a>
-                        </li>
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/products/">
+                                 <i class="bi bi-box-seam text-secondary me-2"></i><b>Products</b>
+                             </a>
+                         </li>
 
-                        <li class="list-group-item nav-promos">
-                            <a class="link-dark d-block" href="#">
-                                <i class="bi bi-ticket-perforated text-secondary me-2"></i><b>Promocodes</b>
-                            </a>
-                        </li> --}}
                      </ul>
                  </div>
                  <script>

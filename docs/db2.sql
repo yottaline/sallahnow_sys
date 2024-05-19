@@ -74,7 +74,9 @@ CREATE TABLE IF NOT EXISTS `market_products` (
   `product_delete` BOOLEAN DEFAULT '0',
   `product_cerated` DATETIME NOT NULL,
   PRIMARY KEY (`product_id`),
-  FOREIGN KEY (`product_category`) REFERENCES `market_subcategories`(`subcategory_id`),
+  FOREIGN KEY (`product_store`) REFERENCES `market_stores`(`store_id`),
+  FOREIGN KEY (`product_category`) REFERENCES `market_categories`(`category_id`),
+  FOREIGN KEY (`product_subcategory`) REFERENCES `market_subcategories`(`subcategory_id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

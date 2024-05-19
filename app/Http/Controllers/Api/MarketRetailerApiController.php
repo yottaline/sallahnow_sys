@@ -21,7 +21,7 @@ class MarketRetailerApiController extends Controller
     {
         $request->validate([
             'name'  => 'required',
-            'phone' => 'required',
+            'phone' => 'required|unique:market_retailers,retailer_phone',
             'store' => 'required',
             'email' => 'required|email|unique:market_retailers,retailer_email',
         ]);
