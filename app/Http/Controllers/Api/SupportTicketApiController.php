@@ -30,33 +30,43 @@ class SupportTicketApiController extends Controller
     {
 
         $data = $request->validate([
-            'ticket_brand'       => 'required | numeric',
-            'ticket_model'       => 'required | numeric',
-            'ticket_category'    => 'required | numeric',
-            'ticket_tech'        => 'required | numeric',
-            'ticket_context'     => 'required | string',
+            'brand_id'       => 'required | numeric',
+            'model_id'       => 'required | numeric',
+            'category_id'    => 'required | numeric',
+            'tech_id'        => 'required | numeric',
+            'text'           => 'required | string',
         ]);
 
-        $cate_id = $request->ticket_category;
+        $param = [
+            'ticket_brand'    => $request->brand_id,
+            'ticket_model'    => $request->model_id,
+            'ticket_category' => $request->category_id,
+            'ticket_tech'     => $request->tech_id,
+            'ticket_context'  => $request->text,
+        ];
+
+        $cate_id = $request->category_id;
         $cost = Support_category::fetch($cate_id);
+
         if(!$cost) return $this->returnError('No category', 107);
 
-        $data['ticket_code']   = strtoupper($this->uniqidReal());
-        $data['ticket_cost']   = $cost->category_cost;
-        $data['ticket_create'] = Carbon::now();
+        $param['ticket_code']   = strtoupper($this->uniqidReal());
+        $param['ticket_cost']   = $cost->category_cost;
+        $param['ticket_create'] = Carbon::now();
 
-        $result = Support_ticket::submit($data, null);
+        $result = Support_ticket::submit($param, null);
 
         $ticket = $result ? Support_ticket::fetch($result) : [];
 
-        return $this->returnData('ticket', $ticket);
+        return $this->returnData('data', $ticket);
     }
 
-    public function gtReplies($ticket_id)
+    public function gtReplies(Request $request)
     {
-        $params[] = ['reply_ticket', $ticket_id];
+        $id  = $request->ticket_id;
+        $params[] = ['reply_ticket', $id];
         $replies = Support_replie::fetch(0, $params);
-        return $this->returnData('replies', $replies);
+        return $this->returnData('data', $replies);
     }
 
     public function addReplie(Request $request)
@@ -78,7 +88,7 @@ class SupportTicketApiController extends Controller
 
         $replie = $result ? Support_replie::fetch($result) : [];
 
-        return $this->returnData('replie', $replie);
+        return $this->returnData('data', $replie);
     }
 
     private function uniqidReal($lenght = 12)

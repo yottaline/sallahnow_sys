@@ -164,6 +164,55 @@
              </li>
 
 
+             <li class="list-group-item">
+                 <a class="link-dark d-block" data-bs-toggle="collapse" href="#marketsItme" role="button"
+                     aria-expanded="false" aria-controls="marketsItme">
+                     <i class="bi bi-shop text-secondary me-2"></i><b>Markets</b>
+                 </a>
+                 <div class="collapse" id="marketsItme">
+                     <ul class="list-group list-group-flush">
+                         <li class="list-group-item nav-subsc">
+                             <a class="link-dark d-block" href="/markets/retailers/">
+                                 <i class="bi bi-person-vcard-fill text-secondary me-2"></i><b>Retailers</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/stores/">
+                                 <i class="bi bi-shop-window text-secondary me-2"></i><b>Stores</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/categories/">
+                                 <i class="bi bi-grid text-secondary me-2"></i><b>Categories</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/subcategories/">
+                                 <i class="bi bi-grid-3x3-gap text-secondary me-2"></i><b>Sub Categories</b>
+                             </a>
+                         </li>
+
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/products/">
+                                 <i class="bi bi-box-seam text-secondary me-2"></i><b>Products</b>
+                             </a>
+                         </li>
+
+                     </ul>
+                 </div>
+                 <script>
+                     const marketsItme = new bootstrap.Collapse('#marketsItme', {
+                         toggle: false
+                     });
+                     if (['subsc', 'trans', 'refunds', 'promos'].includes(navTarget))
+                         marketsItme.show();
+                 </script>
+             </li>
+
+
 
              {{-- <li class="list-group-item">
                  <a class="link-dark d-block" data-bs-toggle="collapse" href="#reportsCollapse" role="button"

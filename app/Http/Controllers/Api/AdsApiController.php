@@ -19,6 +19,6 @@ class AdsApiController extends Controller
     {
         $ads = Technician_ads::fetch();
 
-        return $this->returnData('ads', $ads);
+        return $this->returnData('data', $ads);
     }
 }

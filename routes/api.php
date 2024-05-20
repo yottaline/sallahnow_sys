@@ -70,8 +70,8 @@ Route::middleware('api')->group(function() {
     Route::prefix('tickets')->group( function()
     {
         Route::post('load_ticket', 'SupportTicketApiController@getTickets');
-        Route::post('add', 'SupportTicketApiController@addTicket');
-        Route::get('replies/{ticket_id}', 'SupportTicketApiController@gtReplies');
+        Route::post('add_ticket', 'SupportTicketApiController@addTicket');
+        Route::post('replies', 'SupportTicketApiController@gtReplies');
         Route::post('add_reply', 'SupportTicketApiController@addReplie');
     });
 
@@ -93,4 +93,26 @@ Route::middleware('api')->group(function() {
     });
 
 
+    // markets api route
+    // stores route
+    Route::prefix('stores')->group(function(){
+        Route::post('get_stores','MarketStoreApiController@getStores');
+        Route::match(['put', 'post'], 'submit', 'MarketStoreApiController@submit');
+        Route::post('locations', 'MarketStoreApiController@loadLocation');
+    });
+    // retailer route
+    Route::prefix('retailers')->group(function(){
+        Route::post('register', 'MarketRetailerApiController@register');
+        Route::post('login', 'MarketRetailerApiController@login');
+    });
+    //categories
+    Route::prefix('categories')->group(function(){
+        Route::post('load_categories', 'MarketCategoryApiController@load');
+        Route::match(['post', 'put'], 'add_category', 'MarketCategoryApiController@submit');
+    });
+
+    // locations rouets
+    Route::prefix('locations')->group(function () {
+        Route::post('load', 'LocationApiController@load');
+    });
 });

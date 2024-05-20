@@ -209,12 +209,50 @@ Route::prefix('customers')->middleware('auth')->group(function () {
     Route::put('update_active', 'CustomerController@updateActive');
 });
 
-
 Route::prefix('settings')->middleware('auth')->group(function () {
     Route::get('/', 'SettingController@index');
     Route::post('location/load', 'SettingController@locationLoad');
     Route::post('location/submit', 'SettingController@locationSubmit');
 });
+
+// start markets routes
+
+Route::prefix('markets')->middleware('auth')->group(function(){
+    // retailers route
+    Route::prefix('retailers')->group(function() {
+        Route::get('/', 'MarketRetailerController@index');
+        Route::post('load', 'MarketRetailerController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketRetailerController@submit');
+        Route::put('change', 'MarketRetailerController@change');
+    });
+    // stores route
+    Route::prefix('stores')->group(function(){
+        Route::get('/', 'MarketStoreController@index');
+        Route::post('load', 'MarketStoreController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketStoreController@submit');
+        Route::put('change_status', 'MarketStoreController@ChangeStatus');
+    });
+    // categories
+    Route::prefix('categories')->group(function(){
+        Route::get('/', 'MarketCategoryController@index');
+        Route::post('load', 'MarketCategoryController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketCategoryController@submit');
+    });
+    // subcategories
+    Route::prefix('subcategories')->group(function(){
+        Route::get('/', 'MarketSubcategoryController@index');
+        Route::post('load', 'MarketSubcategoryController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketSubcategoryController@submit');
+    });
+    // products
+    Route::prefix('products')->group(function(){
+        Route::get('/','MarketProductController@index');
+        Route::post('load', 'MarketProductController@load');
+    });
+});
+
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

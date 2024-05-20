@@ -21,7 +21,7 @@ class CourseApiController extends Controller
         $courses = Course::fetch();
         if(!$courses) return $this->returnError('No courses', 107);
 
-        return $this->returnData('courses', $courses);
+        return $this->returnData('data', $courses);
     }
 
     public function views(Request $request)
@@ -39,6 +39,6 @@ class CourseApiController extends Controller
 
         $course = $result ? Course::fetch($result) : [];
 
-        return $this->returnData('course', $course);
+        return $this->returnData('data', $course);
     }
 }
