@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `market_orders` (
   `order_create` DATETIME NOT NULL,
   `order_exec` DATETIME DEFAULT NULL,
   `order_approved` DATETIME DEFAULT NULL,
-  `order_deliverd` DATETIME DEFAULT NULL,
+  `order_delivered` DATETIME DEFAULT NULL,
   PRIMARY KEY (`order_id`),
   FOREIGN KEY (`order_customer`) REFERENCES `customers`(`customer_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
