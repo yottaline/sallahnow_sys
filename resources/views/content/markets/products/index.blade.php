@@ -33,7 +33,7 @@
                         {{-- store --}}
                         <div class="mb-3">
                             <label>Sub categories<b class="text-danger">&ast;</b></label>
-                            <select id="filter-store" class="form-select">
+                            <select id="filter-subcategory" class="form-select">
                                 <option value="0">-- SELECT SUB CATEGORY NAME --</option>
                                 <option data-ng-repeat="sub in subcategories" data-ng-value="sub.subcategory_id"
                                     data-ng-bind="jsonParse(sub.subcategory_name)['en']">
@@ -53,8 +53,8 @@
                                     role="status"></span><span>PRODUCTS</span>
                             </h5>
                             <div>
-                                <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setProduct(false)"></button>
+                                {{-- <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                    data-ng-click="setProduct(false)"></button> --}}
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
@@ -68,12 +68,13 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">#</th>
-                                        <th>Product Name</th>
+                                        <th class="text-center">Product Name</th>
                                         <th class="text-center">Store Name</th>
                                         <th class="text-center">Category Name</th>
                                         <th class="text-center">SubCategory Name</th>
                                         <th class="text-center">Price</th>
                                         <th class="text-center">Discount</th>
+                                        <th class="text-center">Show</th>
                                         <th class="text-center">Status</th>
                                         <th></th>
                                     </tr>
@@ -82,30 +83,29 @@
                                     <tr data-ng-repeat="product in list track by $index">
                                         <td data-ng-bind="product.product_code"
                                             class="text-center small font-monospace text-uppercase"></td>
+                                        <td class="text-center" data-ng-bind="product.product_name"></td>
                                         <td class="text-center" data-ng-bind="product.store_name"></td>
-                                        <td class="text-center" data-ng-bind="product.store_name"></td>
-                                        <td class="text-center" data-ng-bind="product.store_name"></td>
-                                        <td class="text-center" data-ng-bind="product.store_name"></td>
+                                        <td class="text-center" data-ng-bind="jsonParse(product.category_name).en"></td>
+                                        <td class="text-center" data-ng-bind="jsonParse(product.subcategory_name).en"></td>
+                                        <td class="text-center" data-ng-bind="product.product_price"></td>
+                                        <td class="text-center" data-ng-bind="product.product_disc"></td>
                                         <td class="text-center">
                                             <span
-                                                class="badge bg-<%positionObj.color[product.product_admin]%> rounded-pill font-monospace p-2"><%positionObj.name[product.product_admin]%></span>
+                                                class="badge bg-<%statusObject.color[product.product_show]%> rounded-pill font-monospace p-2"><%statusObject.name[product.product_show]%></span>
 
                                         </td>
                                         <td class="text-center">
-                                            <span data-ng-if="!product.product_approved">Not Approved</span>
                                             <span
-                                                data-ng-if="product.product_approved"data-ng-bind="product.product_approved"></span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span
-                                                class="badge bg-<%statusObject.color[product.product_active]%> rounded-pill font-monospace"><%statusObject.name[product.product_active]%></span>
+                                                class="badge bg-<%deleteObj.color[product.product_delete]%> rounded-pill font-monospace p-2"><%deleteObj.name[product.product_delete]%></span>
 
                                         </td>
                                         <td class="col-fit">
-                                            <button class="btn btn-outline-success btn-circle bi bi-toggles"
-                                                data-ng-click="editActive($index)"></button>
-                                            <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
-                                                data-ng-click="setProduct($index)"></button>
+                                            <button class="btn btn-outline-success btn-circle bi bi-check"
+                                                data-ng-click="editStatus($index)"></button>
+                                            <button class="btn btn-outline-danger btn-circle bi bi-trash"
+                                                data-ng-click="delete($index)"></button>
+                                            {{-- <button class="btn btn-outline-primary btn-circle bi bi-pencil-square"
+                                                data-ng-click="setProduct($index)"></button> --}}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -119,7 +119,7 @@
             </div>
         </div>
 
-        {{-- @include('components.dashbords.modals.modal_product') --}}
+        @include('components.dashbords.modals.modal_product')
 
     </div>
 @endsection
@@ -134,12 +134,12 @@
 
         app.controller('myCtrl', function($scope) {
             $scope.statusObject = {
-                name: ['blocked', 'active'],
+                name: ['Unavailable', 'Available'],
                 color: ['danger', 'success']
             };
-            $scope.positionObj = {
-                name: ['Not Admin', 'Admin'],
-                color: ['danger', 'success']
+            $scope.deleteObj = {
+                name: ['Not deleted', 'Deleted'],
+                color: ['success', 'danger']
             };
             $('.loading-spinner').hide();
             $scope.noMore = false;
@@ -167,6 +167,9 @@
                 var request = {
                     q: $scope.q,
                     last_id: $scope.last_id,
+                    store: $('#filter-store').val(),
+                    category: $('#filter-caetgories').val(),
+                    subcategory: $('#filter-subcategory').val(),
                     limit: limit,
                     _token: '{{ csrf_token() }}'
                 };
@@ -186,14 +189,19 @@
                 }, 'json');
             }
 
-            $scope.setProduct = (indx) => {
-                $scope.updateProduct = indx;
-                $('#storeModal').modal('show');
-            };
-            $scope.editActive = (index) => {
+            // $scope.setProduct = (indx) => {
+            //     $scope.updateProduct = indx;
+            //     $('#storeModal').modal('show');
+            // };
+            $scope.editStatus = (index) => {
                 $scope.updateProduct = index;
                 $('#edit_active').modal('show');
             };
+            $scope.delete = (index) => {
+                $scope.updateProduct = index;
+                $('#delete_product').modal('show');
+            };
+
             $scope.dataLoader();
             scope = $scope;
         });

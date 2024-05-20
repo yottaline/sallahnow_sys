@@ -248,6 +248,8 @@ Route::prefix('markets')->middleware('auth')->group(function(){
     Route::prefix('products')->group(function(){
         Route::get('/','MarketProductController@index');
         Route::post('load', 'MarketProductController@load');
+        Route::put('change_status', 'MarketProductController@changeStatus');
+        Route::put('delete', 'MarketProductController@delete');
     });
 });
 
