@@ -27,6 +27,7 @@ class MarketRetailerController extends Controller
         $params   = $request->q ? ['q' => $request->q] : [];
         $limit    = $request->limit;
         $listId   = $request->last_id;
+        if($request->store) $params[]  = ['store_id','=', $request->store];
 
         echo json_encode(Market_retailer::fetch(0, $params, $limit, $listId));
     }
