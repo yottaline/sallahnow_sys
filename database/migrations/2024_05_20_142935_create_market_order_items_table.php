@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('orderItem_subtotal', 12, 2);
             $table->decimal('orderItem_disc', 6, 2);
             $table->decimal('orderItem_total', 12, 2);
+            $table->integer('orderItem_qty', false, true);
 
             $table->foreign('orderItem_order')->references('order_id')->on('market_orders')->cascadeOnDelete();
             $table->foreign('orderItem_product')->references('product_id')->on('market_products')->cascadeOnDelete();
