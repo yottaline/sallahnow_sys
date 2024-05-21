@@ -27,11 +27,10 @@ class MarketStoreController extends Controller
         $limit    = $request->limit;
         $listId   = $request->last_id;
 
-        if ($request->status) $params[]      = ['customer_active', $request->status];
-        if ($request->area) $params[]        = ['customer_area', $request->area];
-        elseif ($request->city) $params[]    = ['customer_city', $request->city];
-        elseif ($request->state) $params[]   = ['customer_state', $request->state];
-        elseif ($request->country) $params[] = ['customer_country', $request->country];
+        if ($request->area) $params[]        = ['store_area', $request->area];
+        elseif ($request->city) $params[]    = ['store_city', $request->city];
+        elseif ($request->state) $params[]   = ['store_state', $request->state];
+        elseif ($request->country) $params[] = ['store_country', $request->country];
 
         echo json_encode(Market_store::fetch(0, $params, $limit, $listId));
     }
