@@ -38,8 +38,7 @@ class Market_store extends Model
         {
             $stores->where(function (Builder $query) use ($params) {
                 $query->where('store_official_name', 'like', '%' . $params['q'] . '%')
-                        ->orWhere('store_name', $params['q'])
-                        ->orWhere('retailer_name', $params['q']);
+                        ->orWhere('store_name', $params['q']);
             });
             unset($params['q']);
         }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Market_order extends Model
 {
@@ -39,10 +40,24 @@ class Market_order extends Model
         return $id ? $orders->first() : $orders->get();
     }
 
-    public static function submit($param, $id)
+    public static function submit(int $id, array $orderParam = null, array $orderItemParam = null)
     {
-        if($id) return self::where('order_id', $id)->update($param) ? $id : false;
-        $status = self::create($param);
-        return $status ? $status->id : false;
+        try {
+            DB::beginTransaction();
+            $status = $id ? self::where('order_id', $id)->update($orderParam) : self::create($orderParam);
+            $id = $id ? $id : $status->id;
+            if (!empty($orderItemParam)) {
+                for ($i = 0; $i < count($orderItemParam); $i++) {
+                 $orderItemParam[$i]['orderItem_order'] = $id;
+                }
+                Market_order_item::insert($orderItemParam);
+            }
+            DB::commit();
+            return ['status' => true,'id' => $id];
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ['status' => false,'message' => 'error: ' . $e->getMessage()];
+        }
     }
 }

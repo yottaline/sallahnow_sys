@@ -25,8 +25,8 @@
                                     role="status"></span><span>CATEGORIES</span>
                             </h5>
                             <div>
-                                <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setCategory(false)"></button>
+                                {{-- <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                    data-ng-click="setCategory(false)"></button> --}}
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>

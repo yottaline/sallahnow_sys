@@ -201,6 +201,12 @@
                              </a>
                          </li>
 
+                         <li class="list-group-item nav-trans">
+                             <a class="link-dark d-block" href="/markets/orders/">
+                                 <i class="bi bi-truck text-secondary me-2"></i><b>Orders</b>
+                             </a>
+                         </li>
+
                      </ul>
                  </div>
                  <script>

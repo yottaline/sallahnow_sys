@@ -30,11 +30,4 @@ class Market_order_item extends Model
 
         return $id ? $orderItems->first() : $orderItems->get();
     }
-
-    public static function submit($param, $id)
-    {
-        if($id) return self::where('orderItem_id', $id)->update($param) ? $id : false;
-        $status = self::create($param);
-        return $status ? $status->id : false;
-    }
 }

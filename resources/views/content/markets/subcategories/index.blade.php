@@ -33,15 +33,15 @@
                                     role="status"></span><span>SUBCATEGORIES</span>
                             </h5>
                             <div>
-                                <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setSubCategory(false)"></button>
+                                {{-- <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                    data-ng-click="setSubCategory(false)"></button> --}}
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
                         </div>
 
-                        {{-- <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5> --}}
+                        <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5>
 
                         <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="example">
