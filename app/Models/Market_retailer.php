@@ -28,7 +28,7 @@ class Market_retailer  extends Authenticatable implements JWTSubject
 
     public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
     {
-        $retailers = self::join('market_stores', 'retailer_store', 'store_id')->limit($limit);
+        $retailers = self::join('market_stores', 'retailer_store', 'store_id')->limit($limit)->orderBy('retailer_id', 'DESC');
 
         if($lastId) $retailers->where('retailer_id', '<', $lastId);
 
