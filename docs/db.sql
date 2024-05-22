@@ -842,6 +842,7 @@ CREATE TABLE IF NOT EXISTS `market_orders` (
   `order_disc` DECIMAL(6,2) NOT NULL,
   `order_totaldisc` DECIMAL(12,2) NOT NULL,
   `order_total` DECIMAL(12,2) NOT NULL,
+  `order_store`  INT UNSIGNED NOT NULL,
   `order_create` DATETIME NOT NULL,
   `order_exec` DATETIME DEFAULT NULL,
   `order_approved` DATETIME DEFAULT NULL,

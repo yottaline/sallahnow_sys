@@ -20,6 +20,7 @@ class Market_order extends Model
         'order_disc',
         'order_totaldisc',
         'order_total',
+        'order_store',
         'order_create',
         'order_exec',
         'order_approved',

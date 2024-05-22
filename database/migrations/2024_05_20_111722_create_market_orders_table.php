@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('order_subtotal', 12, 2);
             $table->decimal('order_disc', 6, 2);
             $table->decimal('order_totaldisc', 12, 2);
+            $table->integer('order_store', false, true);
             $table->decimal('order_total', 12, 2);
             $table->dateTime('order_create');
             $table->dateTime('order_exec')->nullable();
