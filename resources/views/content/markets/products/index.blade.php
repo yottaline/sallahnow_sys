@@ -182,7 +182,6 @@
                         if (ln) {
                             $scope.noMore = ln < limit;
                             $scope.list = data;
-                            console.log(data)
                             $scope.last_id = data[ln - 1].product_id;
                         }
                     });

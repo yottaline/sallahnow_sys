@@ -30,7 +30,7 @@ class Market_product extends Model
     {
         $products = self::join('market_stores', 'product_store', 'store_id')
         ->join('market_categories', 'category_id', 'product_category')
-        ->join('market_subcategories', 'subcategory_id', 'product_subcategory')->limit($limit);
+        ->join('market_subcategories', 'subcategory_id', 'product_subcategory')->limit($limit)->orderBy('product_id', 'DESC');
 
 
         if (isset($params['q']))

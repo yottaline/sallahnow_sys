@@ -32,7 +32,7 @@ class Market_store extends Model
     public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
     {
         // $stores = self::join('market_retailers', 'market_stores.store_id', 'market_retailers.retailer_store')->limit($limit);
-        $stores = self::limit($limit);
+        $stores = self::limit($limit)->orderBy('store_id', 'desc');
 
         if (isset($params['q']))
         {

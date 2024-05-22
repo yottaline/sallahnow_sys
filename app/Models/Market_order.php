@@ -29,7 +29,7 @@ class Market_order extends Model
 
     public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
     {
-        $orders = self::join('customers', 'order_customer', 'customer_id')->limit($limit);
+        $orders = self::join('customers', 'order_customer', 'customer_id')->limit($limit)->orderBy('order_id', 'DESC');
 
         if($lastId) $orders->where('order_id', '<', $lastId);
 
