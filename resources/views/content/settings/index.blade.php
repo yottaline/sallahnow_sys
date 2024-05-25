@@ -543,7 +543,7 @@
 
             $scope.loadData = function(parent, target) {
                 $(`#${target}Box .loading-spinner`).show();
-                $.post('/settings/location/load/', {
+                $.post('/settings/location/load', {
                     type: parent ? (+parent.location_type + 1) : 1,
                     parent: parent ? parent.location_id : 0,
                     _token: "{{ csrf_token() }}"
@@ -558,7 +558,7 @@
                 if (reload) {
                     $scope.page = 1;
                 }
-                $.post("/brands/load/", {
+                $.post("/brands/load", {
                     page: $scope.page,
                     limit: 24,
                     _token: '{{ csrf_token() }}'
@@ -586,7 +586,7 @@
                 if (reload) {
                     $scope.page = 1;
                 }
-                $.post("/models/load/", {
+                $.post("/models/load", {
                     page: $scope.page,
                     limit: 24,
                     _token: '{{ csrf_token() }}'
@@ -605,7 +605,7 @@
                 if (reload) {
                     $scope.page = 1;
                 }
-                $.post("/CompatibilityCategories/load/", {
+                $.post("/CompatibilityCategories/load", {
                     page: $scope.page,
                     limit: 24,
                     _token: '{{ csrf_token() }}'
@@ -623,7 +623,7 @@
                 if (reload) {
                     $scope.page = 1;
                 }
-                $.post("/compatibilityMotherBoard/load/", {
+                $.post("/compatibilityMotherBoard/load", {
                     _token: '{{ csrf_token() }}'
                 }, function(data) {
                     $('.loading-spinner').hide();
@@ -649,7 +649,7 @@
                 if (reload) {
                     $scope.page = 1;
                 }
-                $.post("/packages/load/", {
+                $.post("/packages/load", {
                     page: $scope.page,
                     limit: 24,
                     _token: '{{ csrf_token() }}'
