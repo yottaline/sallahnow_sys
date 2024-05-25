@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Market_product extends Model
 {
@@ -29,7 +30,19 @@ class Market_product extends Model
     {
         $products = self::join('market_stores', 'product_store', 'store_id')
         ->join('market_categories', 'category_id', 'product_category')
-        ->join('market_subcategories', 'subcategory_id', 'product_subcategory')->limit($limit);
+        ->join('market_subcategories', 'subcategory_id', 'product_subcategory')->limit($limit)->orderBy('product_id', 'DESC');
+
+
+        if (isset($params['q']))
+        {
+            $products->where(function (Builder $query) use ($params) {
+                $query->where('product_desc', 'like', '%' . $params['q'] . '%')
+                ->orWhere('product_name', $params['q'])
+                    ->orWhere('category_name',  'like', '%' . $params['q'] . '%')
+                    ->orWhere('subcategory_name',  'like', '%' . $params['q'] . '%');
+            });
+            unset($params['q']);
+        }
 
         if($lastId) $products->where('product_id', '<', $lastId);
 

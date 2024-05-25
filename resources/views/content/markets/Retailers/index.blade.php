@@ -11,15 +11,15 @@
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
-                        {{-- country --}}
-                        {{-- <div class="mb-3">
-                            <label>Country<b class="text-danger">&ast;</b></label>
-                            <select id="filter-country" class="form-select">
-                                <option value="0">-- select country --</option>
-                                <option data-ng-repeat="country in countries" data-ng-value="country.location_id"
-                                    data-ng-bind="jsonParse(country.location_name)['en']"></option>
+                        {{-- Store --}}
+                        <div class="mb-3">
+                            <label>Store<b class="text-danger">&ast;</b></label>
+                            <select id="filter-store" class="form-select">
+                                <option value="0">-- SELECT STORE NAME --</option>
+                                <option data-ng-repeat="store in stores" data-ng-value="store.store_id"
+                                    data-ng-bind="store.store_name"></option>
                             </select>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -33,15 +33,15 @@
                                     role="status"></span><span>RETAILERS</span>
                             </h5>
                             <div>
-                                <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setReyailer(false)"></button>
+                                {{-- <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                    data-ng-click="setReyailer(false)"></button> --}}
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
                         </div>
 
-                        {{-- <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5> --}}
+                        <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5>
 
                         <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="example">
@@ -51,7 +51,7 @@
                                         <th>Retailer Name</th>
                                         <th class="text-center">Store Name</th>
                                         <th class="text-center">Position</th>
-                                        <th class="text-center">Approved Date</th>
+                                        <th class="text-center">Approved</th>
                                         <th class="text-center">Status</th>
                                         <th></th>
                                     </tr>
@@ -80,13 +80,12 @@
 
                                         </td>
                                         <td class="text-center">
-                                            <span data-ng-if="!retailer.retailer_approved">Not Approved</span>
                                             <span
-                                                data-ng-if="retailer.retailer_approved"data-ng-bind="retailer.retailer_approved"></span>
+                                                class="badge bg-<%approveObj.color[retailer.retailer_approved]%> rounded-pill font-monospace p-2"><%approveObj.name[retailer.retailer_approved]%></span>
                                         </td>
                                         <td class="text-center">
                                             <span
-                                                class="badge bg-<%statusObject.color[retailer.retailer_active]%> rounded-pill font-monospace"><%statusObject.name[retailer.retailer_active]%></span>
+                                                class="badge bg-<%statusObject.color[retailer.retailer_active]%> rounded-pill font-monospace p-2"><%statusObject.name[retailer.retailer_active]%></span>
 
                                         </td>
                                         <td class="col-fit">
@@ -122,11 +121,15 @@
 
         app.controller('myCtrl', function($scope) {
             $scope.statusObject = {
-                name: ['blocked', 'active'],
+                name: ['Blocked', 'Active'],
                 color: ['danger', 'success']
             };
             $scope.positionObj = {
                 name: ['Not Admin', 'Admin'],
+                color: ['danger', 'success']
+            };
+            $scope.approveObj = {
+                name: ['Not Approved', 'Approved'],
                 color: ['danger', 'success']
             };
             $('.loading-spinner').hide();
@@ -153,6 +156,7 @@
                 var request = {
                     q: $scope.q,
                     last_id: $scope.last_id,
+                    store: $('#filter-store').val(),
                     limit: limit,
                     _token: '{{ csrf_token() }}'
                 };

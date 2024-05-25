@@ -74,8 +74,8 @@
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
                         </div>
-                        {{-- <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5> --}}
+                        <h5 data-ng-if="q" class="text-dark">Result of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5>
                         <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="example">
                                 <thead>

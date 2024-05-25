@@ -13,7 +13,7 @@
                     <div class="card-body">
                         {{-- country --}}
                         <div class="mb-3">
-                            <label>Country<b class="text-danger">&ast;</b></label>
+                            <label>Country</label>
                             <select id="filter-country" class="form-select">
                                 <option value="0">-- select country --</option>
                                 <option data-ng-repeat="country in countries" data-ng-value="country.location_id"
@@ -22,7 +22,7 @@
                         </div>
                         {{-- state --}}
                         <div class="mb-3">
-                            <label>State<b class="text-danger">&ast;</b></label>
+                            <label>State</label>
                             <select id="filter-state" class="form-select">
                                 <option value="0">-- select state --</option>
                                 <option data-ng-repeat="state in filters.states" data-ng-value="state.location_id"
@@ -32,7 +32,7 @@
 
                         {{-- city --}}
                         <div class="mb-3">
-                            <label>City<b class="text-danger">&ast;</b></label>
+                            <label>City</label>
                             <select id="filter-city" class="form-select">
                                 <option value="0">-- select city --</option>
                                 <option data-ng-repeat="city in filters.cities" data-ng-value="city.location_id"
@@ -42,7 +42,7 @@
 
                         {{-- area --}}
                         <div class="mb-3">
-                            <label>Arae<b class="text-danger">&ast;</b></label>
+                            <label>Arae</label>
                             <select id="filter-area" class="form-select" required>
                                 <option value="0">-- select area --</option>
                                 <option data-ng-repeat="area in filters.areas" data-ng-value="area.location_id"
@@ -62,15 +62,15 @@
                                     role="status"></span><span>STORES</span>
                             </h5>
                             <div>
-                                <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
-                                    data-ng-click="setStore(false)"></button>
+                                {{-- <button type="button" class="btn btn-outline-primary btn-circle bi bi-plus-lg"
+                                    data-ng-click="setStore(false)"></button> --}}
                                 <button type="button" class="btn btn-outline-dark btn-circle bi bi-arrow-repeat"
                                     data-ng-click="dataLoader(true)"></button>
                             </div>
                         </div>
 
-                        {{-- <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
-                        </h5> --}}
+                        <h5 data-ng-if="q" class="text-dark">Results of <span class="text-primary" data-ng-bind="q"></span>
+                        </h5>
 
                         <div data-ng-if="list.length" class="table-responsive">
                             <table class="table table-hover" id="example">
@@ -179,7 +179,6 @@
                 var request = {
                     package: $('#filter-package').val(),
                     country: $('#filter-country').val(),
-                    state: $('#filter-state').val(),
                     city: $('#filter-city').val(),
                     area: $('#filter-area').val(),
                     q: $scope.q,
