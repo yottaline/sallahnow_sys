@@ -85,16 +85,17 @@ class MarketRetailerController extends Controller
 
     public function change(Request $request)
     {
+
         $id = $request->id;
-        $param[] = ['retailer_approved', '!=', 0];
-        if (Market_retailer::fetch($id, $param))
-        {
-            echo json_encode(['status' => false,'message' => 'This account is currently active']);
-            return;
-        }
+        // $param[] = ['retailer_approved', '!=', 0];
+        // if (Market_retailer::fetch($id, $param))
+        // {
+        //     echo json_encode(['status' => false,'message' => 'This account is currently active']);
+        //     return;
+        // }
 
         $param = [
-            'retailer_approved' => Carbon::now(),
+            'retailer_approved' => 1,
             'retailer_approved_by' => auth()->user()->id
         ];
 
